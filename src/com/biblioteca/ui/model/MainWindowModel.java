@@ -1,4 +1,4 @@
-package com.biblioteca.model;
+package com.biblioteca.ui.model;
 
 public class MainWindowModel {
 

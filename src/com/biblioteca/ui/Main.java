@@ -1,4 +1,4 @@
-package com.biblioteca;
+package com.biblioteca.ui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
