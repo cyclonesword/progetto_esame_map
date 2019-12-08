@@ -34,7 +34,7 @@ public class Book {
     public void lendBookTo(Customer customer, LocalDateTime expectedReturnDate, LocalDateTime loanDate) throws LoanException {
         if (currentLoan != null)
             throw new LoanException();
-        
+
         currentLoan = new Loan.Builder()
                 .setCustomer(customer)
                 .setLoanDate(loanDate)
@@ -62,6 +62,5 @@ public class Book {
         return Objects.hash(ISBN);
     }
 
-    private class LoanException extends Exception {
-    }
+    private static class LoanException extends RuntimeException { }
 }
