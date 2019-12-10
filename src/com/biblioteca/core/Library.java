@@ -21,7 +21,7 @@ public class Library {
         return instance;
     }
 
-    public void newLoan(Book book, Authorization authorization) {
+    public void newLoan(BookImpl book, Authorization authorization) {
 
     }
 

@@ -6,6 +6,8 @@ module Progetto {
 
     opens com.biblioteca.core;
     opens com.biblioteca.ui;
+    opens com.biblioteca.ui.controller;
+    opens com.biblioteca.ui.model;
 
     exports com.biblioteca.core;
     exports com.biblioteca.ui;
