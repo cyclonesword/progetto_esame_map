@@ -11,4 +11,7 @@ public interface Book {
     Image getImage();
 
     List<Author> getAuthors();
+    void addAuthor(Author author);
+
+    int getQuantity();
 }

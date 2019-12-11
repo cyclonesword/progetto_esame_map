@@ -9,4 +9,7 @@ public interface ListItem {
     String getItemDescription();
     Image getImage();
 
+    int getQuantity();
+
+    boolean isAvailable();
 }

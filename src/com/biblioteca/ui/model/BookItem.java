@@ -31,6 +31,11 @@ public class BookItem implements Book, ListItem {
     }
 
     @Override
+    public void addAuthor(Author author) {
+
+    }
+
+    @Override
     public String getDescription() {
         return book.getDescription();
     }
@@ -51,6 +56,16 @@ public class BookItem implements Book, ListItem {
     }
 
     @Override
+    public int getQuantity() {
+        return book.getQuantity();
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return getQuantity() > 0;
+    }
+
+    @Override
     public String getItemTitle() {
         return getName();
     }
@@ -58,5 +73,10 @@ public class BookItem implements Book, ListItem {
     @Override
     public String getItemDescription() {
         return getDescription();
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

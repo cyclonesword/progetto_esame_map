@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class BookImpl implements Book{
+public class BookImpl implements Book {
 
     private String name;
     private String ISBN;
@@ -17,6 +17,7 @@ public class BookImpl implements Book{
     private List<Loan> loanHistory = new ArrayList<>();
     private String description;
     private Image image;
+    private int quantity;
 
     public BookImpl(String name, String ISBN) {
         this.name = name;
@@ -27,6 +28,13 @@ public class BookImpl implements Book{
         this.name = name;
         this.ISBN = ISBN;
         this.description = description;
+    }
+
+    public BookImpl(String name, String ISBN, String description, int quantity) {
+        this.name = name;
+        this.ISBN = ISBN;
+        this.description = description;
+        this.quantity = quantity;
     }
 
     public String getName() {
@@ -84,6 +92,21 @@ public class BookImpl implements Book{
 
     public List<Author> getAuthors() {
         return authors;
+    }
+
+    @Override
+    public void addAuthor(Author author) {
+        authors.add(author);
+    }
+
+    @Override
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public BookImpl setQuantity(int quantity) {
+        this.quantity = quantity;
+        return this;
     }
 
     @Override

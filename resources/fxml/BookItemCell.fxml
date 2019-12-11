@@ -8,29 +8,45 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="rootNode" hgap="10" vgap="10"
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<GridPane fx:id="rootNode" hgap="10"
+          styleClass="book-item-cell"
+          prefHeight="70"
+          maxWidth="500"
           xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+
+    <padding>
+        <Insets bottom="5" />
+    </padding>
 
     <Label fx:id="itemNumberLabel" text="1" GridPane.rowSpan="2">
         <font>
-            <Font name="AvenirLTStd-Book" size="26.0"/>
+            <Font name="AvenirLTStd-Book" size="20.0"/>
         </font>
     </Label>
-    <ImageView fx:id="imageView" fitHeight="80" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="0"
-               GridPane.rowSpan="2">
+    <ImageView fx:id="imageView" fitHeight="70" fitWidth="40" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="0"
+               GridPane.rowSpan="2" GridPane.valignment="TOP">
         <Image url="@../images/it.jpg"/>
     </ImageView>
-    <Label fx:id="titleLabel" text="IT - Il Pagliaccio assassino" GridPane.columnIndex="2" GridPane.rowIndex="0">
+    <Label fx:id="titleLabel" GridPane.columnIndex="2" GridPane.rowIndex="0">
         <font>
-            <Font name="AvenirLTStd-Medium" size="18.0"/>
+            <Font name="AvenirLTStd-Medium" size="15.0"/>
         </font>
     </Label>
-    <Label fx:id="descriptionLabel" text="Una storia terrificante" GridPane.columnIndex="2" GridPane.rowIndex="1"
-           GridPane.valignment="TOP">
+    <ImageView fitWidth="11" fitHeight="11" fx:id="availabilityImage" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.halignment="RIGHT"/>
+    <Label fx:id="availabilityText"  GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
+        <GridPane.margin>
+            <Insets right="20" />
+        </GridPane.margin>
+    </Label>
+    <Label fx:id="descriptionLabel" GridPane.columnIndex="2" GridPane.rowIndex="1" wrapText="true" GridPane.valignment="TOP"  maxHeight="150">
         <font>
-            <Font name="AvenirLTStd-Roman" size="15.0"/>
+            <Font name="AvenirLTStd-Roman" size="13.0"/>
         </font>
     </Label>
+
+
 
     <columnConstraints>
         <ColumnConstraints/>

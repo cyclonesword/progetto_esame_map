@@ -1,0 +1,14 @@
+.list-cell:filled:selected {
+  -fx-background-color: #eee;
+  -fx-background-insets: 0;
+}
+
+.list-cell:filled {
+  -fx-background-color: white;
+  -fx-background-insets: 0;
+}
+
+.book-item-cell > .label {
+    -fx-text-fill: #333;
+}
+

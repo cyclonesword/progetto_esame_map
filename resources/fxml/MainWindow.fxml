@@ -17,10 +17,14 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
 <BorderPane prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.biblioteca.ui.controller.MainWindowController">
 
     <stylesheets>
         <URL value="@../css/main_window.css" />
+        <URL value="@../css/book_cell.css" />
     </stylesheets>
 
     <top>
@@ -87,9 +91,9 @@
     </top>
 
     <left>
-        <StackPane alignment="TOP_RIGHT">
+        <StackPane alignment="TOP_RIGHT" prefWidth="224">
 
-            <TreeView fx:id="filtersTreeView">
+            <TreeView fx:id="filtersTreeView" >
                 <TreeItem expanded="true" value="Filters">
                     <graphic>
                         <ImageView fitHeight="24" fitWidth="24">
@@ -183,11 +187,64 @@
     </left>
 
     <center>
-        <ListView fx:id="listView">
+        <ListView fx:id="listView" prefWidth="530" maxWidth="530">
+            <padding>
+                <Insets top="10" left="5" right="5" bottom="10" />
+            </padding>
         </ListView>
     </center>
 
     <right>
+
+        <GridPane prefWidth="250.0" hgap="10" alignment="TOP_CENTER">
+            <ImageView fx:id="bookDetailImageView"
+                       GridPane.halignment="CENTER"
+                       fitWidth="150"
+                       preserveRatio="true"
+                       GridPane.columnIndex="0"
+                       GridPane.rowIndex="0"
+                       GridPane.valignment="TOP"/>
+            <Label fx:id="bookDetailTitle" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.halignment="CENTER">
+                <GridPane.margin>
+                    <Insets top="15" bottom="10" />
+                </GridPane.margin>
+                <font>
+                    <Font name="AvenirLTStd-Medium" size="17.0"/>
+                </font>
+            </Label>
+            <Label fx:id="bookDetailDescription" GridPane.columnIndex="0" GridPane.rowIndex="2" wrapText="true"
+                   GridPane.valignment="TOP" GridPane.halignment="CENTER" maxWidth="220" >
+                <font>
+                    <Font name="AvenirLTStd-Roman" size="14.0"/>
+                </font>
+            </Label>
+
+            <ImageView fitWidth="14" fitHeight="14" fx:id="availabilityImage" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.halignment="LEFT">
+                <GridPane.margin>
+                    <Insets top="20" />
+                </GridPane.margin>
+            </ImageView>
+            <Label fx:id="availabilityText"  GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.halignment="LEFT">
+                <GridPane.margin>
+                    <Insets left="25" top="20" />
+                </GridPane.margin>
+            </Label>
+
+            <Button prefHeight="40" fx:id="prenotaButton" text="Avvia prestito" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.halignment="CENTER">
+                <GridPane.margin>
+                    <Insets top="20" />
+                </GridPane.margin>
+                <padding>
+                    <Insets left="13" right="20" />
+                </padding>
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/prenota.png" requestedWidth="21" requestedHeight="21"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+
+        </GridPane>
 
     </right>
 

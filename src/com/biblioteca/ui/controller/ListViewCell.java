@@ -1,10 +1,12 @@
-package com.biblioteca.ui.model;
+package com.biblioteca.ui.controller;
 
+import com.biblioteca.ui.Images;
+import com.biblioteca.ui.model.ListItem;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.image.Image;
+import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
@@ -27,8 +29,20 @@ public class ListViewCell<T extends ListItem> extends ListCell<T> {
     @FXML
     private ImageView imageView;
 
+    @FXML
+    private ImageView availabilityImage;
+
+    @FXML
+    private Label availabilityText;
+
     private FXMLLoader fxmlLoader;
 
+    public ListViewCell() {
+        super();
+    }
+
+    // Created to allow method reference usage.
+    public ListViewCell(ListView<T> source) { }
 
     @Override
     protected void updateItem(T item, boolean empty) {
@@ -54,7 +68,11 @@ public class ListViewCell<T extends ListItem> extends ListCell<T> {
             titleLabel.setText(item.getItemTitle());
             descriptionLabel.setText(item.getItemDescription());
             imageView.setImage(item.getImage());
-            itemNumberLabel.setText(String.valueOf(getIndex()));
+            itemNumberLabel.setText(String.valueOf(getIndex()+1));
+            availabilityImage.setImage(item.isAvailable() ? Images.GREEN_CIRCLE : Images.RED_CIRCLE);
+            availabilityText.setText(item.isAvailable() ? "Disponibile" : "Prestato");
+
+
 
         }
     }
