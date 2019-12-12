@@ -1,9 +1,9 @@
 package com.biblioteca.ui.controller;
 
-import com.biblioteca.core.BookAuthor;
-import com.biblioteca.core.BookImpl;
+import com.biblioteca.core.*;
 import com.biblioteca.ui.Images;
 import com.biblioteca.ui.model.BookItem;
+import com.biblioteca.ui.model.FilterItem;
 import com.biblioteca.ui.model.ListItem;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -15,11 +15,18 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class MainWindowController implements Initializable {
+
+    @FXML
+    private TextField searchBar;
 
     @FXML
     private Button prenotaButton;
@@ -43,7 +50,7 @@ public class MainWindowController implements Initializable {
     private ListView<ListItem> listView;
 
     @FXML
-    private TreeView<TreeItem<String>> filtersTreeView;
+    private TreeView<FilterItem> filtersTreeView;
 
     private ObservableList<ListItem> items = FXCollections.observableArrayList();
 
@@ -58,14 +65,50 @@ public class MainWindowController implements Initializable {
 
         items.add(new BookItem(book1));
         items.add(new BookItem(book2));
+
         listView.setItems(items);
         listView.setCellFactory(ListViewCell::new);
+
         listView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observableValue, oldItem, newItem) -> changeItemDetail(newItem));
+
         listView.getSelectionModel().select(0);
 
+        filtersTreeView.setCellFactory(FilterTreeCell::new);
 
+        initFilters();
+    }
+
+    private void initFilters() {
+
+        var rootItem = new FilterItem(new RootFilter("Filtri"), "/images/filter.png");
+        var rootNode = new TreeItem<>(rootItem);
+
+        var rootAuthors = new FilterItem(new RootFilter("Autori"), "/images/authors.png");
+        var rootAuthorsNode = new TreeItem<>(rootAuthors);
+
+        var rootPublishers = new FilterItem(new RootFilter("Editori"), "/images/publisher.png");
+        var rootPublishersNode = new TreeItem<>(rootPublishers);
+
+        rootNode.getChildren().addAll(List.of(rootAuthorsNode, rootPublishersNode));
+        rootNode.setExpanded(true);
+
+        var af1 = new AuthorFilter("Stephen King");
+        var af2 = new AuthorFilter("Andy Weir");
+        var af3 = new AuthorFilter("Isaac Asimov");
+
+        var pf1 = new PublisherFilter("ACM Press");
+        var pf2 = new PublisherFilter("Pearson");
+        var pf3 = new PublisherFilter("McGraw-Hill");
+
+        var authorFilters = List.of(af1,af2,af3).stream().map(FilterItem::new).collect(Collectors.toList());
+        var publisherFilters = List.of(pf1,pf2,pf3).stream().map(FilterItem::new).collect(Collectors.toList());
+
+        rootAuthorsNode.getChildren().addAll(authorFilters.stream().map(TreeItem::new).collect(Collectors.toList()));
+        rootPublishersNode.getChildren().addAll(publisherFilters.stream().map(TreeItem::new).collect(Collectors.toList()));
+
+        filtersTreeView.setRoot(rootNode);
     }
 
     @FXML
@@ -85,5 +128,14 @@ public class MainWindowController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initialize();
+    }
+
+    @FXML
+    public void searchBarKeyTyped(KeyEvent keyEvent) {
+        // System.out.println(keyEvent);
+        if(keyEvent.getCode() == KeyCode.ENTER) {
+            System.out.println("Premuto invio!");
+        }
+
     }
 }

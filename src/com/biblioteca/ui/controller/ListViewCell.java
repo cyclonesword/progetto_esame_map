@@ -64,6 +64,7 @@ public class ListViewCell<T extends ListItem> extends ListCell<T> {
                 }
             }
 
+
             setGraphic(rootNode);
             titleLabel.setText(item.getItemTitle());
             descriptionLabel.setText(item.getItemDescription());

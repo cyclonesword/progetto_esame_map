@@ -13,11 +13,11 @@
 <GridPane fx:id="rootNode" hgap="10"
           styleClass="book-item-cell"
           prefHeight="70"
-          maxWidth="500"
+          maxWidth="490"
           xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
 
     <padding>
-        <Insets bottom="5" />
+        <Insets bottom="5" top="5" />
     </padding>
 
     <Label fx:id="itemNumberLabel" text="1" GridPane.rowSpan="2">

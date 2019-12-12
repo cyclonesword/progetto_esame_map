@@ -1,3 +1,37 @@
 #border-bottom {
     -fx-background-color: #ccc;
 }
+
+.tree-item-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #333;
+}
+
+.searchBar {
+    -fx-background-color: #fff;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 25;
+    -fx-background-radius: 25;
+
+}
+
+.roundBorders {
+    -fx-background-color: #fff;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.searchBarButton {
+    -fx-background-color: #1473e6;
+    -fx-text-fill: white;
+    -fx-font-size: 12;
+    /* -fx-border-color: #ccc; */
+    -fx-border-radius: 25;
+    -fx-background-radius: 25;
+}
+
+.searchBarButton:hover {
+    -fx-background-color: #0d66d0;
+    -fx-cursor: hand;
+}
