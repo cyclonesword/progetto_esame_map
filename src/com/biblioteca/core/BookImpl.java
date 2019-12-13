@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class BookImpl implements Book {
 
-    private String name;
+    private String title;
     private String ISBN;
     private List<Author> authors = new ArrayList<>();
     //  private BookStatus bookStatus = BookStatus.defaultStatus;
@@ -18,27 +18,39 @@ public class BookImpl implements Book {
     private String description;
     private Image image;
     private int quantity;
+    private String subTitle;
+    private int year;
+    private Publisher publisher;
+    private int id;
 
-    public BookImpl(String name, String ISBN) {
-        this.name = name;
+    public BookImpl() {
+    }
+
+    public BookImpl(String title, String ISBN) {
+        this.title = title;
         this.ISBN = ISBN;
     }
 
-    public BookImpl(String name, String ISBN, String description) {
-        this.name = name;
+    public BookImpl(String title, String ISBN, String description) {
+        this.title = title;
         this.ISBN = ISBN;
         this.description = description;
     }
 
-    public BookImpl(String name, String ISBN, String description, int quantity) {
-        this.name = name;
+    public BookImpl(String title, String ISBN, String description, int quantity) {
+        this.title = title;
         this.ISBN = ISBN;
         this.description = description;
         this.quantity = quantity;
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public String getISBN() {
@@ -50,9 +62,8 @@ public class BookImpl implements Book {
         return image;
     }
 
-    public BookImpl setImage(Image image) {
-        this.image = image;
-        return this;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Loan getCurrentLoan() {
@@ -90,7 +101,7 @@ public class BookImpl implements Book {
         return Objects.hash(ISBN);
     }
 
-    public List<Author> getAuthors() {
+    public List<? extends Author> getAuthors() {
         return authors;
     }
 
@@ -98,6 +109,7 @@ public class BookImpl implements Book {
     public void addAuthor(Author author) {
         authors.add(author);
     }
+
 
     @Override
     public int getQuantity() {
@@ -112,6 +124,57 @@ public class BookImpl implements Book {
     @Override
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public String getSubtitle() {
+        return subTitle;
+    }
+
+    @Override
+    public int getYear() {
+        return year;
+    }
+
+    @Override
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setISBN(String ISBN) {
+        this.ISBN = ISBN;
+    }
+
+    public void setCurrentLoan(Loan currentLoan) {
+        this.currentLoan = currentLoan;
+    }
+
+    public void setLoanHistory(List<Loan> loanHistory) {
+        this.loanHistory = loanHistory;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public void setSubTitle(String subTitle) {
+        this.subTitle = subTitle;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public void setPublisher(Publisher publisher) {
+        this.publisher = publisher;
     }
 
     private static class LoanException extends RuntimeException { }

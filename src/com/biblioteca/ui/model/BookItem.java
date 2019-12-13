@@ -2,6 +2,7 @@ package com.biblioteca.ui.model;
 
 import com.biblioteca.core.Author;
 import com.biblioteca.core.Book;
+import com.biblioteca.core.Publisher;
 import javafx.scene.image.Image;
 
 import java.util.List;
@@ -16,8 +17,8 @@ public class BookItem implements Book, ListItem {
     }
 
     @Override
-    public String getName() {
-        return book.getName();
+    public String getTitle() {
+        return book.getTitle();
     }
 
     @Override
@@ -26,13 +27,33 @@ public class BookItem implements Book, ListItem {
     }
 
     @Override
-    public List<Author> getAuthors() {
+    public List<? extends Author> getAuthors() {
         return book.getAuthors();
     }
 
     @Override
     public void addAuthor(Author author) {
 
+    }
+
+    @Override
+    public int getId() {
+        return 0;
+    }
+
+    @Override
+    public String getSubtitle() {
+        return null;
+    }
+
+    @Override
+    public int getYear() {
+        return 0;
+    }
+
+    @Override
+    public Publisher getPublisher() {
+        return null;
     }
 
     @Override
@@ -67,7 +88,7 @@ public class BookItem implements Book, ListItem {
 
     @Override
     public String getItemTitle() {
-        return getName();
+        return getTitle();
     }
 
     @Override
@@ -77,6 +98,6 @@ public class BookItem implements Book, ListItem {
 
     @Override
     public String toString() {
-        return getName();
+        return getTitle();
     }
 }

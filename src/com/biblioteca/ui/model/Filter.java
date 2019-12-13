@@ -1,4 +1,4 @@
-package com.biblioteca.core;
+package com.biblioteca.ui.model;
 
 import com.biblioteca.ui.model.ListItem;
 

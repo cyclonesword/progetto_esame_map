@@ -2,7 +2,7 @@ package com.biblioteca.ui.model;
 
 import javafx.scene.image.Image;
 
-public interface ListItem {
+public interface ListItem  {
     int getPosition();
     boolean isSelected();
     String getItemTitle();

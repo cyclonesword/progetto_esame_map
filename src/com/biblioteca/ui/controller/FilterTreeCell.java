@@ -62,14 +62,13 @@ public class FilterTreeCell<T extends FilterItem> extends TreeCell<T> {
             } else {
                 checkBox.setVisible(true);
                 checkBox.setManaged(true);
+                imageView.setImage(null);
                 checkBox.setSelected(item.isSelected());
                 checkBox.setOnMouseClicked(event -> {
                     item.setSelected(checkBox.isSelected());
                     System.out.println("Filter selected: "+item);
                 });
             }
-
-
 
         }
 

@@ -1,12 +1,12 @@
 package com.biblioteca.ui.controller;
 
 import com.biblioteca.core.*;
+import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.Images;
 import com.biblioteca.ui.model.BookItem;
 import com.biblioteca.ui.model.FilterItem;
 import com.biblioteca.ui.model.ListItem;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -67,7 +67,7 @@ public class MainWindowController implements Initializable {
         items.add(new BookItem(book2));
 
         listView.setItems(items);
-        listView.setCellFactory(ListViewCell::new);
+        listView.setCellFactory(BookListCell::new);
 
         listView.getSelectionModel()
                 .selectedItemProperty()
@@ -109,6 +109,13 @@ public class MainWindowController implements Initializable {
         rootPublishersNode.getChildren().addAll(publisherFilters.stream().map(TreeItem::new).collect(Collectors.toList()));
 
         filtersTreeView.setRoot(rootNode);
+
+        var pubs = DataSource.getDefault().readPublishers();
+        var auths = DataSource.getDefault().readAuthors();
+        var cats = DataSource.getDefault().readCategories();
+        var books = DataSource.getDefault().readBooks();
+        System.out.println("");
+        // DataSource.getDefault().readCategories();
     }
 
     @FXML

@@ -1,6 +1,5 @@
 package com.biblioteca.ui;
 
-import com.biblioteca.ui.controller.ListViewCell;
 import javafx.scene.image.Image;
 
 public class Images {

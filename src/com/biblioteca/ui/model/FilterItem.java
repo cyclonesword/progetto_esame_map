@@ -1,6 +1,5 @@
 package com.biblioteca.ui.model;
 
-import com.biblioteca.core.Filter;
 import javafx.scene.image.Image;
 
 public class FilterItem {

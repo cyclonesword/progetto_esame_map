@@ -1,5 +1,6 @@
 package com.biblioteca.core;
 
+import com.biblioteca.ui.model.Filter;
 import com.biblioteca.ui.model.ListItem;
 
 public class RootFilter implements Filter {

@@ -12,7 +12,7 @@ import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 
-public class ListViewCell<T extends ListItem> extends ListCell<T> {
+public class BookListCell<T extends ListItem> extends ListCell<T> {
 
     @FXML
     private GridPane rootNode;
@@ -37,12 +37,12 @@ public class ListViewCell<T extends ListItem> extends ListCell<T> {
 
     private FXMLLoader fxmlLoader;
 
-    public ListViewCell() {
+    public BookListCell() {
         super();
     }
 
     // Created to allow method reference usage.
-    public ListViewCell(ListView<T> source) { }
+    public BookListCell(ListView<T> source) { }
 
     @Override
     protected void updateItem(T item, boolean empty) {
