@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +23,8 @@ public class BookImpl implements Book {
     private int year;
     private Publisher publisher;
     private int id;
+    private List<Category> categories = new ArrayList<>();
+    private String format;
 
     public BookImpl() {
     }
@@ -49,6 +52,11 @@ public class BookImpl implements Book {
         return id;
     }
 
+    @Override
+    public List<? extends Category> getCategories() {
+        return Collections.unmodifiableList(categories);
+    }
+
     public String getTitle() {
         return title;
     }
@@ -60,6 +68,11 @@ public class BookImpl implements Book {
     @Override
     public Image getImage() {
         return image;
+    }
+
+    @Override
+    public String getFormat() {
+        return format;
     }
 
     public void setId(int id) {
@@ -108,6 +121,16 @@ public class BookImpl implements Book {
     @Override
     public void addAuthor(Author author) {
         authors.add(author);
+    }
+
+    @Override
+    public void addCategories(List<? extends Category> categories) {
+        this.categories.addAll(categories);
+    }
+
+    @Override
+    public void setFormat(String format) {
+        this.format = format;
     }
 
 

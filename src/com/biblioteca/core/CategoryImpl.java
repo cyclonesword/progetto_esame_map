@@ -11,6 +11,11 @@ public class CategoryImpl implements Category {
     }
 
     @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
     public String getName() {
         return name;
     }

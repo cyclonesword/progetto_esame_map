@@ -10,5 +10,6 @@
 
 .book-item-cell > .label {
     -fx-text-fill: #333;
+    width:400;
 }
 

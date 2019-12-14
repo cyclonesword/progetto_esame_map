@@ -1,6 +1,8 @@
 package com.biblioteca.ui.controller;
 
+import com.biblioteca.core.Book;
 import com.biblioteca.ui.Images;
+import com.biblioteca.ui.model.BookListItem;
 import com.biblioteca.ui.model.ListItem;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +14,7 @@ import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 
-public class BookListCell<T extends ListItem> extends ListCell<T> {
+public class BookListCell extends ListCell<BookListItem> {
 
     @FXML
     private GridPane rootNode;
@@ -21,7 +23,7 @@ public class BookListCell<T extends ListItem> extends ListCell<T> {
     private Label titleLabel;
 
     @FXML
-    private Label descriptionLabel;
+    private Label subtitleLabel;
 
     @FXML
     private Label itemNumberLabel;
@@ -42,10 +44,10 @@ public class BookListCell<T extends ListItem> extends ListCell<T> {
     }
 
     // Created to allow method reference usage.
-    public BookListCell(ListView<T> source) { }
+    public BookListCell(ListView<BookListItem> source) { }
 
     @Override
-    protected void updateItem(T item, boolean empty) {
+    protected void updateItem(BookListItem item, boolean empty) {
         super.updateItem(item, empty);
 
         if(empty || item == null) {
@@ -65,9 +67,12 @@ public class BookListCell<T extends ListItem> extends ListCell<T> {
             }
 
 
+            final Book book = item.getBook();
+
             setGraphic(rootNode);
             titleLabel.setText(item.getItemTitle());
-            descriptionLabel.setText(item.getItemDescription());
+            item.setPosition(getIndex()+1);
+            subtitleLabel.setText(book.getSubtitle().equals("-") ? book.getDescription() : book.getSubtitle());
             imageView.setImage(item.getImage());
             itemNumberLabel.setText(String.valueOf(getIndex()+1));
             availabilityImage.setImage(item.isAvailable() ? Images.GREEN_CIRCLE : Images.RED_CIRCLE);

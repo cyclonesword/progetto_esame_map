@@ -1,6 +1,7 @@
 package com.biblioteca.datasource;
 
 import com.biblioteca.core.*;
+import javafx.scene.image.Image;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,6 +33,8 @@ class CSVDataSource implements DataSource {
     private Collection<? extends Author> authors;
     private Collection<? extends Book> books;
     private Collection<? extends Category> categories;
+    private String imagesPath = "/images/";
+    private Collection<String> formats = List.of("Paper Book", "ePub", "PDF", "Audiobook");
 
     static DataSource getInstance() {
         return instance;
@@ -62,38 +65,54 @@ class CSVDataSource implements DataSource {
     }
 
     @Override
+    public Collection<String> readFormats() {
+        return formats;
+    }
+
+    @Override
     public Collection<? extends Book> readBooks() {
 
         if (books == null) {
-            books = readDataFromCsv(booksCsv, values -> {
+            books = readDataFromCsv(booksCsv, line -> { // Invoked on every line of the Csv file
 
-                var publisher = publishers.stream()
-                        .filter(p -> p.getId() == Integer.parseInt(values[6].trim()))
+                var publisher = readPublishers().stream()
+                        .filter(p -> p.getId() == Integer.parseInt(line[6].trim()))
                         .findFirst()
                         .orElse(null);
 
-                var splittedAuthors = List.of(values[4].replaceAll("[\\[\\] ]", "").split(";"));
+                var authorIds = getIDs(line[4]);
+                var categoryIds = getIDs(line[10]);
 
-                var auths = authors.stream()
-                        .filter(a -> splittedAuthors.contains(String.valueOf(a.getId())))
+                var auths = readAuthors().stream()
+                        .filter(author -> authorIds.contains(String.valueOf(author.getId())))
+                        .collect(Collectors.toList());
+
+                var cats = readCategories().stream()
+                        .filter(category -> categoryIds.contains(String.valueOf(category.getId())))
                         .collect(Collectors.toList());
 
                 return new Book.Builder()
-                        .setId(Integer.parseInt(values[0]))
-                        .setTitle(values[1])
-                        .setSubTitle(values[2])
-                        .setDescription(values[3])
+                        .setId(Integer.parseInt(line[0]))
+                        .setTitle(line[1])
+                        .setSubTitle(line[2])
+                        .setDescription(line[3])
                         .setAuthors(auths)
-                        .setYear(Integer.parseInt(values[5].trim()))
+                        .setYear(Integer.parseInt(line[5].trim()))
                         .setPublisher(publisher)
-                        .setIsbn(values[7])
-                        .setQuantity(Integer.parseInt(values[8].trim()))
-                        .setImage(null)
+                        .setIsbn(line[7])
+                        .setQuantity(Integer.parseInt(line[8].trim()))
+                        .setImage(new Image(getClass().getResourceAsStream(imagesPath + line[9])))
+                        .setCategories(cats)
+                        .setFormat(line[11])
                         .build();
             });
         }
 
         return books;
+    }
+
+    private List<String> getIDs(String s) {
+        return List.of(s.replaceAll("[\\[\\] ]", "").split(";"));
     }
 
 

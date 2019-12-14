@@ -96,98 +96,13 @@
             <BorderPane.margin>
                 <Insets left="6" />
             </BorderPane.margin>
-            <TreeView fx:id="filtersTreeView" styleClass="roundBorders">
-<!--                <TreeItem expanded="true" value="Filters">-->
-
-<!--                    <graphic>-->
-<!--                        <ImageView fitHeight="24" fitWidth="24">-->
-<!--                            <Image url="@../images/filter.png" />-->
-<!--                        </ImageView>-->
-<!--                    </graphic>-->
-
-
-<!--                    <children>-->
-<!--                        <TreeItem value="Categorie">-->
-<!--                            <graphic>-->
-<!--                                <ImageView fitHeight="24" fitWidth="24">-->
-<!--                                    <Image url="@../images/category.png" />-->
-<!--                                </ImageView>-->
-<!--                            </graphic>-->
-<!--                            <children>-->
-<!--                                <TreeItem value="Horror" />-->
-<!--                                <TreeItem value="Drammatico" />-->
-<!--                                <TreeItem value="Fantascienza" />-->
-<!--                            </children>-->
-<!--                        </TreeItem>-->
-
-<!--                        <TreeItem value="Autori">-->
-<!--                            <graphic>-->
-<!--                                <ImageView fitHeight="24" fitWidth="24">-->
-<!--                                    <Image url="@../images/authors.png" />-->
-<!--                                </ImageView>-->
-<!--                            </graphic>-->
-<!--                            <children>-->
-<!--                                <TreeItem value="Stephen King" />-->
-<!--                                <TreeItem value="Gabriele Fici" />-->
-<!--                                <TreeItem value="Domenico Aiello" />-->
-<!--                                <TreeItem value="Alba Marina D'Asaro" />-->
-<!--                            </children>-->
-<!--                        </TreeItem>-->
-
-<!--                        <TreeItem value="Editori">-->
-<!--                            <graphic>-->
-<!--                                <ImageView fitHeight="24" fitWidth="24">-->
-<!--                                    <Image url="@../images/publisher.png" />-->
-<!--                                </ImageView>-->
-<!--                            </graphic>-->
-<!--                            <children>-->
-<!--                                <TreeItem value="ACM Press" />-->
-<!--                                <TreeItem value="Pearson Learning" />-->
-<!--                                <TreeItem value="McGraw-Hill" />-->
-<!--                                <TreeItem value="Sellerio" />-->
-<!--                            </children>-->
-<!--                        </TreeItem>-->
-
-<!--                        <TreeItem value="Formato">-->
-<!--                            <graphic>-->
-<!--                                <ImageView fitHeight="24" fitWidth="24">-->
-<!--                                    <Image url="@../images/format.png" />-->
-<!--                                </ImageView>-->
-<!--                            </graphic>-->
-<!--                            <children>-->
-<!--                                <TreeItem value="Cartaceo" />-->
-<!--                                <TreeItem value="Audiolibro" />-->
-<!--                                <TreeItem value="PDF" />-->
-<!--                                <TreeItem value="ePub" />-->
-<!--                            </children>-->
-<!--                        </TreeItem>-->
-
-<!--                        <TreeItem value="Tag">-->
-<!--                            <graphic>-->
-<!--                                <ImageView fitHeight="24" fitWidth="24">-->
-<!--                                    <Image url="@../images/tag.png" />-->
-<!--                                </ImageView>-->
-<!--                            </graphic>-->
-<!--                            <children>-->
-<!--                                <TreeItem value="     New" />-->
-<!--                                <TreeItem value="     Cult" />-->
-<!--                                <TreeItem value="     2019 best read" />-->
-<!--                                <TreeItem value="     terrifying" />-->
-<!--                            </children>-->
-<!--                        </TreeItem>-->
-
-<!--                    </children>-->
-<!--                </TreeItem>-->
-
-            </TreeView>
-
+            <TreeView fx:id="filtersTreeView" styleClass="roundBorders" />
 <!--            <ImageView>-->
 <!--                <StackPane.margin>-->
 <!--                    <Insets bottom="5.0" right="10.0" top="10.0" />-->
 <!--                </StackPane.margin>-->
 <!--                <Image requestedHeight="20" requestedWidth="20" url="@../images/remove.png" />-->
 <!--            </ImageView>-->
-
         </StackPane>
 
     </left>
@@ -195,13 +110,13 @@
     <center>
         <VBox>
             <HBox>
-                <TextField prefWidth="450" fx:id="searchBar" promptText="Cerca sul database..." onKeyPressed="#searchBarKeyTyped" styleClass="searchBar">
+                <TextField prefWidth="450" fx:id="searchBar" promptText="Cerca sul database..." onKeyReleased="#searchBarKeyTyped" styleClass="searchBar">
                     <HBox.margin>
                         <Insets bottom="5" left="5" right="8" />
                     </HBox.margin>
 
                 </TextField>
-                <Button styleClass="searchBarButton" maxHeight="15" prefWidth="70" text="Search">
+                <Button fx:id="searchButton" onMouseClicked="#searchButtonClicked"  styleClass="searchBarButton" maxHeight="15" prefWidth="70" text="Search">
                     <HBox.margin>
                         <Insets right="5" />
                     </HBox.margin>
@@ -283,3 +198,86 @@
     </bottom>
 
 </BorderPane>
+
+
+        <!--                <TreeItem expanded="true" value="Filters">-->
+
+        <!--                    <graphic>-->
+        <!--                        <ImageView fitHeight="24" fitWidth="24">-->
+        <!--                            <Image url="@../images/filter.png" />-->
+        <!--                        </ImageView>-->
+        <!--                    </graphic>-->
+
+
+        <!--                    <children>-->
+        <!--                        <TreeItem value="Categorie">-->
+        <!--                            <graphic>-->
+        <!--                                <ImageView fitHeight="24" fitWidth="24">-->
+        <!--                                    <Image url="@../images/category.png" />-->
+        <!--                                </ImageView>-->
+        <!--                            </graphic>-->
+        <!--                            <children>-->
+        <!--                                <TreeItem value="Horror" />-->
+        <!--                                <TreeItem value="Drammatico" />-->
+        <!--                                <TreeItem value="Fantascienza" />-->
+        <!--                            </children>-->
+        <!--                        </TreeItem>-->
+
+        <!--                        <TreeItem value="Autori">-->
+        <!--                            <graphic>-->
+        <!--                                <ImageView fitHeight="24" fitWidth="24">-->
+        <!--                                    <Image url="@../images/authors.png" />-->
+        <!--                                </ImageView>-->
+        <!--                            </graphic>-->
+        <!--                            <children>-->
+        <!--                                <TreeItem value="Stephen King" />-->
+        <!--                                <TreeItem value="Gabriele Fici" />-->
+        <!--                                <TreeItem value="Domenico Aiello" />-->
+        <!--                                <TreeItem value="Alba Marina D'Asaro" />-->
+        <!--                            </children>-->
+        <!--                        </TreeItem>-->
+
+        <!--                        <TreeItem value="Editori">-->
+        <!--                            <graphic>-->
+        <!--                                <ImageView fitHeight="24" fitWidth="24">-->
+        <!--                                    <Image url="@../images/publisher.png" />-->
+        <!--                                </ImageView>-->
+        <!--                            </graphic>-->
+        <!--                            <children>-->
+        <!--                                <TreeItem value="ACM Press" />-->
+        <!--                                <TreeItem value="Pearson Learning" />-->
+        <!--                                <TreeItem value="McGraw-Hill" />-->
+        <!--                                <TreeItem value="Sellerio" />-->
+        <!--                            </children>-->
+        <!--                        </TreeItem>-->
+
+        <!--                        <TreeItem value="Formato">-->
+        <!--                            <graphic>-->
+        <!--                                <ImageView fitHeight="24" fitWidth="24">-->
+        <!--                                    <Image url="@../images/format.png" />-->
+        <!--                                </ImageView>-->
+        <!--                            </graphic>-->
+        <!--                            <children>-->
+        <!--                                <TreeItem value="Cartaceo" />-->
+        <!--                                <TreeItem value="Audiolibro" />-->
+        <!--                                <TreeItem value="PDF" />-->
+        <!--                                <TreeItem value="ePub" />-->
+        <!--                            </children>-->
+        <!--                        </TreeItem>-->
+
+        <!--                        <TreeItem value="Tag">-->
+        <!--                            <graphic>-->
+        <!--                                <ImageView fitHeight="24" fitWidth="24">-->
+        <!--                                    <Image url="@../images/tag.png" />-->
+        <!--                                </ImageView>-->
+        <!--                            </graphic>-->
+        <!--                            <children>-->
+        <!--                                <TreeItem value="     New" />-->
+        <!--                                <TreeItem value="     Cult" />-->
+        <!--                                <TreeItem value="     2019 best read" />-->
+        <!--                                <TreeItem value="     terrifying" />-->
+        <!--                            </children>-->
+        <!--                        </TreeItem>-->
+
+        <!--                    </children>-->
+        <!--                </TreeItem>-->

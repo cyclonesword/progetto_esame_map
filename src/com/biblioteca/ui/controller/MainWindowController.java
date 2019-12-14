@@ -1,29 +1,27 @@
 package com.biblioteca.ui.controller;
 
-import com.biblioteca.core.*;
 import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.Images;
-import com.biblioteca.ui.model.BookItem;
-import com.biblioteca.ui.model.FilterItem;
-import com.biblioteca.ui.model.ListItem;
+import com.biblioteca.ui.model.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
-import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class MainWindowController implements Initializable {
+public class MainWindowController {
+
+    @FXML
+    private Button searchButton;
 
     @FXML
     private TextField searchBar;
@@ -47,83 +45,66 @@ public class MainWindowController implements Initializable {
     private ImageView bookDetailImageView;
 
     @FXML
-    private ListView<ListItem> listView;
+    private ListView<BookListItem> listView;
 
     @FXML
-    private TreeView<FilterItem> filtersTreeView;
-
-    private ObservableList<ListItem> items = FXCollections.observableArrayList();
-
-    public void initialize() {
-
-        var book1 = new BookImpl("IT", "1222132323", "Nell'estate del 1989, un gruppo di bambini vittime di bullismo si uniscono per distruggere un mostro mutevole, che si maschera da clown e preda dei bambini di Derry, la loro piccola città del Maine.",2);
-        var book2 = new BookImpl("The Martian", "22311211", "Un astronauta viene bloccato su Marte dopo che la sua squadra lo ha ritenuto morto e deve fare affidamento sulla sua ingegnosità per trovare un modo per segnalare alla Terra di essere vivo.",0);
-        book1.setImage(new Image(getClass().getResourceAsStream("/images/it.jpg")));
-        book1.addAuthor(new BookAuthor(1, "Stephen King"));
-        book2.setImage(new Image(getClass().getResourceAsStream("/images/martian.jpg")));
-        book2.addAuthor(new BookAuthor(2, "Andy Weir"));
-
-        items.add(new BookItem(book1));
-        items.add(new BookItem(book2));
-
-        listView.setItems(items);
-        listView.setCellFactory(BookListCell::new);
-
-        listView.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((observableValue, oldItem, newItem) -> changeItemDetail(newItem));
-
-        listView.getSelectionModel().select(0);
-
-        filtersTreeView.setCellFactory(FilterTreeCell::new);
-
-        initFilters();
-    }
-
-    private void initFilters() {
-
-        var rootItem = new FilterItem(new RootFilter("Filtri"), "/images/filter.png");
-        var rootNode = new TreeItem<>(rootItem);
-
-        var rootAuthors = new FilterItem(new RootFilter("Autori"), "/images/authors.png");
-        var rootAuthorsNode = new TreeItem<>(rootAuthors);
-
-        var rootPublishers = new FilterItem(new RootFilter("Editori"), "/images/publisher.png");
-        var rootPublishersNode = new TreeItem<>(rootPublishers);
-
-        rootNode.getChildren().addAll(List.of(rootAuthorsNode, rootPublishersNode));
-        rootNode.setExpanded(true);
-
-        var af1 = new AuthorFilter("Stephen King");
-        var af2 = new AuthorFilter("Andy Weir");
-        var af3 = new AuthorFilter("Isaac Asimov");
-
-        var pf1 = new PublisherFilter("ACM Press");
-        var pf2 = new PublisherFilter("Pearson");
-        var pf3 = new PublisherFilter("McGraw-Hill");
-
-        var authorFilters = List.of(af1,af2,af3).stream().map(FilterItem::new).collect(Collectors.toList());
-        var publisherFilters = List.of(pf1,pf2,pf3).stream().map(FilterItem::new).collect(Collectors.toList());
-
-        rootAuthorsNode.getChildren().addAll(authorFilters.stream().map(TreeItem::new).collect(Collectors.toList()));
-        rootPublishersNode.getChildren().addAll(publisherFilters.stream().map(TreeItem::new).collect(Collectors.toList()));
-
-        filtersTreeView.setRoot(rootNode);
-
-        var pubs = DataSource.getDefault().readPublishers();
-        var auths = DataSource.getDefault().readAuthors();
-        var cats = DataSource.getDefault().readCategories();
-        var books = DataSource.getDefault().readBooks();
-        System.out.println("");
-        // DataSource.getDefault().readCategories();
-    }
+    private TreeView<AbstractFilterItem> filtersTreeView;
 
     @FXML
     public void handleExit(ActionEvent event) {
         Platform.exit();
     }
 
+    private static final ObservableList<BookListItem> allBooks = FXCollections.observableArrayList();
+    private static final ObservableList<BookListItem> filteredItems = FXCollections.observableArrayList();
+    private static final DataSource ds = DataSource.getDefault();
+
+    public static final Set<AbstractFilterItem> selectedFilters = new HashSet<>();
+
+    public static void notifyFiltersChanged() {
+        filteredItems.clear();
+        filteredItems.addAll(filterItems());
+    }
+
+    private static List<BookListItem> filterItems() {
+        return allBooks.stream()
+                .filter(book -> selectedFilters.stream()
+                        .allMatch(filter -> filter.applyTo(book)))
+                .collect(Collectors.toList());
+    }
+
+
+    // This method will be called automatically by the JavaFX runtime.
+    public void initialize() {
+        allBooks.addAll(ds.readBooks().stream()
+                .map(BookListItem::new)
+                .collect(Collectors.toList())
+        );
+
+        filteredItems.addAll(allBooks);
+
+        listView.setItems(filteredItems);
+        listView.setCellFactory(BookListCell::new);
+
+        // When the user selects a book in the listview, update the book details section (right)
+        listView.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((observableValue, oldItem, newItem) -> changeItemDetail(newItem));
+
+        listView.getSelectionModel().select(0);
+
+        // Select the first book when the underlying dataset changes.
+        listView.getItems().addListener((ListChangeListener<? super BookListItem>) change -> {
+            listView.getSelectionModel().selectFirst();
+        });
+
+        initFilters();
+    }
+
     private void changeItemDetail(ListItem item) {
+        if (item == null)
+            return;
+
         bookDetailTitle.setText(item.getItemTitle());
         bookDetailDescription.setText(item.getItemDescription());
         bookDetailImageView.setImage(item.getImage());
@@ -132,17 +113,75 @@ public class MainWindowController implements Initializable {
         prenotaButton.setDisable(!item.isAvailable());
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        initialize();
+    private void initFilters() {
+        filtersTreeView.setCellFactory(FilterTreeCell::new);
+
+        var rootFilterNode = new RootFilterItem("Filtri", "/images/filter.png").getTreeItem();
+        var rootCategoryFilter = new RootFilterItem("Categorie", "/images/category.png");
+        var rootAuthorsFilter = new RootFilterItem("Autori", "/images/authors.png");
+        var rootPublishersFilter = new RootFilterItem("Editori", "/images/publisher.png");
+        var rootFormatsFilter = new RootFilterItem("Formato", "/images/format.png");
+        // var rootTagFilter = new RootFilterItem("Tag", "/images/tag.png");
+
+        var filterList = List.of(rootCategoryFilter, rootAuthorsFilter, rootPublishersFilter, rootFormatsFilter);
+
+        rootFilterNode.getChildren().addAll(filterList.stream().map(AbstractFilterItem::getTreeItem).collect(Collectors.toList()));
+        rootFilterNode.setExpanded(true);
+        filtersTreeView.setRoot(rootFilterNode);
+
+        rootCategoryFilter.getTreeItem()
+                .getChildren()
+                .addAll(ds.readCategories().stream()
+                        .map(CategoryFilterItem::new)
+                        .map(AbstractFilterItem::getTreeItem)
+                        .collect(Collectors.toList()));
+
+        rootAuthorsFilter.getTreeItem()
+                .getChildren()
+                .addAll(ds.readAuthors().stream()
+                        .map(AuthorFilterItem::new)
+                        .map(AbstractFilterItem::getTreeItem)
+                        .collect(Collectors.toList()));
+
+        rootPublishersFilter.getTreeItem()
+                .getChildren()
+                .addAll(ds.readPublishers().stream()
+                        .map(PublisherFilterItem::new)
+                        .map(AbstractFilterItem::getTreeItem)
+                        .collect(Collectors.toList()));
+
+
+        rootFormatsFilter.getTreeItem()
+                .getChildren()
+                .addAll(ds.readFormats().stream()
+                        .map(FormatFilterItem::new)
+                        .map(AbstractFilterItem::getTreeItem)
+                        .collect(Collectors.toList()));
+
+    }
+
+    @FXML
+    public void searchButtonClicked(MouseEvent mouseEvent) {
+        var result = filterItems().stream() // Then apply the search text filtering
+                .filter(b -> b.getBook().getTitle().toLowerCase().contains(searchBar.getText().toLowerCase()))
+                .collect(Collectors.toList());
+
+        filteredItems.clear();
+        filteredItems.addAll(result);
     }
 
     @FXML
     public void searchBarKeyTyped(KeyEvent keyEvent) {
-        // System.out.println(keyEvent);
-        if(keyEvent.getCode() == KeyCode.ENTER) {
-            System.out.println("Premuto invio!");
+        System.out.println(keyEvent);
+
+        if (keyEvent.getCode() == KeyCode.ENTER) {
+            searchButtonClicked(null);
+        } else {
+            if (searchBar.getText().isEmpty() && filteredItems.size() != allBooks.size()) {
+                notifyFiltersChanged();
+            }
         }
 
     }
+
 }

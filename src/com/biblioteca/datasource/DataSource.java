@@ -5,6 +5,7 @@ import com.biblioteca.core.Book;
 import com.biblioteca.core.Category;
 import com.biblioteca.core.Publisher;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 public interface DataSource {
@@ -13,6 +14,7 @@ public interface DataSource {
     Collection<? extends Author> readAuthors();
     Collection<? extends Book> readBooks();
     Collection<? extends Publisher> readPublishers();
+    Collection<String> readFormats();
 
     /**
      * This is
@@ -21,5 +23,4 @@ public interface DataSource {
     static DataSource getDefault() {
         return CSVDataSource.getInstance();
     }
-
 }

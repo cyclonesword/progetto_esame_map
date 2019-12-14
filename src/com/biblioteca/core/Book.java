@@ -24,11 +24,19 @@ public interface Book {
 
     Image getImage();
 
+    String getFormat();
+
+    void setFormat(String format);
+
     Publisher getPublisher();
 
     List<? extends Author> getAuthors();
 
     void addAuthor(Author author);
+
+    List<? extends Category> getCategories();
+
+    void addCategories(List<? extends Category> categories);
 
     class Builder {
         private int id;
@@ -36,9 +44,11 @@ public interface Book {
         private String subTitle;
         private String description;
         private String isbn;
+        private String format;
         private Publisher publisher;
         private Image image;
         private List<? extends Author> authors;
+        private List<? extends Category> categories;
         private int quantity;
         private int year;
 
@@ -92,6 +102,15 @@ public interface Book {
             return this;
         }
 
+        public Builder setCategories(List<? extends Category> categories) {
+            this.categories = categories;
+            return this;
+        }
+        public Builder setFormat(String format) {
+            this.format = format;
+            return this;
+        }
+
         public Book build() {
             var book = new BookImpl(title, isbn, description, quantity);
 
@@ -100,9 +119,12 @@ public interface Book {
             book.setPublisher(publisher);
             book.setImage(image);
             book.setYear(year);
+            book.setFormat(format);
+            book.addCategories(categories);
             authors.forEach(book::addAuthor);
 
             return book;
         }
     }
+
 }

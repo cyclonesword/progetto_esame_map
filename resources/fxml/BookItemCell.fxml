@@ -40,7 +40,7 @@
             <Insets right="20" />
         </GridPane.margin>
     </Label>
-    <Label fx:id="descriptionLabel" GridPane.columnIndex="2" GridPane.rowIndex="1" wrapText="true" GridPane.valignment="TOP"  maxHeight="150">
+    <Label fx:id="subtitleLabel" GridPane.columnIndex="2" GridPane.rowIndex="1" wrapText="true" GridPane.valignment="TOP"  maxHeight="150">
         <font>
             <Font name="AvenirLTStd-Roman" size="13.0"/>
         </font>
@@ -49,9 +49,9 @@
 
 
     <columnConstraints>
-        <ColumnConstraints/>
-        <ColumnConstraints/>
-        <ColumnConstraints/>
+        <ColumnConstraints />
+        <ColumnConstraints />
+        <ColumnConstraints hgrow="ALWAYS"/>
     </columnConstraints>
 
     <rowConstraints>

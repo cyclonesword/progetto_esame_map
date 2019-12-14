@@ -1,6 +1,6 @@
 package com.biblioteca.ui.controller;
 
-import com.biblioteca.ui.model.FilterItem;
+import com.biblioteca.ui.model.AbstractFilterItem;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.CheckBox;
@@ -12,7 +12,7 @@ import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 
-public class FilterTreeCell<T extends FilterItem> extends TreeCell<T> {
+public class FilterTreeCell<T extends AbstractFilterItem> extends TreeCell<T> {
 
     private FXMLLoader fxmlLoader;
 
@@ -66,6 +66,14 @@ public class FilterTreeCell<T extends FilterItem> extends TreeCell<T> {
                 checkBox.setSelected(item.isSelected());
                 checkBox.setOnMouseClicked(event -> {
                     item.setSelected(checkBox.isSelected());
+
+                    if(checkBox.isSelected())
+                        MainWindowController.selectedFilters.add(item);
+                    else
+                        MainWindowController.selectedFilters.remove(item);
+
+                    MainWindowController.notifyFiltersChanged();
+
                     System.out.println("Filter selected: "+item);
                 });
             }
