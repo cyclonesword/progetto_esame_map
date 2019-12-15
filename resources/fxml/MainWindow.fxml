@@ -77,13 +77,13 @@
                     </graphic>
                 </Button>
 
-                <ToggleButton prefHeight="40" selected="true" text="Ultimi prestiti">
+                <Button prefHeight="40" text="Visualizza prestiti" onMouseClicked="#showReservedBooksClicked">
                     <graphic>
                         <ImageView>
                             <Image requestedHeight="24" requestedWidth="24" url="@../images/list.png" />
                         </ImageView>
                     </graphic>
-                </ToggleButton>
+                </Button>
             </HBox>
             <HBox id="border-bottom" maxHeight="1" minHeight="1">
 

@@ -82,7 +82,6 @@ public class MainWindowController {
                 .collect(Collectors.toList());
     }
 
-
     // This method will be called automatically by the JavaFX runtime.
     public void initialize() {
         allBooks.addAll(ds.readBooks().stream()
@@ -108,53 +107,6 @@ public class MainWindowController {
         });
 
         initFilters();
-    }
-
-    private void initFilters() {
-        filtersTreeView.setCellFactory(FilterTreeCell::new);
-
-        var rootFilterNode = new RootFilterItem("Filtri", "/images/filter.png").getTreeItem();
-        var rootCategoryFilter = new RootFilterItem("Categorie", "/images/category.png");
-        var rootAuthorsFilter = new RootFilterItem("Autori", "/images/authors.png");
-        var rootPublishersFilter = new RootFilterItem("Editori", "/images/publisher.png");
-        var rootFormatsFilter = new RootFilterItem("Formato", "/images/format.png");
-        // var rootTagFilter = new RootFilterItem("Tag", "/images/tag.png");
-
-        var filterList = List.of(rootCategoryFilter, rootAuthorsFilter, rootPublishersFilter, rootFormatsFilter);
-
-        rootFilterNode.getChildren().addAll(filterList.stream().map(AbstractFilterItem::getTreeItem).collect(Collectors.toList()));
-        rootFilterNode.setExpanded(true);
-        filtersTreeView.setRoot(rootFilterNode);
-
-        rootCategoryFilter.getTreeItem()
-                .getChildren()
-                .addAll(ds.readCategories().stream()
-                        .map(CategoryFilterItem::new)
-                        .map(AbstractFilterItem::getTreeItem)
-                        .collect(Collectors.toList()));
-
-        rootAuthorsFilter.getTreeItem()
-                .getChildren()
-                .addAll(ds.readAuthors().stream()
-                        .map(AuthorFilterItem::new)
-                        .map(AbstractFilterItem::getTreeItem)
-                        .collect(Collectors.toList()));
-
-        rootPublishersFilter.getTreeItem()
-                .getChildren()
-                .addAll(ds.readPublishers().stream()
-                        .map(PublisherFilterItem::new)
-                        .map(AbstractFilterItem::getTreeItem)
-                        .collect(Collectors.toList()));
-
-
-        rootFormatsFilter.getTreeItem()
-                .getChildren()
-                .addAll(ds.readFormats().stream()
-                        .map(FormatFilterItem::new)
-                        .map(AbstractFilterItem::getTreeItem)
-                        .collect(Collectors.toList()));
-
     }
 
     private void changeItemDetail(ListItem item) {
@@ -221,8 +173,7 @@ public class MainWindowController {
         if (dialog.getResult().getButtonData().equals(ButtonBar.ButtonData.OK_DONE)) {
             System.out.println("Ok clicked");
             controller.applyData();
-            listView.refresh();
-            changeItemDetail(listView.getSelectionModel().getSelectedItem());
+            refreshListView();
         }
     }
 
@@ -244,28 +195,88 @@ public class MainWindowController {
 
     @FXML
     public void reserveBookClicked(MouseEvent mouseEvent) throws IOException {
-        Dialogs.<LoanDialogController>showDialog("Loan",
+        final Book book = listView.getSelectionModel().getSelectedItem().getBook();
+
+        Dialogs.<LoanDialogController>showDialog("New Loan",
                 "/fxml/LoanDialog.fxml",
                 rootPane.getScene().getWindow(),
                 controller -> {
-                    controller.setReservedBook(listView.getSelectionModel().getSelectedItem().getBook());
+                    controller.setReservedBook(book);
                 }, controller -> {
                     var loan = controller.getLoan();
                     ds.save(loan);
-                    System.out.println(loan);
+                    book.decrementQuantity();
+                    refreshListView();
                 });
     }
 
     @FXML
     public void addUserClicked(ActionEvent actionEvent) throws IOException {
-
         Dialogs.<AddUserDialogController>showDialog("Add user", "/fxml/AddUserDialog.fxml", rootPane.getScene().getWindow(),
                 controller -> {
-
                 }, controller -> {
                     ds.save(controller.getUser());
                     var u = ds.readUsers();
                     System.out.println(u);
                 });
+    }
+
+    private void refreshListView() {
+        listView.refresh();
+        changeItemDetail(listView.getSelectionModel().getSelectedItem());
+    }
+
+    private void initFilters() {
+        filtersTreeView.setCellFactory(FilterTreeCell::new);
+
+        var rootFilterNode = new RootFilterItem("Filtri", "/images/filter.png").getTreeItem();
+        var rootCategoryFilter = new RootFilterItem("Categorie", "/images/category.png");
+        var rootAuthorsFilter = new RootFilterItem("Autori", "/images/authors.png");
+        var rootPublishersFilter = new RootFilterItem("Editori", "/images/publisher.png");
+        var rootFormatsFilter = new RootFilterItem("Formato", "/images/format.png");
+        // var rootTagFilter = new RootFilterItem("Tag", "/images/tag.png");
+
+        var filterList = List.of(rootCategoryFilter, rootAuthorsFilter, rootPublishersFilter, rootFormatsFilter);
+
+        rootFilterNode.getChildren().addAll(filterList.stream().map(AbstractFilterItem::getTreeItem).collect(Collectors.toList()));
+        rootFilterNode.setExpanded(true);
+        filtersTreeView.setRoot(rootFilterNode);
+
+        rootCategoryFilter.getTreeItem()
+                .getChildren()
+                .addAll(ds.readCategories().stream()
+                        .map(CategoryFilterItem::new)
+                        .map(AbstractFilterItem::getTreeItem)
+                        .collect(Collectors.toList()));
+
+        rootAuthorsFilter.getTreeItem()
+                .getChildren()
+                .addAll(ds.readAuthors().stream()
+                        .map(AuthorFilterItem::new)
+                        .map(AbstractFilterItem::getTreeItem)
+                        .collect(Collectors.toList()));
+
+        rootPublishersFilter.getTreeItem()
+                .getChildren()
+                .addAll(ds.readPublishers().stream()
+                        .map(PublisherFilterItem::new)
+                        .map(AbstractFilterItem::getTreeItem)
+                        .collect(Collectors.toList()));
+
+
+        rootFormatsFilter.getTreeItem()
+                .getChildren()
+                .addAll(ds.readFormats().stream()
+                        .map(FormatFilterItem::new)
+                        .map(AbstractFilterItem::getTreeItem)
+                        .collect(Collectors.toList()));
+
+    }
+
+    @FXML
+    public void showReservedBooksClicked(MouseEvent mouseEvent) throws IOException {
+        Dialogs.<ReservedBooksDialogController>showDialog("Prestiti", "Ok", "/fxml/ReservedBookDialog.fxml",
+                rootPane.getScene().getWindow(),
+                controller -> { }, controller -> { });
     }
 }

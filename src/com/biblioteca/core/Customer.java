@@ -59,4 +59,28 @@ public class Customer {
     public String toString() {
         return String.format("%s %s %s", firstName, lastName, fiscalCode);
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getFiscalCode() {
+        return fiscalCode;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 }

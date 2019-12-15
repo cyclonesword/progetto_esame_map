@@ -55,6 +55,8 @@ public interface Book {
 
     void setPublisher(Publisher publisher);
 
+    void decrementQuantity();
+
 
     class Builder {
         private int id;

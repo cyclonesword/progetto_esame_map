@@ -4,10 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class BookImpl implements Book {
 
@@ -202,7 +199,15 @@ public class BookImpl implements Book {
         this.publisher = publisher;
     }
 
+    @Override
+    public void decrementQuantity() {
+        quantity -= 1;
+    }
 
+    @Override
+    public String toString() {
+        return title;
+    }
 
     private static class LoanException extends RuntimeException { }
 }

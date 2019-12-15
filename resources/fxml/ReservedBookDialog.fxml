@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.biblioteca.ui.controller.ReservedBooksDialogController"
+          vgap="10"
+          prefHeight="300.0" prefWidth="400.0">
+
+    <padding>
+        <Insets top="10" bottom="10" left="20" right="20" />
+    </padding>
+
+    <Label GridPane.rowIndex="0" GridPane.columnIndex="0" text="Codice prestrito - Nome libro - Cliente" />
+    <TableView GridPane.rowIndex="1" GridPane.columnIndex="0" fx:id="tableView" prefWidth="350">
+
+    </TableView>
+
+</GridPane>

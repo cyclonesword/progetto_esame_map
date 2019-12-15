@@ -86,8 +86,14 @@ class CSVDataSource implements DataSource {
     public List<? extends Loan> readLoans() {
         if(loans == null)
             loans = readDataFromCsv(loansCsv, line -> {
-                Customer customer = null;
-                Book book = null;
+                Customer customer = readUsers().stream()
+                        .filter(c -> c.getId() == Integer.parseInt(line[3]))
+                        .findFirst()
+                        .orElse(null);
+                Book book = readBooks().stream()
+                        .filter(b -> b.getId() == Integer.parseInt(line[4]))
+                        .findFirst()
+                        .orElse(null);;
                 return new Loan.Builder()
                        .setId(Integer.parseInt(line[0]))
                        .setLoanDate(LocalDate.parse(line[1]))
