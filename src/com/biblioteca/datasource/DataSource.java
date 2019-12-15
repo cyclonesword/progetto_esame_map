@@ -1,20 +1,25 @@
 package com.biblioteca.datasource;
 
-import com.biblioteca.core.Author;
-import com.biblioteca.core.Book;
-import com.biblioteca.core.Category;
-import com.biblioteca.core.Publisher;
+import com.biblioteca.core.*;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 public interface DataSource {
 
-    Collection<? extends Category> readCategories();
-    Collection<? extends Author> readAuthors();
-    Collection<? extends Book> readBooks();
-    Collection<? extends Publisher> readPublishers();
-    Collection<String> readFormats();
+    List<? extends Category> readCategories();
+    List<? extends Author> readAuthors();
+    List<? extends Book> readBooks();
+    List<? extends Publisher> readPublishers();
+    List<String> readFormats();
+    List<? extends Customer> readUsers();
+    List<? extends Loan> readLoans();
+
+
+    void delete(Book book);
+    void modify(Book book);
+
+    void save(Customer user);
+    void save(Loan loan);
 
     /**
      * This is

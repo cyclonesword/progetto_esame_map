@@ -21,7 +21,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.control.TextField?>
-<BorderPane prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.biblioteca.ui.controller.MainWindowController">
+<BorderPane fx:id="rootPane" prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.biblioteca.ui.controller.MainWindowController">
 
     <stylesheets>
         <URL value="@../css/main_window.css" />
@@ -36,7 +36,7 @@
             <MenuBar>
                 <Menu text="Aggiungi">
                     <MenuItem text="Nuovo libro" />
-                    <MenuItem text="Nuovo utente" />
+                    <MenuItem text="Nuovo utente" onAction="#addUserClicked"/>
                 </Menu>
 
                 <Menu text="Cerca">
@@ -110,7 +110,7 @@
     <center>
         <VBox>
             <HBox>
-                <TextField prefWidth="450" fx:id="searchBar" promptText="Cerca sul database..." onKeyReleased="#searchBarKeyTyped" styleClass="searchBar">
+                <TextField prefWidth="450" fx:id="searchBar" promptText="Cerca sul database..." onKeyReleased="#searchBarKeyReleased" styleClass="searchBar">
                     <HBox.margin>
                         <Insets bottom="5" left="5" right="8" />
                     </HBox.margin>
@@ -175,7 +175,7 @@
                 </GridPane.margin>
             </Label>
 
-            <Button prefHeight="40" fx:id="prenotaButton" text="Avvia prestito" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.halignment="CENTER">
+            <Button prefHeight="40" prefWidth="140" onMouseClicked="#reserveBookClicked" fx:id="prenotaButton" text="Avvia prestito" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.halignment="CENTER">
                 <GridPane.margin>
                     <Insets top="20" />
                 </GridPane.margin>
@@ -185,6 +185,40 @@
                 <graphic>
                     <ImageView>
                         <Image url="@../images/prenota.png" requestedWidth="21" requestedHeight="21"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <HBox GridPane.rowIndex="5" GridPane.columnIndex="0" id="border-bottom" maxHeight="1" minHeight="1">
+                <GridPane.margin>
+                    <Insets top="10" left="30" right="30" />
+                </GridPane.margin>
+            </HBox>
+
+            <Button prefHeight="40" prefWidth="140" onMouseClicked="#editBookClicked" fx:id="modificaButton" text="Modifica" GridPane.rowIndex="6" GridPane.columnIndex="0" GridPane.halignment="CENTER">
+                <GridPane.margin>
+                    <Insets top="10" />
+                </GridPane.margin>
+                <padding>
+                    <Insets left="13" right="20" />
+                </padding>
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/edit.png" requestedWidth="21" requestedHeight="21"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Button prefHeight="40" prefWidth="140" onMouseClicked="#deleteBookClicked" fx:id="eliminaButton" text="Elimina" GridPane.rowIndex="7" GridPane.columnIndex="0" GridPane.halignment="CENTER">
+                <GridPane.margin>
+                    <Insets top="5" />
+                </GridPane.margin>
+                <padding>
+                    <Insets left="13" right="20" />
+                </padding>
+                <graphic>
+                    <ImageView>
+                        <Image url="@../images/delete.png" requestedWidth="21" requestedHeight="21"/>
                     </ImageView>
                 </graphic>
             </Button>

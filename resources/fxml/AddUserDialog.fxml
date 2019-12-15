@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.biblioteca.ui.controller.AddUserDialogController"
+          prefHeight="200.0" prefWidth="280.0">
+
+    <VBox GridPane.rowIndex="0" GridPane.columnIndex="0">
+        <Label text="Nome"/>
+        <TextField maxWidth="200" fx:id="firstNameTf"/>
+    </VBox>
+
+    <VBox GridPane.rowIndex="1" GridPane.columnIndex="0">
+        <Label text="Cognome"/>
+        <TextField maxWidth="200" fx:id="lastNameTf"/>
+    </VBox>
+
+    <VBox GridPane.rowIndex="2" GridPane.columnIndex="0">
+        <Label text="Email"/>
+        <TextField maxWidth="220" fx:id="emailTf"/>
+    </VBox>
+
+    <VBox GridPane.rowIndex="3" GridPane.columnIndex="0">
+        <Label text="Numero di telefono"/>
+        <TextField maxWidth="120" fx:id="phoneNumberTf"/>
+    </VBox>
+
+    <VBox GridPane.rowIndex="4" GridPane.columnIndex="0">
+        <Label text="Codice fiscale"/>
+        <TextField maxWidth="170" fx:id="fiscalCodeTf"/>
+    </VBox>
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+
+</GridPane>

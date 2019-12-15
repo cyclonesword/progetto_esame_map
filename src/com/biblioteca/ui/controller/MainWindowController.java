@@ -1,6 +1,8 @@
 package com.biblioteca.ui.controller;
 
+import com.biblioteca.core.Book;
 import com.biblioteca.datasource.DataSource;
+import com.biblioteca.ui.Dialogs;
 import com.biblioteca.ui.Images;
 import com.biblioteca.ui.model.*;
 import javafx.application.Platform;
@@ -9,16 +11,23 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class MainWindowController {
+
+    @FXML
+    private BorderPane rootPane;
 
     @FXML
     private Button searchButton;
@@ -61,12 +70,12 @@ public class MainWindowController {
 
     public static final Set<AbstractFilterItem> selectedFilters = new HashSet<>();
 
-    public static void notifyFiltersChanged() {
+    public static void applyFilters() {
         filteredItems.clear();
-        filteredItems.addAll(filterItems());
+        filteredItems.addAll(getFilteredItems());
     }
 
-    private static List<BookListItem> filterItems() {
+    private static List<BookListItem> getFilteredItems() {
         return allBooks.stream()
                 .filter(book -> selectedFilters.stream()
                         .allMatch(filter -> filter.applyTo(book)))
@@ -99,18 +108,6 @@ public class MainWindowController {
         });
 
         initFilters();
-    }
-
-    private void changeItemDetail(ListItem item) {
-        if (item == null)
-            return;
-
-        bookDetailTitle.setText(item.getItemTitle());
-        bookDetailDescription.setText(item.getItemDescription());
-        bookDetailImageView.setImage(item.getImage());
-        availabilityImage.setImage(item.getQuantity() > 0 ? Images.GREEN_CIRCLE : Images.RED_CIRCLE);
-        availabilityText.setText(item.isAvailable() ? "Disponibile" : "Prestato");
-        prenotaButton.setDisable(!item.isAvailable());
     }
 
     private void initFilters() {
@@ -160,9 +157,21 @@ public class MainWindowController {
 
     }
 
+    private void changeItemDetail(ListItem item) {
+        if (item == null)
+            return;
+
+        bookDetailTitle.setText(item.getItemTitle());
+        bookDetailDescription.setText(item.getItemDescription());
+        bookDetailImageView.setImage(item.getImage());
+        availabilityImage.setImage(item.getQuantity() > 0 ? Images.GREEN_CIRCLE : Images.RED_CIRCLE);
+        availabilityText.setText(item.isAvailable() ? "Disponibile" : "Prestato");
+        prenotaButton.setDisable(!item.isAvailable());
+    }
+
     @FXML
     public void searchButtonClicked(MouseEvent mouseEvent) {
-        var result = filterItems().stream() // Then apply the search text filtering
+        var result = getFilteredItems().stream() // Then apply the search text filtering
                 .filter(b -> b.getBook().getTitle().toLowerCase().contains(searchBar.getText().toLowerCase()))
                 .collect(Collectors.toList());
 
@@ -171,17 +180,92 @@ public class MainWindowController {
     }
 
     @FXML
-    public void searchBarKeyTyped(KeyEvent keyEvent) {
+    public void searchBarKeyReleased(KeyEvent keyEvent) {
         System.out.println(keyEvent);
 
         if (keyEvent.getCode() == KeyCode.ENTER) {
             searchButtonClicked(null);
         } else {
             if (searchBar.getText().isEmpty() && filteredItems.size() != allBooks.size()) {
-                notifyFiltersChanged();
+                applyFilters();
             }
         }
 
     }
 
+    @FXML
+    public void editBookClicked(MouseEvent mouseEvent) {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        //   dialog.initOwner(ApplicationStart.getScene().getWindow());
+
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        try {
+            fxmlLoader.setLocation(getClass().getResource("/fxml/ModifyBookDialog.fxml"));
+            dialog.getDialogPane().setContent(fxmlLoader.load());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ModifyBookDialogController controller = fxmlLoader.getController();
+        controller.setBook(listView.getSelectionModel().getSelectedItem().getBook());
+        dialog.initOwner(listView.getScene().getWindow());
+
+        dialog.getDialogPane().getButtonTypes().add(new ButtonType("Save", ButtonBar.ButtonData.OK_DONE));
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+        dialog.setTitle("Modify Book");
+
+        dialog.showAndWait();
+
+        if (dialog.getResult().getButtonData().equals(ButtonBar.ButtonData.OK_DONE)) {
+            System.out.println("Ok clicked");
+            controller.applyData();
+            listView.refresh();
+            changeItemDetail(listView.getSelectionModel().getSelectedItem());
+        }
+    }
+
+    @FXML
+    public void deleteBookClicked(MouseEvent mouseEvent) {
+        final Book book = listView.getSelectionModel().getSelectedItem().getBook();
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                String.format("Sei sicuro di volere eliminare %s - %s?", book.getTitle(), book.getSubtitle()),
+                ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+
+        if (alert.getResult() == ButtonType.YES) {
+            ds.delete(book);
+            filteredItems.removeIf(i -> i.getBook() == book);
+            allBooks.removeIf(i -> i.getBook() == book);
+        }
+    }
+
+    @FXML
+    public void reserveBookClicked(MouseEvent mouseEvent) throws IOException {
+        Dialogs.<LoanDialogController>showDialog("Loan",
+                "/fxml/LoanDialog.fxml",
+                rootPane.getScene().getWindow(),
+                controller -> {
+                    controller.setReservedBook(listView.getSelectionModel().getSelectedItem().getBook());
+                }, controller -> {
+                    var loan = controller.getLoan();
+                    ds.save(loan);
+                    System.out.println(loan);
+                });
+    }
+
+    @FXML
+    public void addUserClicked(ActionEvent actionEvent) throws IOException {
+
+        Dialogs.<AddUserDialogController>showDialog("Add user", "/fxml/AddUserDialog.fxml", rootPane.getScene().getWindow(),
+                controller -> {
+
+                }, controller -> {
+                    ds.save(controller.getUser());
+                    var u = ds.readUsers();
+                    System.out.println(u);
+                });
+    }
 }

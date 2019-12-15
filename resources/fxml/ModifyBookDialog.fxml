@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:id="rootPane"
+          fx:controller="com.biblioteca.ui.controller.ModifyBookDialogController"
+          prefHeight="430.0" prefWidth="550.0">
+
+    <VBox GridPane.rowIndex="0" GridPane.columnIndex="0">
+        <Label text="Nome breve"/>
+        <TextField maxWidth="250" fx:id="titleTf"/>
+    </VBox>
+
+    <VBox GridPane.rowIndex="1" GridPane.columnIndex="0">
+        <Label text="Nome completo"/>
+        <TextField maxWidth="250" fx:id="subtitleTf"/>
+    </VBox>
+
+    <VBox GridPane.rowIndex="2" GridPane.columnIndex="0">
+        <Label text="Breve descrizione"/>
+        <TextArea wrapText="true" maxWidth="300" maxHeight="300" fx:id="descriptionTf"/>
+    </VBox>
+
+    <VBox GridPane.rowIndex="3" GridPane.columnIndex="0">
+        <GridPane.margin>
+            <Insets top="10" />
+        </GridPane.margin>
+
+        <Label text="Categorie: "/>
+        <HBox>
+            <Label fx:id="categoryLabel"/>
+            <Button text="Modifica categorie" onMouseClicked="#modifyCategoryClicked" >
+                <HBox.margin>
+                    <Insets left="15" />
+                </HBox.margin>
+            </Button>
+        </HBox>
+
+    </VBox>
+
+    <VBox fx:id="authorsContainer" GridPane.rowIndex="4" GridPane.columnIndex="0">
+<!--        <GridPane.margin>-->
+<!--            <Insets top="10" />-->
+<!--        </GridPane.margin>-->
+        <Label text="Autori: " wrapText="true"/>
+        <HBox>
+            <Label fx:id="authorsLabel" wrapText="true"/>
+            <Button minWidth="100" text="Modifica autori" onMouseClicked="#modifyAuthorsClicked" >
+                <HBox.margin>
+                    <Insets left="15" />
+                </HBox.margin>
+            </Button>
+        </HBox>
+
+    </VBox>
+
+    <VBox prefWidth="280" GridPane.rowIndex="0" GridPane.rowSpan="4" GridPane.columnIndex="1"
+          GridPane.halignment="CENTER" alignment="CENTER">
+        <ImageView fx:id="bookImg" fitWidth="150" fitHeight="200" preserveRatio="true">
+            <Image url="@../images/it.jpg"/>
+            <VBox.margin>
+                <Insets bottom="20"/>
+            </VBox.margin>
+        </ImageView>
+        <Label text="Cambia immagine">
+            <VBox.margin>
+                <Insets bottom="3"/>
+            </VBox.margin>
+        </Label>
+        <Button onMouseClicked="#browseFileClicked" fx:id="browseFiles" text="Sfoglia..."/>
+    </VBox>
+
+    <HBox GridPane.rowIndex="5" GridPane.columnIndex="0">
+        <VBox>
+            <Label text="Anno"/>
+            <TextField maxWidth="70" fx:id="yearTf"/>
+        </VBox>
+
+        <VBox>
+            <HBox.margin>
+                <Insets left="20"/>
+            </HBox.margin>
+            <Label text="Editore"/>
+            <ComboBox fx:id="editoriCombobox"/>
+        </VBox>
+    </HBox>
+
+    <HBox GridPane.rowIndex="6" GridPane.columnIndex="0">
+        <VBox>
+            <Label text="ISBN"/>
+            <TextField maxWidth="120" fx:id="isbnTf"/>
+
+        </VBox>
+        <VBox>
+            <HBox.margin>
+                <Insets left="20"/>
+            </HBox.margin>
+            <Label text="Quantità"/>
+            <TextField maxWidth="50" fx:id="qntTf"/>
+        </VBox>
+    </HBox>
+
+    <VBox GridPane.rowIndex="7" GridPane.columnIndex="0">
+        <HBox.margin>
+            <Insets left="20"/>
+        </HBox.margin>
+        <Label text="Formato"/>
+        <ComboBox fx:id="formatoCombobox" prefWidth="130">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Libro cartaceo"/>
+                    <String fx:value="Audiolibro"/>
+                    <String fx:value="ePub"/>
+                    <String fx:value="PDF"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+    </VBox>
+
+    <columnConstraints>
+        <ColumnConstraints percentWidth="60.0"/>
+        <ColumnConstraints/>
+    </columnConstraints>
+
+</GridPane>

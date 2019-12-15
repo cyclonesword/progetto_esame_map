@@ -1,5 +1,6 @@
 package com.biblioteca.core;
 
+import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ public class BookImpl implements Book {
     private String description;
     private Image image;
     private int quantity;
-    private String subTitle;
+    private String subtitle;
     private int year;
     private Publisher publisher;
     private int id;
@@ -47,6 +48,7 @@ public class BookImpl implements Book {
         this.quantity = quantity;
     }
 
+
     @Override
     public int getId() {
         return id;
@@ -54,7 +56,7 @@ public class BookImpl implements Book {
 
     @Override
     public List<? extends Category> getCategories() {
-        return Collections.unmodifiableList(categories);
+        return categories;
     }
 
     public String getTitle() {
@@ -87,17 +89,17 @@ public class BookImpl implements Book {
         if (currentLoan != null)
             throw new LoanException();
 
-        currentLoan = new Loan.Builder()
-                .setCustomer(customer)
-                .setLoanDate(loanDate)
-                .setExpectedReturnDate(expectedReturnDate)
-                .build();
+//        currentLoan = new Loan.Builder()
+//                .setCustomer(customer)
+//                .setLoanDate(loanDate)
+//                .setExpectedReturnDate(expectedReturnDate)
+//                .build();
 
 
     }
 
     public void setAsReturned(LocalDateTime returnDate) {
-        currentLoan.setReturnDate(returnDate);
+      //  currentLoan.setReturnDate(returnDate);
         loanHistory.add(currentLoan);
     }
 
@@ -120,7 +122,8 @@ public class BookImpl implements Book {
 
     @Override
     public void addAuthor(Author author) {
-        authors.add(author);
+        if(!authors.contains(author))
+            authors.add(author);
     }
 
     @Override
@@ -139,9 +142,8 @@ public class BookImpl implements Book {
         return quantity;
     }
 
-    public BookImpl setQuantity(int quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
-        return this;
     }
 
     @Override
@@ -151,7 +153,7 @@ public class BookImpl implements Book {
 
     @Override
     public String getSubtitle() {
-        return subTitle;
+        return subtitle;
     }
 
     @Override
@@ -188,8 +190,8 @@ public class BookImpl implements Book {
         this.image = image;
     }
 
-    public void setSubTitle(String subTitle) {
-        this.subTitle = subTitle;
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
     }
 
     public void setYear(int year) {
@@ -199,6 +201,8 @@ public class BookImpl implements Book {
     public void setPublisher(Publisher publisher) {
         this.publisher = publisher;
     }
+
+
 
     private static class LoanException extends RuntimeException { }
 }

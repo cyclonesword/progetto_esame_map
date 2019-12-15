@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -26,30 +27,34 @@ class CSVDataSource implements DataSource {
 
     private final String categoriesCsv = "/csv/categories.csv";
     private final String authorsCsv = "/csv/authors.csv";
-    private String publishersCsv = "/csv/publishers.csv";
-    private String booksCsv = "/csv/books.csv";
+    private final String publishersCsv = "/csv/publishers.csv";
+    private final String booksCsv = "/csv/books.csv";
+    private final String usersCsv = "/csv/users.csv";
+    private final String loansCsv = "/csv/loans.csv";
 
-    private Collection<? extends Publisher> publishers;
-    private Collection<? extends Author> authors;
-    private Collection<? extends Book> books;
-    private Collection<? extends Category> categories;
+    private List<? extends Publisher> publishers;
+    private List<? extends Author> authors;
+    private List<? extends Book> books;
+    private List<? extends Category> categories;
+    private List<Customer> customers;
     private String imagesPath = "/images/";
-    private Collection<String> formats = List.of("Paper Book", "ePub", "PDF", "Audiobook");
+    private List<String> formats = List.of("Paper Book", "ePub", "PDF", "Audiobook");
+    private List<Loan> loans;
 
     static DataSource getInstance() {
         return instance;
     }
 
     @Override
-    public Collection<? extends Category> readCategories() {
-        if(categories == null)
+    public List<? extends Category> readCategories() {
+        if (categories == null)
             categories = readDataFromCsv(categoriesCsv, CategoryImpl::new);
 
         return categories;
     }
 
     @Override
-    public Collection<? extends Author> readAuthors() {
+    public List<? extends Author> readAuthors() {
         if (authors == null)
             authors = readDataFromCsv(authorsCsv, AuthorImpl::new);
 
@@ -57,7 +62,7 @@ class CSVDataSource implements DataSource {
     }
 
     @Override
-    public Collection<? extends Publisher> readPublishers() {
+    public List<? extends Publisher> readPublishers() {
         if (publishers == null)
             publishers = readDataFromCsv(publishersCsv, PublisherImpl::new);
 
@@ -65,12 +70,63 @@ class CSVDataSource implements DataSource {
     }
 
     @Override
-    public Collection<String> readFormats() {
+    public List<String> readFormats() {
         return formats;
     }
 
     @Override
-    public Collection<? extends Book> readBooks() {
+    public List<? extends Customer> readUsers() {
+        if (customers == null)
+            customers = readDataFromCsv(usersCsv, line -> new Customer(Integer.parseInt(line[0]), line[1], line[2], line[3], line[4], line[5], false)); // Si poteva usare un Builder
+
+        return customers;
+    }
+
+    @Override
+    public List<? extends Loan> readLoans() {
+        if(loans == null)
+            loans = readDataFromCsv(loansCsv, line -> {
+                Customer customer = null;
+                Book book = null;
+                return new Loan.Builder()
+                       .setId(Integer.parseInt(line[0]))
+                       .setLoanDate(LocalDate.parse(line[1]))
+                       .setExpectedReturnDate(LocalDate.parse(line[2]))
+                       .setCustomer(customer)
+                       .setBook(book)
+                       .build();
+
+            });
+
+        return  loans;
+    }
+
+    @Override
+    public void delete(Book book) {
+        books.remove(book);
+    }
+
+    @Override
+    public void modify(Book book) {
+
+    }
+
+    @Override
+    public void save(Customer user) {
+        if (customers == null)
+            readUsers();
+        this.customers.add(user);
+    }
+
+    @Override
+    public void save(Loan loan) {
+        if(loans == null)
+            readLoans();
+        this.loans.add(loan);
+    }
+
+    @Override
+    public List<? extends Book> readBooks() {
 
         if (books == null) {
             books = readDataFromCsv(booksCsv, line -> { // Invoked on every line of the Csv file
@@ -132,14 +188,14 @@ class CSVDataSource implements DataSource {
         return lines;
     }
 
-    private <T> Collection<T> readDataFromCsv(String csvFilePath, BiFunction<Integer, String, T> action) { // Bi function for two input paramenters
+    private <T> List<T> readDataFromCsv(String csvFilePath, BiFunction<Integer, String, T> action) { // Bi function for two input paramenters
         return readCSVFile(csvFilePath)
                 .stream()
                 .map(line -> action.apply(Integer.valueOf(line[0]), line[1])) // Using lambda expression
                 .collect(Collectors.toList());
     }
 
-    private <T> Collection<T> readDataFromCsv(String csvFilePath, Function<String[], T> action) { // Function with String array for n parameters.
+    private <T> List<T> readDataFromCsv(String csvFilePath, Function<String[], T> action) { // Function with String array for n parameters.
         return readCSVFile(csvFilePath)
                 .stream()
                 .map(action) // Using qualifiers

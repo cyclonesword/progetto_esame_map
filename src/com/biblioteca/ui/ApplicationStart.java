@@ -17,7 +17,6 @@ public class ApplicationStart extends Application {
         primaryStage.show();
     }
 
-
     public static void begin(String[] args) {
         launch(args);
     }

@@ -1,19 +1,20 @@
 package com.biblioteca.core;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Calendar;
-import java.util.Date;
 
 public class StandardLoan implements Loan {
 
     private Customer customer;
-    private LocalDateTime loanDate;
-    private LocalDateTime expectedReturnDate;
-    private LocalDateTime actualReturnDate;
+    private Book book;
+    private LocalDate loanDate;
+    private LocalDate expectedReturnDate;
+    private LocalDate actualReturnDate;
     private int id;
 
-    public StandardLoan(Customer customer, LocalDateTime loanDate, LocalDateTime expectedReturnDate) {
+    public StandardLoan(Customer customer, Book book, LocalDate loanDate, LocalDate expectedReturnDate) {
         this.customer = customer;
+        this.book = book;
         this.loanDate = loanDate;
         this.expectedReturnDate = expectedReturnDate;
     }
@@ -35,22 +36,22 @@ public class StandardLoan implements Loan {
     }
 
     @Override
-    public LocalDateTime getLoanDate() {
+    public LocalDate getLoanDate() {
         return loanDate;
     }
 
     @Override
-    public LocalDateTime getExpectedReturnDate() {
+    public LocalDate getExpectedReturnDate() {
         return expectedReturnDate;
     }
 
     @Override
-    public LocalDateTime getReturnDate() {
+    public LocalDate getReturnDate() {
         return actualReturnDate;
     }
 
     @Override
-    public void setReturnDate(LocalDateTime returnDate) {
+    public void setReturnDate(LocalDate returnDate) {
         this.actualReturnDate = returnDate;
     }
 }

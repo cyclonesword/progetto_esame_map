@@ -72,7 +72,7 @@ public class FilterTreeCell<T extends AbstractFilterItem> extends TreeCell<T> {
                     else
                         MainWindowController.selectedFilters.remove(item);
 
-                    MainWindowController.notifyFiltersChanged();
+                    MainWindowController.applyFilters();
 
                     System.out.println("Filter selected: "+item);
                 });

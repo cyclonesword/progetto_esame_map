@@ -1,51 +1,63 @@
 package com.biblioteca.core;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public interface Loan {
 
     Customer getCustomer();
     int getId();
 
-    LocalDateTime getLoanDate();
-    LocalDateTime getExpectedReturnDate();
-    LocalDateTime getReturnDate();
+    LocalDate getLoanDate();
+    LocalDate getExpectedReturnDate();
+    LocalDate getReturnDate();
 
-    void setReturnDate(LocalDateTime returnDate);
+    void setReturnDate(LocalDate returnDate);
     void confirm();
 
     class Builder {
 
         private Customer customer;
-        private LocalDateTime loanDate;
-        private LocalDateTime expectedReturnDate;
+        private LocalDate loanDate;
+        private LocalDate expectedReturnDate;
+        private Book book;
+        private int id;
 
-        Builder setCustomer(Customer customer) {
+        public Builder setCustomer(Customer customer) {
             this.customer = customer;
             return this;
         }
 
-        public Builder setLoanDate(LocalDateTime loanDate) {
+        public Builder setLoanDate(LocalDate loanDate) {
             this.loanDate = loanDate;
             return this;
         }
 
-        public Builder setExpectedReturnDate(LocalDateTime expectedReturnDate) {
+        public Builder setExpectedReturnDate(LocalDate expectedReturnDate) {
             this.expectedReturnDate = expectedReturnDate;
+            return this;
+        }
+
+        public Builder setBook(Book book) {
+            this.book = book;
             return this;
         }
 
         public Loan build() {
 
-            if(customer == null)
-                throw new IllegalArgumentException("Null customer given in Loan Builder.");
+            if(customer == null || book == null)
+                throw new IllegalArgumentException("Null customer or book given in Loan Builder.");
 
             if(loanDate == null || expectedReturnDate == null) {
                 throw new IllegalArgumentException("Loan Date and Expected return date must not be null.");
             }
 
-            return new StandardLoan(customer, loanDate, expectedReturnDate);
+            return new StandardLoan(customer, book, loanDate, expectedReturnDate);
 
+        }
+
+        public Builder setId(int id) {
+            this.id = id;
+            return this;
         }
     }
 }

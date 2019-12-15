@@ -1,5 +1,6 @@
 package com.biblioteca.core;
 
+import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 
 import java.util.List;
@@ -12,17 +13,31 @@ public interface Book {
 
     String getTitle();
 
+    void setTitle(String title);
+
     String getSubtitle();
+
+    void setSubtitle(String subtitle);
 
     String getDescription();
 
+    void setDescription(String description);
+
     String getISBN();
+
+    void setISBN(String isbn);
 
     int getYear();
 
+    void setYear(int year);
+
     int getQuantity();
 
+    void setQuantity(int quantity);
+
     Image getImage();
+
+    void setImage(Image image);
 
     String getFormat();
 
@@ -37,6 +52,9 @@ public interface Book {
     List<? extends Category> getCategories();
 
     void addCategories(List<? extends Category> categories);
+
+    void setPublisher(Publisher publisher);
+
 
     class Builder {
         private int id;
@@ -115,7 +133,7 @@ public interface Book {
             var book = new BookImpl(title, isbn, description, quantity);
 
             book.setId(id);
-            book.setSubTitle(subTitle);
+            book.setSubtitle(subTitle);
             book.setPublisher(publisher);
             book.setImage(image);
             book.setYear(year);
