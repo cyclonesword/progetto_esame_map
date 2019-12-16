@@ -11,4 +11,8 @@ public interface Authentication {
             super(message);
         }
     }
+
+    static Authentication from(String empCode, String password) {
+        return new EmployeeCodePasswordAuthentication(empCode,password);
+    }
 }

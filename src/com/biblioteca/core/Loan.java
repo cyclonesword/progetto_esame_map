@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public interface Loan {
 
     Customer getCustomer();
-    int getId();
+    int getLoanId();
 
     LocalDate getLoanDate();
     LocalDate getExpectedReturnDate();
@@ -13,6 +13,8 @@ public interface Loan {
 
     void setReturnDate(LocalDate returnDate);
     void confirm();
+
+    Book getBook();
 
     class Builder {
 
@@ -51,7 +53,7 @@ public interface Loan {
                 throw new IllegalArgumentException("Loan Date and Expected return date must not be null.");
             }
 
-            return new StandardLoan(customer, book, loanDate, expectedReturnDate);
+            return new StandardLoan(id,customer, book, loanDate, expectedReturnDate);
 
         }
 

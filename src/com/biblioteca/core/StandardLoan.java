@@ -2,7 +2,6 @@ package com.biblioteca.core;
 
 import java.time.LocalDate;
 import java.util.Calendar;
-import java.util.StringJoiner;
 
 public class StandardLoan implements Loan {
 
@@ -14,7 +13,8 @@ public class StandardLoan implements Loan {
     private LocalDate expectedReturnDate;
     private LocalDate actualReturnDate;
 
-    public StandardLoan(Customer customer, Book book, LocalDate loanDate, LocalDate expectedReturnDate) {
+    public StandardLoan(int id, Customer customer, Book book, LocalDate loanDate, LocalDate expectedReturnDate) {
+        this.id = id;
         this.customer = customer;
         this.book = book;
         this.loanDate = loanDate;
@@ -28,7 +28,12 @@ public class StandardLoan implements Loan {
     }
 
     @Override
-    public int getId() {
+    public Book getBook() {
+        return book;
+    }
+
+    @Override
+    public int getLoanId() {
         return id;
     }
 

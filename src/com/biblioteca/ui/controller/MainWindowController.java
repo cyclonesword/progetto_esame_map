@@ -197,7 +197,8 @@ public class MainWindowController {
     public void reserveBookClicked(MouseEvent mouseEvent) throws IOException {
         final Book book = listView.getSelectionModel().getSelectedItem().getBook();
 
-        Dialogs.<LoanDialogController>showDialog("New Loan",
+        Dialogs.<LoanDialogController>showDialog("Nuovo prestito",
+                "Conferma",
                 "/fxml/LoanDialog.fxml",
                 rootPane.getScene().getWindow(),
                 controller -> {
@@ -224,6 +225,18 @@ public class MainWindowController {
     private void refreshListView() {
         listView.refresh();
         changeItemDetail(listView.getSelectionModel().getSelectedItem());
+    }
+
+    /**
+     * Invoked when the user click onto the "show loans" button. This method will open a new window dialog .
+     * @param mouseEvent The mouse event occurred
+     * @throws IOException If something horrible happens
+     */
+    @FXML
+    public void showReservedBooksClicked(MouseEvent mouseEvent) throws IOException {
+        Dialogs.<ReservedBooksDialogController>showDialog("Prestiti", "Ok", "/fxml/ReservedBookDialog.fxml",
+                rootPane.getScene().getWindow(),
+                controller -> { }, controller -> { });
     }
 
     private void initFilters() {
@@ -271,12 +284,5 @@ public class MainWindowController {
                         .map(AbstractFilterItem::getTreeItem)
                         .collect(Collectors.toList()));
 
-    }
-
-    @FXML
-    public void showReservedBooksClicked(MouseEvent mouseEvent) throws IOException {
-        Dialogs.<ReservedBooksDialogController>showDialog("Prestiti", "Ok", "/fxml/ReservedBookDialog.fxml",
-                rootPane.getScene().getWindow(),
-                controller -> { }, controller -> { });
     }
 }

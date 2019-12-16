@@ -83,4 +83,8 @@ public class Customer {
     public String getPhoneNumber() {
         return phoneNumber;
     }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 }

@@ -7,19 +7,37 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.biblioteca.ui.controller.ReservedBooksDialogController"
           vgap="10"
-          prefHeight="300.0" prefWidth="400.0">
+          prefHeight="350.0" prefWidth="650.0">
 
     <padding>
         <Insets top="10" bottom="10" left="20" right="20" />
     </padding>
 
-    <Label GridPane.rowIndex="0" GridPane.columnIndex="0" text="Codice prestrito - Nome libro - Cliente" />
-    <TableView GridPane.rowIndex="1" GridPane.columnIndex="0" fx:id="tableView" prefWidth="350">
-
+    <Label GridPane.rowIndex="0" GridPane.columnIndex="0" text="Libri prestati" alignment="CENTER" GridPane.halignment="CENTER">
+        <font>
+            <Font name="AvenirLTStd-Medium" size="14.0"/>
+        </font>
+    </Label>
+    <TableView GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.columnIndex="0" fx:id="tableView" prefWidth="600">
+        <GridPane.margin>
+            <Insets top="5" />
+        </GridPane.margin>
+        <placeholder>
+            <Label text="Nessun prestito attualmente registrato" />
+        </placeholder>
+        <columns>
+            <TableColumn fx:id="id" text="Cod." />
+            <TableColumn fx:id="reservedBook" text="Libro" />
+            <TableColumn fx:id="user" text="Cliente" />
+            <TableColumn fx:id="startDate" text="Data Inizio" prefWidth="100" />
+            <TableColumn fx:id="expectedReturnDate" text="Data Restituz." prefWidth="100" />
+            <TableColumn fx:id="endDate" text="Data Rest. effettiva" prefWidth="100" />
+        </columns>
     </TableView>
 
 </GridPane>
