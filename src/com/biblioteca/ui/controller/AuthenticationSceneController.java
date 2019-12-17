@@ -1,32 +1,43 @@
 package com.biblioteca.ui.controller;
 
-import com.biblioteca.core.Authentication;
-import com.biblioteca.core.EmployeeCodePasswordAuthentication;
 import com.biblioteca.core.Library;
-import javafx.application.Platform;
+import com.biblioteca.core.auth.Authentication;
+import com.biblioteca.datasource.DataSource;
+import com.biblioteca.ui.Dialogs;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
 
 public class AuthenticationSceneController {
 
-    public TextField matricola;
-    public PasswordField passwrord;
+    @FXML
+    private VBox rootNode;
 
-    private Scene scene;
+    @FXML
+    private TextField emailOrNumber;
+
+    @FXML
+    private PasswordField passwrord;
+
+    private Scene mainWindowScene;
     private Stage primaryStage;
-    private Parent root;
+    private Parent mainWindowRootNode;
+
+    private DataSource ds = DataSource.getDefault();
 
     public AuthenticationSceneController() {
-        // Loads the MainWindow.fxml in another thread to avoid lag effect when the user press the Login button.
+        // Loads the MainWindow.fxml in another thread(asynchronously) to avoid lag effect when the user press the Login button.
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 System.out.println("Loading asynchronously the MainWindow.fxml UI .");
@@ -39,22 +50,56 @@ public class AuthenticationSceneController {
     }
 
     private void loadMainWindow() throws IOException {
-        root = FXMLLoader.load(getClass().getResource("/fxml/MainWindow.fxml"));
-        scene = new Scene(root, 1024, 768);
+        mainWindowRootNode = FXMLLoader.load(getClass().getResource("/fxml/MainWindow.fxml"));
+        mainWindowScene = new Scene(mainWindowRootNode, 1024, 768);
     }
 
-    public void loginClicked(MouseEvent mouseEvent) throws IOException {
-        if (root == null)
+    /**
+     * This method is invoked by the JavaFX Runtime when the user press the Login button.
+     *
+     * @throws IOException if the .fxml file cannot be loaded. This is a critical error that will abort the application.
+     */
+    @FXML
+    public void loginClicked() throws IOException {
+        if (mainWindowRootNode == null)
             loadMainWindow();
 
-        Authentication authStrategy = Authentication.from(matricola.getText(), passwrord.getText());
+        Authentication authStrategy = Authentication.from(emailOrNumber.getText(), passwrord.getText());
 
-        if (authStrategy.authenticate()) {
+        try {
+            var emp = authStrategy.authenticate();
+            Library.getInstance().setLoggedEmployee(emp);
+
             primaryStage.close();
             primaryStage.setTitle("Super Biblioteca 1.0");
-            primaryStage.setScene(scene);
+            primaryStage.setScene(mainWindowScene);
             primaryStage.show();
+
+        } catch (Authentication.InvalidCredentialsException e) {
+            e.printStackTrace();
+            showErrorDialog();
         }
+
+    }
+
+    @FXML
+    public void registerClicked() throws IOException {
+        Dialogs.<RegisterEmployeeDialogController>showDialog("Register new employee",
+                "Aggiungi Impiegato",
+                "/fxml/NewEmployeeDialog.fxml", rootNode.getScene().getWindow(),
+                controller -> { // Before showing the dialog
+
+                },
+                controller -> { // After the user press some confirmation button
+                    var emp = controller.getEmployee();
+                    ds.save(emp);
+                });
+    }
+
+    private void showErrorDialog() {
+        Alert alert = new Alert(Alert.AlertType.WARNING, "Credenziali non corrette!", ButtonType.OK);
+        alert.initOwner(rootNode.getScene().getWindow());
+        alert.showAndWait();
     }
 
     public void setPrimaryStage(Stage primaryStage) {

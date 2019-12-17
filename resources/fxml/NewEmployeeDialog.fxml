@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.biblioteca.ui.controller.RegisterEmployeeDialogController"
+          vgap="10"
+          >
+
+    <padding>
+        <Insets left="15" right="15" top="20" bottom="20" />
+    </padding>
+
+    <VBox GridPane.rowIndex="0" GridPane.columnIndex="0">
+        <Label text="Nome"/>
+        <TextField maxWidth="180" fx:id="firstName"/>
+    </VBox>
+
+    <VBox GridPane.rowIndex="1" GridPane.columnIndex="0">
+        <Label text="Cognome"/>
+        <TextField maxWidth="180" fx:id="lastName"/>
+    </VBox>
+
+    <VBox GridPane.rowIndex="2" GridPane.columnIndex="0">
+        <Label text="Email"/>
+        <TextField maxWidth="220" fx:id="email"/>
+    </VBox>
+
+    <VBox GridPane.rowIndex="3" GridPane.columnIndex="0">
+        <Label text="Scegli una password (minimo 5 caratteri)"/>
+        <PasswordField maxWidth="180" fx:id="password"/>
+    </VBox>
+
+    <VBox GridPane.rowIndex="4" GridPane.columnIndex="0">
+        <Label text="Livello"/>
+        <ComboBox fx:id="levelComboBox" prefWidth="140">
+<!--            <items>-->
+<!--                <String fx:value="Addetto ai prestiti" />-->
+<!--                <String fx:value="Gestore" />-->
+<!--                <String fx:value="Amministratore" />-->
+<!--            </items>-->
+        </ComboBox>
+    </VBox>
+
+    <VBox GridPane.rowIndex="5" GridPane.columnIndex="0">
+        <Label text="Codice autorizzazione"/>
+        <TextField maxWidth="170" fx:id="authCode"/>
+    </VBox>
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+
+</GridPane>

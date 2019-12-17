@@ -1,5 +1,7 @@
 package com.biblioteca.core;
 
+import com.biblioteca.core.employee.Employee;
+
 import java.util.List;
 
 /*
@@ -11,7 +13,7 @@ public class Library {
     private String name;
     private String address;
 
-    private List<Employee> employees;
+    private Employee loggedEmployee;
 
     private static Library instance;
 
@@ -21,9 +23,8 @@ public class Library {
         return instance;
     }
 
-    public void newLoan(BookImpl book, Authorization authorization) {
 
+    public void setLoggedEmployee(Employee loggedEmployee) {
+        this.loggedEmployee = loggedEmployee;
     }
-
-
 }

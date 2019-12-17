@@ -1,10 +1,13 @@
-package com.biblioteca.core;
+package com.biblioteca.core.auth;
+
+import com.biblioteca.core.employee.Employee;
 
 public interface Authentication {
-    boolean authenticate() throws InvalidCredentialsException;
+    Employee authenticate() throws InvalidCredentialsException;
 
     class InvalidCredentialsException extends RuntimeException {
         public InvalidCredentialsException() {
+            super("Invalid Credentials given");
         }
 
         public InvalidCredentialsException(String message) {

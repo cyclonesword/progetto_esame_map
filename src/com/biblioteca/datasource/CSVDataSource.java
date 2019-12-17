@@ -1,6 +1,8 @@
 package com.biblioteca.datasource;
 
 import com.biblioteca.core.*;
+import com.biblioteca.core.employee.Employee;
+import com.biblioteca.core.employee.EmployeeFactory;
 import javafx.scene.image.Image;
 
 import java.io.BufferedReader;
@@ -31,6 +33,7 @@ class CSVDataSource implements DataSource {
     private final String booksCsv = "/csv/books.csv";
     private final String usersCsv = "/csv/users.csv";
     private final String loansCsv = "/csv/loans.csv";
+    private final String employeesCsv = "/csv/employees.csv";
 
     private List<? extends Publisher> publishers;
     private List<? extends Author> authors;
@@ -40,6 +43,7 @@ class CSVDataSource implements DataSource {
     private String imagesPath = "/images/";
     private List<String> formats = List.of("Paper Book", "ePub", "PDF", "Audiobook");
     private List<Loan> loans;
+    private List<Employee> employees;
 
     static DataSource getInstance() {
         return instance;
@@ -129,6 +133,30 @@ class CSVDataSource implements DataSource {
         if(loans == null)
             readLoans();
         this.loans.add(loan);
+    }
+
+    @Override
+    public List<? extends Employee> getEmployees() {
+        if(employees == null) {
+            var factory = new EmployeeFactory();
+            employees = readDataFromCsv(employeesCsv, line -> {
+                factory.setEmployeeNumber(line[0]);
+                factory.setPassword(line[1]);
+                factory.setName(line[2]);
+                factory.setLastName(line[3]);
+                factory.setEmail(line[4]);
+                String level = line[5];
+
+                return factory.getEmployee(level);
+            });
+        }
+
+        return employees;
+    }
+
+    @Override
+    public void save(Employee emp) {
+        this.employees.add(emp);
     }
 
     @Override

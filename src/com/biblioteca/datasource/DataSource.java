@@ -1,6 +1,7 @@
 package com.biblioteca.datasource;
 
 import com.biblioteca.core.*;
+import com.biblioteca.core.employee.Employee;
 
 import java.util.List;
 
@@ -28,4 +29,8 @@ public interface DataSource {
     static DataSource getDefault() {
         return CSVDataSource.getInstance();
     }
+
+    List<? extends Employee> getEmployees();
+
+    void save(Employee emp);
 }
