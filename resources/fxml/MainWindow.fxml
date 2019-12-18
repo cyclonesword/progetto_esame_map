@@ -35,25 +35,18 @@
             </padding>
             <MenuBar>
                 <Menu text="Aggiungi">
-                    <MenuItem text="Nuovo libro" />
+                    <MenuItem text="Nuovo libro" onAction="#addBookClicked"/>
                     <MenuItem text="Nuovo utente" onAction="#addUserClicked"/>
                 </Menu>
 
                 <Menu text="Cerca">
-                    <MenuItem text="Libro" />
                     <MenuItem text="Utente" />
-                </Menu>
-
-                <Menu text="Visualizza">
-                    <MenuItem text="Ultimi prestiti" />
-                    <MenuItem text="Prestiti scaduti" />
-                    <MenuItem text="Utenti registrati" />
                 </Menu>
 
                 <Menu text="?">
                     <MenuItem text="Cerca aggiornamenti" />
                     <MenuItem text="Help" />
-                    <MenuItem text="About" />
+                    <MenuItem text="About" onAction="#onAboutClicked" />
                 </Menu>
             </MenuBar>
 
@@ -61,13 +54,6 @@
                 <padding>
                     <Insets left="10" />
                 </padding>
-                <Button prefHeight="40" text="Nuovo prestito">
-                    <graphic>
-                        <ImageView>
-                            <Image url="@/toolbarButtonGraphics/general/New24.gif" />
-                        </ImageView>
-                    </graphic>
-                </Button>
 
                 <Button prefHeight="40" text="Nuova restituzione">
                     <graphic>

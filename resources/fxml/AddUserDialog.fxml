@@ -9,7 +9,8 @@
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.biblioteca.ui.controller.AddUserDialogController"
-          prefHeight="200.0" prefWidth="280.0">
+          prefHeight="200.0" prefWidth="280.0"
+fx:id="rootNode">
 
     <VBox GridPane.rowIndex="0" GridPane.columnIndex="0">
         <Label text="Nome"/>

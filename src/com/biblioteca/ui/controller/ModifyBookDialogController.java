@@ -9,6 +9,7 @@ import com.biblioteca.ui.Dialogs;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ModifyBookDialogController {
+public class ModifyBookDialogController implements DialogController {
 
     @FXML
     private VBox authorsContainer;
@@ -67,23 +68,15 @@ public class ModifyBookDialogController {
     private GridPane rootPane;
 
     private Book book;
+    private boolean modify;
 
     private List<Author> authors = new ArrayList<>();
     private List<Category> categories = new ArrayList<>();
 
     private DataSource ds = DataSource.getDefault();
+    private Dialog<ButtonType> dialog;
 
     public void fillFields() {
-        authors.addAll(book.getAuthors()); // Shallow copy
-        categories.addAll(book.getCategories());
-
-        titleTf.setText(book.getTitle());
-        subtitleTf.setText(book.getSubtitle());
-        descriptionTf.setText(book.getDescription());
-        yearTf.setText(String.valueOf(book.getYear()));
-        isbnTf.setText(book.getISBN());
-        qntTf.setText(String.valueOf(book.getQuantity()));
-        bookImg.setImage(book.getImage());
 
         ObservableList<Publisher> publishers = FXCollections.observableArrayList(ds.readPublishers());
         editoriCombobox.setItems(publishers);
@@ -91,11 +84,25 @@ public class ModifyBookDialogController {
         var formats = FXCollections.observableArrayList(ds.readFormats());
         formatoCombobox.setItems(formats);
 
-        editoriCombobox.getSelectionModel().select(book.getPublisher());
-        formatoCombobox.getSelectionModel().select(book.getFormat());
+        if (modify) {
+            authors.addAll(book.getAuthors()); // Shallow copy
+            categories.addAll(book.getCategories());
 
-        fillCategoriesLabel();
-        fillAuthorsLabel();
+            titleTf.setText(book.getTitle());
+            subtitleTf.setText(book.getSubtitle());
+            descriptionTf.setText(book.getDescription());
+            yearTf.setText(String.valueOf(book.getYear()));
+            isbnTf.setText(book.getISBN());
+            qntTf.setText(String.valueOf(book.getQuantity()));
+            bookImg.setImage(book.getImage());
+
+            editoriCombobox.getSelectionModel().select(book.getPublisher());
+            formatoCombobox.getSelectionModel().select(book.getFormat());
+
+            fillCategoriesLabel();
+            fillAuthorsLabel();
+        }
+
     }
 
     private void fillAuthorsLabel() {
@@ -136,7 +143,7 @@ public class ModifyBookDialogController {
     }
 
     @FXML
-    public void browseFileClicked(MouseEvent mouseEvent) throws FileNotFoundException {
+    public void browseFileClicked() throws FileNotFoundException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         var file = fileChooser.showOpenDialog(rootPane.getScene().getWindow());
@@ -148,7 +155,7 @@ public class ModifyBookDialogController {
     }
 
     @FXML
-    public void modifyCategoryClicked(MouseEvent mouseEvent) throws IOException {
+    public void modifyCategoryClicked() throws IOException {
         Dialogs.<AddRemoveDialogController<Category>>showDialog("Modify categories",
                 "/fxml/AddRemoveData.fxml",
                 rootPane.getScene().getWindow(),
@@ -164,9 +171,8 @@ public class ModifyBookDialogController {
     }
 
 
-
     @FXML
-    public void modifyAuthorsClicked(MouseEvent mouseEvent) throws IOException {
+    public void modifyAuthorsClicked() throws IOException {
         Dialogs.<AddRemoveDialogController<Author>>showDialog("Modify authors",
                 "/fxml/AddRemoveData.fxml",
                 rootPane.getScene().getWindow(),
@@ -181,8 +187,51 @@ public class ModifyBookDialogController {
                 });
     }
 
-    public void setBook(Book book) {
+    public void setBook(Book book, boolean modify) {
         this.book = book;
+        this.modify = modify;
         fillFields();
+    }
+
+    @Override
+    public void setDialog(Dialog<ButtonType> dialog) {
+        this.dialog = dialog;
+        DialogController.super.setDialog(dialog);
+
+    }
+
+    @Override
+    public Dialog<ButtonType> getDialog() {
+        return dialog;
+    }
+
+    @Override
+    public boolean checkData() {
+
+        var test1 = titleTf.getText().isEmpty() || subtitleTf.getText().isEmpty() || isbnTf.getText().isEmpty()
+                || categories.size() == 0 || authors.size() == 0
+                || editoriCombobox.getSelectionModel().getSelectedItem() == null
+                || formatoCombobox.getSelectionModel().getSelectedItem() == null;
+
+        if (test1) {
+            Dialogs.showAlertDialog("Si prega di completare tutti i campi", rootPane.getScene().getWindow());
+            return false;
+        }
+
+        try {
+            Integer.parseInt(qntTf.getText());
+        } catch (NumberFormatException e) {
+            Dialogs.showAlertDialog("Si prega di inserire una quantità numerica", rootPane.getScene().getWindow());
+            return false;
+        }
+
+        try {
+            Integer.parseInt(yearTf.getText());
+        } catch (NumberFormatException e) {
+            Dialogs.showAlertDialog("Si prega di inserire l'anno di pubblicazione del libro", rootPane.getScene().getWindow());
+            return false;
+        }
+
+        return true;
     }
 }

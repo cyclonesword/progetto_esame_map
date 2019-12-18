@@ -93,6 +93,7 @@ public class AuthenticationSceneController {
                 controller -> { // After the user press some confirmation button
                     var emp = controller.getEmployee();
                     ds.save(emp);
+
                 });
     }
 

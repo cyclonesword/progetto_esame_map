@@ -8,12 +8,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
 import java.time.LocalDate;
 
-public class LoanDialogController {
+public class LoanDialogController implements DialogController{
 
     @FXML
     public DatePicker startDatePicker;
@@ -34,7 +35,21 @@ public class LoanDialogController {
         ObservableList<Customer> allUsers = FXCollections.observableArrayList(ds.readUsers());
         usersCombobox.setItems(allUsers);
 
+        var maxDate = LocalDate.now().plusDays(60); // Max 2 month
+        var minDate = LocalDate.now();
+
+        startDatePicker.setDayCellFactory(d -> new DateCell() {
+                    @Override public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setDisable(item.isBefore(minDate));
+                    }});
         startDatePicker.setValue(LocalDate.now());
+
+        endDatePicker.setDayCellFactory(d -> new DateCell() {
+            @Override public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                setDisable(item.isAfter(maxDate));
+            }});
         endDatePicker.setValue(LocalDate.now());
         usersCombobox.getSelectionModel().selectFirst();
     }

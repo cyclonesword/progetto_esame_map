@@ -67,7 +67,7 @@
     <VBox prefWidth="280" GridPane.rowIndex="0" GridPane.rowSpan="4" GridPane.columnIndex="1"
           GridPane.halignment="CENTER" alignment="CENTER">
         <ImageView fx:id="bookImg" fitWidth="150" fitHeight="200" preserveRatio="true">
-            <Image url="@../images/it.jpg"/>
+            <Image url="@../images/book_default.png"/>
             <VBox.margin>
                 <Insets bottom="20"/>
             </VBox.margin>

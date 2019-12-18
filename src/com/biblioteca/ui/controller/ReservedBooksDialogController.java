@@ -13,7 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.stream.Collectors;
 
-public class ReservedBooksDialogController {
+public class ReservedBooksDialogController implements DialogController{
 
     public TableColumn<TableViewLoan, Integer> id;
     public TableColumn<TableViewLoan, String> reservedBook;

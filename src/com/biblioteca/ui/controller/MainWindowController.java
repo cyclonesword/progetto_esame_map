@@ -1,6 +1,7 @@
 package com.biblioteca.ui.controller;
 
 import com.biblioteca.core.Book;
+import com.biblioteca.core.BookImpl;
 import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.Dialogs;
 import com.biblioteca.ui.Images;
@@ -146,11 +147,25 @@ public class MainWindowController {
     }
 
     @FXML
-    public void editBookClicked(MouseEvent mouseEvent) {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        //   dialog.initOwner(ApplicationStart.getScene().getWindow());
+    public void addBookClicked() throws IOException {
+        var book = new BookImpl();
 
+        Dialogs.<ModifyBookDialogController>showDialog("Nuovo libro", "Aggiungi", "/fxml/ModifyBookDialog.fxml", rootPane.getScene().getWindow(),
+                controller -> controller.setBook(book, false),
+                controller -> {
+                    controller.applyData();
+                    ds.save(book);
+                    allBooks.add(new BookListItem(book));
+                    applyFilters();
+                    refreshListView();
+                });
+    }
+
+    @FXML
+    public void editBookClicked() {
+        Dialog<ButtonType> dialog = new Dialog<>();
         FXMLLoader fxmlLoader = new FXMLLoader();
+
         try {
             fxmlLoader.setLocation(getClass().getResource("/fxml/ModifyBookDialog.fxml"));
             dialog.getDialogPane().setContent(fxmlLoader.load());
@@ -161,16 +176,16 @@ public class MainWindowController {
         }
 
         ModifyBookDialogController controller = fxmlLoader.getController();
-        controller.setBook(listView.getSelectionModel().getSelectedItem().getBook());
+        controller.setBook(listView.getSelectionModel().getSelectedItem().getBook(), true);
         dialog.initOwner(listView.getScene().getWindow());
 
-        dialog.getDialogPane().getButtonTypes().add(new ButtonType("Save", ButtonBar.ButtonData.OK_DONE));
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
         dialog.setTitle("Modify Book");
 
         dialog.showAndWait();
 
-        if (dialog.getResult().getButtonData().equals(ButtonBar.ButtonData.OK_DONE)) {
+        if (dialog.getResult().equals(ButtonType.OK)) {
             System.out.println("Ok clicked");
             controller.applyData();
             refreshListView();
@@ -222,13 +237,9 @@ public class MainWindowController {
                 });
     }
 
-    private void refreshListView() {
-        listView.refresh();
-        changeItemDetail(listView.getSelectionModel().getSelectedItem());
-    }
-
     /**
      * Invoked when the user click onto the "show loans" button. This method will open a new window dialog .
+     *
      * @param mouseEvent The mouse event occurred
      * @throws IOException If something horrible happens
      */
@@ -236,7 +247,14 @@ public class MainWindowController {
     public void showReservedBooksClicked(MouseEvent mouseEvent) throws IOException {
         Dialogs.<ReservedBooksDialogController>showDialog("Prestiti", "Ok", "/fxml/ReservedBookDialog.fxml",
                 rootPane.getScene().getWindow(),
-                controller -> { }, controller -> { });
+                controller -> {
+                }, controller -> {
+                });
+    }
+
+    private void refreshListView() {
+        listView.refresh();
+        changeItemDetail(listView.getSelectionModel().getSelectedItem());
     }
 
     private void initFilters() {
@@ -284,5 +302,12 @@ public class MainWindowController {
                         .map(AbstractFilterItem::getTreeItem)
                         .collect(Collectors.toList()));
 
+    }
+
+    @FXML
+    public void onAboutClicked() throws IOException {
+        Dialogs.<AboutDialogController>showDialog("About", "Ok", "/fxml/About.fxml",
+                rootPane.getScene().getWindow(),
+                null, null);
     }
 }

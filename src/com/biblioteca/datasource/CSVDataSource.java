@@ -2,7 +2,6 @@ package com.biblioteca.datasource;
 
 import com.biblioteca.core.*;
 import com.biblioteca.core.employee.Employee;
-import com.biblioteca.core.employee.EmployeeFactory;
 import javafx.scene.image.Image;
 
 import java.io.BufferedReader;
@@ -37,7 +36,7 @@ class CSVDataSource implements DataSource {
 
     private List<? extends Publisher> publishers;
     private List<? extends Author> authors;
-    private List<? extends Book> books;
+    private List<Book> books;
     private List<? extends Category> categories;
     private List<Customer> customers;
     private String imagesPath = "/images/";
@@ -125,6 +124,8 @@ class CSVDataSource implements DataSource {
     public void save(Customer user) {
         if (customers == null)
             readUsers();
+        int lastId = customers.stream().map(Customer::getId).max(Comparator.naturalOrder()).get();
+        user.setId(lastId);
         this.customers.add(user);
     }
 
@@ -132,23 +133,23 @@ class CSVDataSource implements DataSource {
     public void save(Loan loan) {
         if(loans == null)
             readLoans();
+
+        int lastId = loans.stream().map(Loan::getLoanId).max(Comparator.naturalOrder()).get();
+        loan.setId(lastId +1);
         this.loans.add(loan);
     }
 
     @Override
     public List<? extends Employee> getEmployees() {
         if(employees == null) {
-            var factory = new EmployeeFactory();
-            employees = readDataFromCsv(employeesCsv, line -> {
-                factory.setEmployeeNumber(line[0]);
-                factory.setPassword(line[1]);
-                factory.setName(line[2]);
-                factory.setLastName(line[3]);
-                factory.setEmail(line[4]);
-                String level = line[5];
-
-                return factory.getEmployee(level);
-            });
+            employees = readDataFromCsv(employeesCsv, line ->
+                new Employee.Builder()
+                        .setNumber(line[0])
+                        .setPassword(line[1])
+                        .setFirstName(line[2])
+                        .setLastName(line[3])
+                        .setEmail(line[4])
+                        .build());
         }
 
         return employees;
@@ -157,6 +158,12 @@ class CSVDataSource implements DataSource {
     @Override
     public void save(Employee emp) {
         this.employees.add(emp);
+    }
+
+    @Override
+    public void save(Book book) {
+        book.setId(books.stream().map(Book::getId).max(Comparator.naturalOrder()).get()+1);
+        books.add(book);
     }
 
     @Override

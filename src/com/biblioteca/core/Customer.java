@@ -87,4 +87,8 @@ public class Customer {
     public String getFullName() {
         return firstName + " " + lastName;
     }
+
+    public void setId(int lastId) {
+        this.id = lastId;
+    }
 }

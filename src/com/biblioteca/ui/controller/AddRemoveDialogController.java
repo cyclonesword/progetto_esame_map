@@ -9,7 +9,7 @@ import javafx.scene.input.MouseEvent;
 
 import java.util.List;
 
-public class AddRemoveDialogController<T> {
+public class AddRemoveDialogController<T> implements DialogController {
 
     public ComboBox<T> dataCombobox;
     public ListView<T> listView;

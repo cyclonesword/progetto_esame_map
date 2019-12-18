@@ -6,6 +6,7 @@ public interface Loan {
 
     Customer getCustomer();
     int getLoanId();
+    void setId(int id);
 
     LocalDate getLoanDate();
     LocalDate getExpectedReturnDate();

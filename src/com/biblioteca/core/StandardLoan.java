@@ -38,6 +38,11 @@ public class StandardLoan implements Loan {
     }
 
     @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
     public Customer getCustomer() {
         return customer;
     }

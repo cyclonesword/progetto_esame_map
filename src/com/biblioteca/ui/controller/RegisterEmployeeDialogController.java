@@ -3,40 +3,54 @@ package com.biblioteca.ui.controller;
 import com.biblioteca.core.employee.Employee;
 import com.biblioteca.core.employee.EmployeeFactory;
 import com.biblioteca.datasource.DataSource;
+import com.biblioteca.ui.Dialogs;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.event.ActionEvent;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 
 import java.util.Comparator;
 import java.util.List;
 
-public class RegisterEmployeeDialogController {
+public class RegisterEmployeeDialogController implements DialogController {
 
     public TextField firstName;
+    public GridPane rootNode;
     public TextField lastName;
     public TextField email;
     public TextField password;
     public TextField authCode;
 
-    public ComboBox<Employee.Level> levelComboBox;
+    // public ComboBox<Employee.Level> levelComboBox;
 
     private DataSource ds = DataSource.getDefault();
+    private Dialog<ButtonType> dialog;
 
     public void initialize() {
-        ObservableList<Employee.Level> observableList = FXCollections.observableList(List.of(Employee.Level.ADMIN, Employee.Level.MANAGER, Employee.Level.ASSISTANT));
-        levelComboBox.getItems().addAll(observableList);
-        levelComboBox.getSelectionModel().selectLast();
+
+    }
+
+    @Override
+    public boolean checkData() {
+
+        if (firstName.getText().isEmpty() || lastName.getText().isEmpty() || email.getText().isEmpty()) {
+            Dialogs.showAlertDialog("Tutti i campi sono obbligatori!", rootNode.getScene().getWindow());
+            return false;
+        } else if (password.getText().isEmpty() || password.getText().length() < 5) {
+            Dialogs.showAlertDialog("La password deve essere lunga almeno 5 caratteri.", rootNode.getScene().getWindow());
+            return false;
+        }
+
+        if (!authCode.getText().equals("21134")) {
+            Dialogs.showAlertDialog("Il Codice di autorizzazione è errato", rootNode.getScene().getWindow());
+            return false;
+        }
+
+        return true;
     }
 
     public Employee getEmployee() {
-
-        EmployeeFactory factory = new EmployeeFactory();
-
-        factory.setEmail(email.getText());
-        factory.setPassword(password.getText());
-        factory.setName(firstName.getText());
-        factory.setLastName(lastName.getText());
 
         var lastNum = ds.getEmployees().stream()
                 .map(Employee::getEmployeeNumber)
@@ -44,11 +58,31 @@ public class RegisterEmployeeDialogController {
                 .max(Comparator.naturalOrder())
                 .get();
 
-        factory.setEmployeeNumber(String.valueOf(lastNum + 1));
-
-        var level = levelComboBox.getSelectionModel().getSelectedItem();
-
-        return factory.getEmployee(level);
+        return new Employee.Builder()
+                .setNumber(String.valueOf(lastNum + 1))
+                .setPassword(password.getText())
+                .setFirstName(firstName.getText())
+                .setLastName(lastName.getText())
+                .setEmail(email.getText())
+                .build();
     }
 
+    @Override
+    public void setDialog(Dialog<ButtonType> dialog) {
+        this.dialog = dialog;
+        dialog.getDialogPane().lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION,
+                event -> {
+                    if (!checkData())
+                        event.consume();
+                });
+    }
+
+    @Override
+    public Dialog<ButtonType> getDialog() {
+        return dialog;
+    }
+
+    //   ObservableList<Employee.Level> observableList = FXCollections.observableList(List.of(Employee.Level.ADMIN, Employee.Level.MANAGER, Employee.Level.ASSISTANT));
+    //   levelComboBox.getItems().addAll(observableList);
+    //   levelComboBox.getSelectionModel().selectLast();
 }

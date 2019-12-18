@@ -33,4 +33,6 @@ public interface DataSource {
     List<? extends Employee> getEmployees();
 
     void save(Employee emp);
+
+    void save(Book book);
 }

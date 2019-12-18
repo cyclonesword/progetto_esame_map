@@ -9,10 +9,13 @@ import javafx.stage.Stage;
 
 public class ApplicationStart extends Application {
 
+    public static Application applicationInstance;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
 //        var mainWindow = ClassLoader.getSystemResource("fxml/MainWindow.fxml");
      //   Parent root = FXMLLoader.load(getClass().getResource("/fxml/AuthenticationScene.fxml"));
+        applicationInstance = this;
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(getClass().getResource("/fxml/AuthenticationScene.fxml"));
         Parent root = fxmlLoader.load();

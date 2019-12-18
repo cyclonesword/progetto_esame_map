@@ -9,6 +9,7 @@
 <?import javafx.geometry.Insets?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
+          fx:id="rootNode"
           fx:controller="com.biblioteca.ui.controller.RegisterEmployeeDialogController"
           vgap="10"
           >
@@ -37,16 +38,11 @@
         <PasswordField maxWidth="180" fx:id="password"/>
     </VBox>
 
-    <VBox GridPane.rowIndex="4" GridPane.columnIndex="0">
-        <Label text="Livello"/>
-        <ComboBox fx:id="levelComboBox" prefWidth="140">
-<!--            <items>-->
-<!--                <String fx:value="Addetto ai prestiti" />-->
-<!--                <String fx:value="Gestore" />-->
-<!--                <String fx:value="Amministratore" />-->
-<!--            </items>-->
-        </ComboBox>
-    </VBox>
+<!--    <VBox GridPane.rowIndex="4" GridPane.columnIndex="0">-->
+<!--        <Label text="Livello"/>-->
+<!--        <ComboBox fx:id="levelComboBox" prefWidth="140">-->
+<!--        </ComboBox>-->
+<!--    </VBox>-->
 
     <VBox GridPane.rowIndex="5" GridPane.columnIndex="0">
         <Label text="Codice autorizzazione"/>

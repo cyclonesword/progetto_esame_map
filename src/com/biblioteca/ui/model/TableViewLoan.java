@@ -67,6 +67,11 @@ public class TableViewLoan implements Loan {
         return loan.getLoanId();
     }
 
+    @Override
+    public void setId(int id) {
+        loan.setId(id);
+    }
+
     public String getUser() {
         return user.get();
     }
