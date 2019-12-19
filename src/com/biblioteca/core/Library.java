@@ -1,6 +1,7 @@
 package com.biblioteca.core;
 
 import com.biblioteca.core.employee.Employee;
+import com.biblioteca.datasource.DataSource;
 
 import java.util.List;
 
@@ -17,6 +18,8 @@ public class Library {
 
     private static Library instance;
 
+    private static final DataSource ds = DataSource.getDefault();
+
     public static Library getInstance() {
         if(instance == null)
             instance = new Library();
@@ -26,5 +29,9 @@ public class Library {
 
     public void setLoggedEmployee(Employee loggedEmployee) {
         this.loggedEmployee = loggedEmployee;
+    }
+
+    public void applicationWillClose() {
+        ds.saveAll();
     }
 }

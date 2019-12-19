@@ -1,5 +1,6 @@
 package com.biblioteca.core;
 
+import com.biblioteca.ui.model.BookImage;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 
@@ -15,7 +16,7 @@ public class BookImpl implements Book {
     private Loan currentLoan;
     private List<Loan> loanHistory = new ArrayList<>();
     private String description;
-    private Image image;
+    private BookImage image = new BookImage(getClass().getResourceAsStream("/images/book_default.png"),"local","book_default.png");
     private int quantity;
     private String subtitle;
     private int year;
@@ -65,7 +66,7 @@ public class BookImpl implements Book {
     }
 
     @Override
-    public Image getImage() {
+    public BookImage getImage() {
         return image;
     }
 
@@ -183,7 +184,7 @@ public class BookImpl implements Book {
         this.description = description;
     }
 
-    public void setImage(Image image) {
+    public void setImage(BookImage image) {
         this.image = image;
     }
 

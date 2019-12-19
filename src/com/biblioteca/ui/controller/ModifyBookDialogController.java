@@ -7,6 +7,7 @@ import com.biblioteca.core.Publisher;
 import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.Dialogs;
 
+import com.biblioteca.ui.model.BookImage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +20,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -76,6 +78,8 @@ public class ModifyBookDialogController implements DialogController {
     private DataSource ds = DataSource.getDefault();
     private Dialog<ButtonType> dialog;
 
+    private File selectedImage;
+
     public void fillFields() {
 
         ObservableList<Publisher> publishers = FXCollections.observableArrayList(ds.readPublishers());
@@ -125,11 +129,21 @@ public class ModifyBookDialogController implements DialogController {
 
 
     public void applyData() {
+
         book.setTitle(titleTf.getText());
         book.setSubtitle(subtitleTf.getText());
         book.setDescription(descriptionTf.getText());
         book.setFormat(formatoCombobox.getSelectionModel().getSelectedItem());
-        book.setImage(bookImg.getImage());
+        try {
+            if (selectedImage != null) {
+                BookImage image = new BookImage(selectedImage);
+                book.setImage(image);
+                ds.saveImage(image);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         book.setQuantity(Integer.parseInt(qntTf.getText()));
         book.setISBN(isbnTf.getText());
         book.setYear(Integer.parseInt(yearTf.getText()));
@@ -151,6 +165,7 @@ public class ModifyBookDialogController implements DialogController {
         if (file != null) {
             Image image = new Image(new FileInputStream(file));
             bookImg.setImage(image);
+            selectedImage = file;
         }
     }
 

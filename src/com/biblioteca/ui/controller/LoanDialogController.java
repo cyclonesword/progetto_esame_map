@@ -32,7 +32,7 @@ public class LoanDialogController implements DialogController{
     private Book book;
 
     public void initialize() {
-        ObservableList<Customer> allUsers = FXCollections.observableArrayList(ds.readUsers());
+        ObservableList<Customer> allUsers = FXCollections.observableArrayList(ds.readCustomers());
         usersCombobox.setItems(allUsers);
 
         var maxDate = LocalDate.now().plusDays(60); // Max 2 month

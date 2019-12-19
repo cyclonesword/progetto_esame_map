@@ -23,7 +23,7 @@
         <Insets left="10" right="10" />
     </padding>
 
-    <Label text="MAP Library">
+    <Label text="MAP Library" fx:id="appName">
         <font>
             <Font name="Arial Bold" size="20.0"/>
         </font>

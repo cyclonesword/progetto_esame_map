@@ -232,7 +232,7 @@ public class MainWindowController {
                 controller -> {
                 }, controller -> {
                     ds.save(controller.getUser());
-                    var u = ds.readUsers();
+                    var u = ds.readCustomers();
                     System.out.println(u);
                 });
     }

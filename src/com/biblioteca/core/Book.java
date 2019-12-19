@@ -1,5 +1,6 @@
 package com.biblioteca.core;
 
+import com.biblioteca.ui.model.BookImage;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 
@@ -37,9 +38,9 @@ public interface Book {
 
     void setQuantity(int quantity);
 
-    Image getImage();
+    BookImage getImage();
 
-    void setImage(Image image);
+    void setImage(BookImage image);
 
     String getFormat();
 
@@ -68,7 +69,7 @@ public interface Book {
         private String isbn;
         private String format;
         private Publisher publisher;
-        private Image image;
+        private BookImage image;
         private List<? extends Author> authors;
         private List<? extends Category> categories;
         private int quantity;
@@ -99,7 +100,7 @@ public interface Book {
             return this;
         }
 
-        public Builder setImage(Image image) {
+        public Builder setImage(BookImage image) {
             this.image = image;
             return this;
         }

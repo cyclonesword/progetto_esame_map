@@ -2,11 +2,11 @@ package com.biblioteca.datasource;
 
 import com.biblioteca.core.*;
 import com.biblioteca.core.employee.Employee;
-import javafx.scene.image.Image;
+import com.biblioteca.ui.ApplicationStart;
+import com.biblioteca.ui.model.BookImage;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.file.*;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.BiFunction;
@@ -24,25 +24,48 @@ import java.util.stream.Collectors;
  */
 class CSVDataSource implements DataSource {
 
-    private static DataSource instance = new CSVDataSource();
+    private static final DataSource instance = new CSVDataSource();
 
-    private final String categoriesCsv = "/csv/categories.csv";
-    private final String authorsCsv = "/csv/authors.csv";
-    private final String publishersCsv = "/csv/publishers.csv";
-    private final String booksCsv = "/csv/books.csv";
-    private final String usersCsv = "/csv/users.csv";
-    private final String loansCsv = "/csv/loans.csv";
-    private final String employeesCsv = "/csv/employees.csv";
+    private final String categoriesCsv = "categories.csv";
+    private final String authorsCsv = "authors.csv";
+    private final String publishersCsv = "publishers.csv";
+    private final String booksCsv = "books.csv";
+    private final String customersCsv = "users.csv";
+    private final String loansCsv = "loans.csv";
+    private final String employeesCsv = "employees.csv";
+
+
+    private final String basePath = System.getProperty("user.home") + File.separator + ApplicationStart.instance.getAppName() + File.separator;
+    private final String basePathCsv = basePath + "csv" + File.separator;
+    private final String basePathImgs = basePath + "images" + File.separator;
 
     private List<? extends Publisher> publishers;
     private List<? extends Author> authors;
     private List<Book> books;
     private List<? extends Category> categories;
     private List<Customer> customers;
-    private String imagesPath = "/images/";
+    private String classathImagesFolder = "/images/";
     private List<String> formats = List.of("Paper Book", "ePub", "PDF", "Audiobook");
     private List<Loan> loans;
     private List<Employee> employees;
+
+    private CSVDataSource() { // Creates a local copy of the internal database with mock entity.
+        new File(basePathCsv).mkdirs(); // Create directory if not exists;
+
+        var filesToCopy = List.of(categoriesCsv, authorsCsv, publishersCsv, booksCsv, customersCsv, loansCsv, employeesCsv);
+
+        filesToCopy.forEach(csv -> {
+            try {
+                Path target = Paths.get(basePathCsv + csv);
+                if (!Files.exists(target)) {
+                    InputStream stream = getClass().getResourceAsStream("/csv/" + csv);
+                    Files.copy(stream, target);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
     static DataSource getInstance() {
         return instance;
@@ -78,92 +101,57 @@ class CSVDataSource implements DataSource {
     }
 
     @Override
-    public List<? extends Customer> readUsers() {
+    public List<? extends Customer> readCustomers() {
         if (customers == null)
-            customers = readDataFromCsv(usersCsv, line -> new Customer(Integer.parseInt(line[0]), line[1], line[2], line[3], line[4], line[5], false)); // Si poteva usare un Builder
+            customers = readDataFromCsv(customersCsv, line -> new Customer(Integer.parseInt(line[0]), line[1], line[2], line[3], line[4], line[5], false)); // Si poteva usare un Builder
 
         return customers;
     }
 
     @Override
     public List<? extends Loan> readLoans() {
-        if(loans == null)
+        if (loans == null)
             loans = readDataFromCsv(loansCsv, line -> {
-                Customer customer = readUsers().stream()
+
+                Customer customer = readCustomers().stream()
                         .filter(c -> c.getId() == Integer.parseInt(line[3]))
                         .findFirst()
                         .orElse(null);
                 Book book = readBooks().stream()
                         .filter(b -> b.getId() == Integer.parseInt(line[4]))
                         .findFirst()
-                        .orElse(null);;
+                        .orElse(null);
+
                 return new Loan.Builder()
-                       .setId(Integer.parseInt(line[0]))
-                       .setLoanDate(LocalDate.parse(line[1]))
-                       .setExpectedReturnDate(LocalDate.parse(line[2]))
-                       .setCustomer(customer)
-                       .setBook(book)
-                       .build();
+                        .setId(Integer.parseInt(line[0]))
+                        .setLoanDate(LocalDate.parse(line[1]))
+                        .setExpectedReturnDate(LocalDate.parse(line[2]))
+                        .setCustomer(customer)
+                        .setBook(book)
+                        .build();
 
             });
 
-        return  loans;
+        return loans;
     }
 
     @Override
-    public void delete(Book book) {
-        books.remove(book);
-    }
-
-    @Override
-    public void modify(Book book) {
-
-    }
-
-    @Override
-    public void save(Customer user) {
-        if (customers == null)
-            readUsers();
-        int lastId = customers.stream().map(Customer::getId).max(Comparator.naturalOrder()).get();
-        user.setId(lastId);
-        this.customers.add(user);
-    }
-
-    @Override
-    public void save(Loan loan) {
-        if(loans == null)
-            readLoans();
-
-        int lastId = loans.stream().map(Loan::getLoanId).max(Comparator.naturalOrder()).get();
-        loan.setId(lastId +1);
-        this.loans.add(loan);
-    }
+    public void modify(Book book) { }
 
     @Override
     public List<? extends Employee> getEmployees() {
-        if(employees == null) {
+        if (employees == null) {
             employees = readDataFromCsv(employeesCsv, line ->
-                new Employee.Builder()
-                        .setNumber(line[0])
-                        .setPassword(line[1])
-                        .setFirstName(line[2])
-                        .setLastName(line[3])
-                        .setEmail(line[4])
-                        .build());
+                    new Employee.Builder()
+                            .setNumber(line[0])
+                            .setPassword(line[1])
+                            .setFirstName(line[2])
+                            .setLastName(line[3])
+                            .setEmail(line[4])
+                            .build());
         }
 
         return employees;
-    }
-
-    @Override
-    public void save(Employee emp) {
-        this.employees.add(emp);
-    }
-
-    @Override
-    public void save(Book book) {
-        book.setId(books.stream().map(Book::getId).max(Comparator.naturalOrder()).get()+1);
-        books.add(book);
     }
 
     @Override
@@ -188,6 +176,19 @@ class CSVDataSource implements DataSource {
                         .filter(category -> categoryIds.contains(String.valueOf(category.getId())))
                         .collect(Collectors.toList());
 
+                String[] imgSplit = line[9].split("=");
+                InputStream is = null;
+
+                if (imgSplit[0].equals("local"))
+                    is = getClass().getResourceAsStream("/images/" + imgSplit[1]);
+                else {
+                    try {
+                        is = new FileInputStream(basePathImgs + imgSplit[1]);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 return new Book.Builder()
                         .setId(Integer.parseInt(line[0]))
                         .setTitle(line[1])
@@ -198,7 +199,7 @@ class CSVDataSource implements DataSource {
                         .setPublisher(publisher)
                         .setIsbn(line[7])
                         .setQuantity(Integer.parseInt(line[8].trim()))
-                        .setImage(new Image(getClass().getResourceAsStream(imagesPath + line[9])))
+                        .setImage(new BookImage(is, imgSplit[0], imgSplit[1]))
                         .setCategories(cats)
                         .setFormat(line[11])
                         .build();
@@ -208,20 +209,76 @@ class CSVDataSource implements DataSource {
         return books;
     }
 
-    private List<String> getIDs(String s) {
-        return List.of(s.replaceAll("[\\[\\] ]", "").split(";"));
+    @Override
+    public void save(Customer user) {
+        if (customers == null)
+            readCustomers();
+        int lastId = customers.stream().map(Customer::getId).max(Comparator.naturalOrder()).get();
+        user.setId(lastId);
+        this.customers.add(user);
     }
 
+    @Override
+    public void save(Loan loan) {
+        if (loans == null)
+            readLoans();
 
-    private List<String[]> readCSVFile(String csvFilePath) {
+        int lastId = loans.stream().map(Loan::getLoanId).max(Comparator.naturalOrder()).get();
+        loan.setId(lastId + 1);
+        this.loans.add(loan);
+    }
+
+    @Override
+    public void save(Employee emp) {
+        this.employees.add(emp);
+    }
+
+    @Override
+    public void save(Book book) {
+        book.setId(books.stream().map(Book::getId).max(Comparator.naturalOrder()).get() + 1);
+        books.add(book);
+    }
+
+    @Override
+    public void saveImage(BookImage image) {
+        try {
+            writeDataToFile(image.getName(), basePathImgs, new FileInputStream(image.getFile()).readAllBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void saveAll() {
+        // Saves the authors contained in the list back to the CSV file. The same thing occur for the other lines.
+        writeCsvDataToFile(authorsCsv, Converters.getAuthorConverter().convert(readAuthors()));
+        writeCsvDataToFile(categoriesCsv, Converters.getCategoryConverter().convert(readCategories()));
+        writeCsvDataToFile(publishersCsv, Converters.getPublisherConverter().convert(readPublishers()));
+        writeCsvDataToFile(customersCsv, Converters.getCustomerConverter().convert(readCustomers()));
+        writeCsvDataToFile(employeesCsv, Converters.getEmployeeConverter().convert(getEmployees()));
+        writeCsvDataToFile(loansCsv, Converters.getLoanConverter().convert(readLoans()));
+        writeCsvDataToFile(booksCsv, Converters.getBookConverter().convert(readBooks()));
+    }
+
+    @Override
+    public void delete(Book book) {
+        books.remove(book);
+    }
+
+    /* ========= Private utility methods ====== */
+
+    private List<String[]> readCSVFile(String csvFileName) {
         String line;
         List<String[]> lines = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(csvFilePath)))) {
+        String path = basePathCsv + csvFileName;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)))) {
 
             while ((line = br.readLine()) != null)
                 lines.add(line.split(","));
 
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -241,6 +298,25 @@ class CSVDataSource implements DataSource {
                 .stream()
                 .map(action) // Using qualifiers
                 .collect(Collectors.toList());
+    }
+
+    private void writeDataToFile(String fileName, String path, byte[] data) {
+        try (BufferedOutputStream bou = new BufferedOutputStream(new FileOutputStream(new File(path + fileName), false))) {
+            bou.write(data);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeCsvDataToFile(String fileName, String data) {
+        writeDataToFile(fileName, basePathCsv, data.getBytes());
+    }
+
+    // Utility method to get all IDs splitted by the ; separator and removing the [] parenthesis.
+    private List<String> getIDs(String s) {
+        return List.of(s.replaceAll("[\\[\\] ]", "").split(";"));
     }
 
 //    private <T> Collection<T> readCSVFile(String csvFilePath, BiFunction<Integer, String, T> action) {

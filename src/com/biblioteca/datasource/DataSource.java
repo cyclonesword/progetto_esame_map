@@ -2,6 +2,7 @@ package com.biblioteca.datasource;
 
 import com.biblioteca.core.*;
 import com.biblioteca.core.employee.Employee;
+import com.biblioteca.ui.model.BookImage;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface DataSource {
     List<? extends Book> readBooks();
     List<? extends Publisher> readPublishers();
     List<String> readFormats();
-    List<? extends Customer> readUsers();
+    List<? extends Customer> readCustomers();
     List<? extends Loan> readLoans();
 
 
@@ -35,4 +36,8 @@ public interface DataSource {
     void save(Employee emp);
 
     void save(Book book);
+
+    void saveAll();
+
+    void saveImage(BookImage image);
 }
