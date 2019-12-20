@@ -23,6 +23,7 @@
             <Font name="AvenirLTStd-Medium" size="14.0"/>
         </font>
     </Label>
+
     <TableView GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.columnIndex="0" fx:id="tableView" prefWidth="600">
         <GridPane.margin>
             <Insets top="5" />
@@ -36,8 +37,9 @@
             <TableColumn fx:id="user" text="Cliente" />
             <TableColumn fx:id="startDate" text="Data Inizio" prefWidth="100" />
             <TableColumn fx:id="expectedReturnDate" text="Data Restituz." prefWidth="100" />
-            <TableColumn fx:id="endDate" text="Data Rest. effettiva" prefWidth="100" />
+            <TableColumn fx:id="status" text="Status" prefWidth="100" />
         </columns>
+
     </TableView>
 
 </GridPane>

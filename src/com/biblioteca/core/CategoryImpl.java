@@ -39,4 +39,9 @@ public class CategoryImpl implements Category {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public int compareTo(Category o) {
+        return name.compareTo(o.getName());
+    }
 }

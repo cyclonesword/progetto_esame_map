@@ -1,17 +1,13 @@
 package com.biblioteca.ui.controller;
 
 import com.biblioteca.core.employee.Employee;
-import com.biblioteca.core.employee.EmployeeFactory;
 import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.Dialogs;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 import java.util.Comparator;
-import java.util.List;
 
 public class RegisterEmployeeDialogController implements DialogController {
 

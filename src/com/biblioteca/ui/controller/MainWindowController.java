@@ -1,5 +1,6 @@
 package com.biblioteca.ui.controller;
 
+import com.biblioteca.core.Author;
 import com.biblioteca.core.Book;
 import com.biblioteca.core.BookImpl;
 import com.biblioteca.datasource.DataSource;
@@ -85,6 +86,7 @@ public class MainWindowController {
 
     // This method will be called automatically by the JavaFX runtime.
     public void initialize() {
+        //
         allBooks.addAll(ds.readBooks().stream()
                 .map(BookListItem::new)
                 .collect(Collectors.toList())
@@ -193,7 +195,7 @@ public class MainWindowController {
     }
 
     @FXML
-    public void deleteBookClicked(MouseEvent mouseEvent) {
+    public void deleteBookClicked() {
         final Book book = listView.getSelectionModel().getSelectedItem().getBook();
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
@@ -209,7 +211,7 @@ public class MainWindowController {
     }
 
     @FXML
-    public void reserveBookClicked(MouseEvent mouseEvent) throws IOException {
+    public void reserveBookClicked() throws IOException {
         final Book book = listView.getSelectionModel().getSelectedItem().getBook();
 
         Dialogs.<LoanDialogController>showDialog("Nuovo prestito",
@@ -232,8 +234,19 @@ public class MainWindowController {
                 controller -> {
                 }, controller -> {
                     ds.save(controller.getUser());
-                    var u = ds.readCustomers();
-                    System.out.println(u);
+                });
+    }
+
+    @FXML
+    public void addAuthorClicked(ActionEvent actionEvent) throws IOException {
+        Dialogs.<AddAuthorDialogController>showDialog("Add Book Author", "Add",
+                "/fxml/AddAuthorDialog.fxml",
+                rootPane.getScene().getWindow(),
+                null,
+                controller -> {
+                    Author a = controller.getAuthor();
+                    ds.save(a);
+                    filtersTreeView.getRoot().getChildren().get(1).getChildren().add(new AuthorFilterItem(a).getTreeItem());
                 });
     }
 
@@ -249,7 +262,15 @@ public class MainWindowController {
                 rootPane.getScene().getWindow(),
                 controller -> {
                 }, controller -> {
+                    refreshListView();
                 });
+    }
+
+    @FXML
+    public void onAboutClicked() throws IOException {
+        Dialogs.<AboutDialogController>showDialog("About", "Ok", "/fxml/About.fxml",
+                rootPane.getScene().getWindow(),
+                null, null);
     }
 
     private void refreshListView() {
@@ -275,25 +296,24 @@ public class MainWindowController {
 
         rootCategoryFilter.getTreeItem()
                 .getChildren()
-                .addAll(ds.readCategories().stream()
+                .addAll(ds.readCategories().stream().sorted()
                         .map(CategoryFilterItem::new)
                         .map(AbstractFilterItem::getTreeItem)
                         .collect(Collectors.toList()));
 
         rootAuthorsFilter.getTreeItem()
                 .getChildren()
-                .addAll(ds.readAuthors().stream()
+                .addAll(ds.readAuthors().stream().sorted()
                         .map(AuthorFilterItem::new)
                         .map(AbstractFilterItem::getTreeItem)
                         .collect(Collectors.toList()));
 
         rootPublishersFilter.getTreeItem()
                 .getChildren()
-                .addAll(ds.readPublishers().stream()
+                .addAll(ds.readPublishers().stream().sorted()
                         .map(PublisherFilterItem::new)
                         .map(AbstractFilterItem::getTreeItem)
                         .collect(Collectors.toList()));
-
 
         rootFormatsFilter.getTreeItem()
                 .getChildren()
@@ -302,12 +322,5 @@ public class MainWindowController {
                         .map(AbstractFilterItem::getTreeItem)
                         .collect(Collectors.toList()));
 
-    }
-
-    @FXML
-    public void onAboutClicked() throws IOException {
-        Dialogs.<AboutDialogController>showDialog("About", "Ok", "/fxml/About.fxml",
-                rootPane.getScene().getWindow(),
-                null, null);
     }
 }

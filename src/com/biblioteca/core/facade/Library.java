@@ -1,9 +1,7 @@
-package com.biblioteca.core;
+package com.biblioteca.core.facade;
 
 import com.biblioteca.core.employee.Employee;
 import com.biblioteca.datasource.DataSource;
-
-import java.util.List;
 
 /*
 --module-path "JavaFX 13\lib" --add-modules javafx.controls,javafx.fxml

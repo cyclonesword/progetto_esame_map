@@ -40,4 +40,6 @@ public interface DataSource {
     void saveAll();
 
     void saveImage(BookImage image);
+
+    void save(Author a);
 }

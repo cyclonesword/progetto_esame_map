@@ -3,12 +3,12 @@ package com.biblioteca.core.auth;
 import com.biblioteca.core.employee.Employee;
 import com.biblioteca.datasource.DataSource;
 
-public class EmployeeCodePasswordAuthentication implements Authentication {
+public class CodePasswordAuthentication implements Authentication {
 
     private String code;
     private String password;
 
-    public EmployeeCodePasswordAuthentication(String code, String password) {
+    public CodePasswordAuthentication(String code, String password) {
         this.code = code;
         this.password = password;
     }

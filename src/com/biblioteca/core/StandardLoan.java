@@ -11,7 +11,7 @@ public class StandardLoan implements Loan {
 
     private LocalDate loanDate;
     private LocalDate expectedReturnDate;
-    private LocalDate actualReturnDate;
+    private String status;
 
     public StandardLoan(int id, Customer customer, Book book, LocalDate loanDate, LocalDate expectedReturnDate) {
         this.id = id;
@@ -30,6 +30,11 @@ public class StandardLoan implements Loan {
     @Override
     public Book getBook() {
         return book;
+    }
+
+    @Override
+    public String getStatus() {
+        return status;
     }
 
     @Override
@@ -58,17 +63,16 @@ public class StandardLoan implements Loan {
     }
 
     @Override
-    public LocalDate getReturnDate() {
-        return actualReturnDate;
-    }
-
-    @Override
     public void setReturnDate(LocalDate returnDate) {
-        this.actualReturnDate = returnDate;
+        this.expectedReturnDate = returnDate;
     }
 
     @Override
     public String toString() {
         return id + " - " + book.toString() + " - " + customer;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

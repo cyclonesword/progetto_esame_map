@@ -27,12 +27,13 @@ public class Converters {
 
     public static Converter<Loan> getLoanConverter() {
         return loans -> loans.stream()
-                .map(loan -> String.format("%d,%s,%s,%d,%d",
+                .map(loan -> String.format("%d,%s,%s,%d,%d,%s",
                         loan.getLoanId(),
                         loan.getLoanDate(),
                         loan.getExpectedReturnDate(),
                         loan.getCustomer().getId(),
-                        loan.getBook().getId()))
+                        loan.getBook().getId(),
+                        loan.getStatus()))
                 .collect(Collectors.joining("\n"));
     }
 

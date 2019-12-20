@@ -39,4 +39,9 @@ public class AuthorImpl implements Author {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public int compareTo(Author o) {
+        return name.compareTo(o.getName());
+    }
 }

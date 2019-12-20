@@ -47,7 +47,7 @@
             </font>
         </Text>
         <Hyperlink text="GPL 2.0 licence." onMouseClicked="#linkToGPLClicked" />
-        <Text text="You are free to use it for both personal or commercial purpose.">
+        <Text text="You are free to use it for both personal and commercial purpose.">
             <font>
                 <Font name="AvenirLTStd-Medium" size="17.0"/>
             </font>

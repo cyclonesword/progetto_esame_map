@@ -48,7 +48,7 @@ public class LoanDialogController implements DialogController{
         endDatePicker.setDayCellFactory(d -> new DateCell() {
             @Override public void updateItem(LocalDate item, boolean empty) {
                 super.updateItem(item, empty);
-                setDisable(item.isAfter(maxDate));
+                setDisable(item.isAfter(maxDate) || item.isBefore(minDate));
             }});
         endDatePicker.setValue(LocalDate.now());
         usersCombobox.getSelectionModel().selectFirst();
@@ -69,6 +69,7 @@ public class LoanDialogController implements DialogController{
                 .setLoanDate(startDatePicker.getValue())
                 .setExpectedReturnDate(endDatePicker.getValue())
                 .setCustomer(selectedUser)
+                .setStatus("not-returned")
                 .setBook(book)
                 .build();
 

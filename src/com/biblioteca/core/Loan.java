@@ -10,18 +10,22 @@ public interface Loan {
 
     LocalDate getLoanDate();
     LocalDate getExpectedReturnDate();
-    LocalDate getReturnDate();
 
     void setReturnDate(LocalDate returnDate);
     void confirm();
 
     Book getBook();
 
+    String getStatus();
+
+    void setStatus(String returned);
+
     class Builder {
 
         private Customer customer;
         private LocalDate loanDate;
         private LocalDate expectedReturnDate;
+        private String status;
         private Book book;
         private int id;
 
@@ -54,12 +58,19 @@ public interface Loan {
                 throw new IllegalArgumentException("Loan Date and Expected return date must not be null.");
             }
 
-            return new StandardLoan(id,customer, book, loanDate, expectedReturnDate);
+            StandardLoan standardLoan = new StandardLoan(id, customer, book, loanDate, expectedReturnDate);
+            standardLoan.setStatus(status);
+            return standardLoan;
 
         }
 
         public Builder setId(int id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder setStatus(String status) {
+            this.status = status;
             return this;
         }
     }

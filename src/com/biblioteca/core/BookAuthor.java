@@ -19,4 +19,9 @@ public class BookAuthor implements Author {
     public String getName() {
         return name;
     }
+
+    @Override
+    public int compareTo(Author o) {
+        return name.compareTo(o.getName());
+    }
 }

@@ -17,17 +17,17 @@
           prefHeight="480.0" prefWidth="580.0">
 
     <VBox GridPane.rowIndex="0" GridPane.columnIndex="0">
-        <Label text="Nome breve"/>
+        <Label text="Titolo"/>
         <TextField maxWidth="250" fx:id="titleTf"/>
     </VBox>
 
     <VBox GridPane.rowIndex="1" GridPane.columnIndex="0">
-        <Label text="Nome completo"/>
+        <Label text="Sottotitolo"/>
         <TextField maxWidth="250" fx:id="subtitleTf"/>
     </VBox>
 
     <VBox GridPane.rowIndex="2" GridPane.columnIndex="0">
-        <Label text="Breve descrizione"/>
+        <Label text="Descrizione breve"/>
         <TextArea wrapText="true" maxWidth="300" maxHeight="300" fx:id="descriptionTf"/>
     </VBox>
 

@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.time.LocalDate;
+import java.util.StringJoiner;
 
 
 // === !! Adapter pattern used here. === //
@@ -20,7 +21,7 @@ public class TableViewLoan implements Loan {
 
     private SimpleStringProperty startDate = new SimpleStringProperty();
     private SimpleStringProperty expectedReturnDate = new SimpleStringProperty();
-    private SimpleStringProperty endDate = new SimpleStringProperty();
+    private SimpleStringProperty status = new SimpleStringProperty();
 
     public TableViewLoan(Loan loan) {
         this.loan = loan;
@@ -29,7 +30,12 @@ public class TableViewLoan implements Loan {
         reservedBook.set(getBook().getTitle());
         startDate.set(getLoanDate().toString());
         expectedReturnDate.set(getExpectedReturnDate().toString());
-        endDate.set(getReturnDate() != null ? getReturnDate().toString() : "");
+        status.set(loan.getStatus());
+     //   endDate.set(getReturnDate() != null ? getReturnDate().toString() : "Not Returned");
+    }
+
+    public Loan getLoan() {
+        return loan;
     }
 
     @Override
@@ -53,12 +59,8 @@ public class TableViewLoan implements Loan {
     }
 
     @Override
-    public LocalDate getReturnDate() {
-        return loan.getReturnDate();
-    }
-
-    @Override
     public void setReturnDate(LocalDate returnDate) {
+        this.expectedReturnDate.set(returnDate.toString());
         loan.setReturnDate(returnDate);
     }
 
@@ -85,12 +87,31 @@ public class TableViewLoan implements Loan {
     }
 
 
-    public String getEndDate() {
-        return endDate.get();
+    public String getStatus() {
+        return status.get();
+    }
+
+    @Override
+    public void setStatus(String status) {
+        loan.setStatus(status);
+        this.status.set(status);
     }
 
     @Override
     public void confirm() {
         loan.confirm();
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", TableViewLoan.class.getSimpleName() + "[", "]")
+                .add("loan=" + loan)
+                .add("loanId=" + loanId)
+                .add("user=" + user)
+                .add("reservedBook=" + reservedBook)
+                .add("startDate=" + startDate)
+                .add("expectedReturnDate=" + expectedReturnDate)
+                .add("endDate=" + status)
+                .toString();
     }
 }

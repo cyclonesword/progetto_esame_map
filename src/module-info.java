@@ -6,7 +6,9 @@ module Progetto {
 
     opens com.biblioteca.core;
     opens com.biblioteca.core.auth;
+    opens com.biblioteca.core.facade;
     opens com.biblioteca.core.employee;
+
     opens com.biblioteca.ui;
     opens com.biblioteca.ui.controller;
     opens com.biblioteca.ui.model;
@@ -17,4 +19,5 @@ module Progetto {
     exports com.biblioteca.ui.model;
     exports com.biblioteca.core.auth;
     exports com.biblioteca.core.employee;
+    exports com.biblioteca.core.facade;
 }

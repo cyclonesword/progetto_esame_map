@@ -1,13 +1,12 @@
 package com.biblioteca.ui;
 
-import com.biblioteca.core.Library;
+import com.biblioteca.core.facade.Library;
 import com.biblioteca.ui.controller.AuthenticationSceneController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 public class ApplicationStart extends Application {
 

@@ -1,6 +1,6 @@
 package com.biblioteca.ui.controller;
 
-import com.biblioteca.core.Library;
+import com.biblioteca.core.facade.Library;
 import com.biblioteca.core.auth.Authentication;
 import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.Dialogs;
@@ -12,7 +12,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -84,7 +83,7 @@ public class AuthenticationSceneController {
 
     @FXML
     public void registerClicked() throws IOException {
-        Dialogs.<RegisterEmployeeDialogController>showDialog("Register new employee",
+        Dialogs.<RegisterEmployeeDialogController>showDialog("Nuovo impiegato",
                 "Aggiungi Impiegato",
                 "/fxml/NewEmployeeDialog.fxml", rootNode.getScene().getWindow(),
                 controller -> { // Before showing the dialog

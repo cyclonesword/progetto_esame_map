@@ -37,6 +37,7 @@
                 <Menu text="Aggiungi">
                     <MenuItem text="Nuovo libro" onAction="#addBookClicked"/>
                     <MenuItem text="Nuovo utente" onAction="#addUserClicked"/>
+                    <MenuItem text="Nuovo autore" onAction="#addAuthorClicked"/>
                 </Menu>
 
                 <Menu text="Cerca">

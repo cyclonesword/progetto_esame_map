@@ -40,7 +40,7 @@ class CSVDataSource implements DataSource {
     private final String basePathImgs = basePath + "images" + File.separator;
 
     private List<? extends Publisher> publishers;
-    private List<? extends Author> authors;
+    private List<Author> authors;
     private List<Book> books;
     private List<? extends Category> categories;
     private List<Customer> customers;
@@ -50,7 +50,10 @@ class CSVDataSource implements DataSource {
     private List<Employee> employees;
 
     private CSVDataSource() { // Creates a local copy of the internal database with mock entity.
-        new File(basePathCsv).mkdirs(); // Create directory if not exists;
+        // Create directories for csv files and for images if not exists.
+
+        new File(basePathCsv).mkdirs();
+        new File(basePathImgs).mkdirs();
 
         var filesToCopy = List.of(categoriesCsv, authorsCsv, publishersCsv, booksCsv, customersCsv, loansCsv, employeesCsv);
 
@@ -65,6 +68,7 @@ class CSVDataSource implements DataSource {
                 e.printStackTrace();
             }
         });
+
     }
 
     static DataSource getInstance() {
@@ -127,6 +131,7 @@ class CSVDataSource implements DataSource {
                         .setLoanDate(LocalDate.parse(line[1]))
                         .setExpectedReturnDate(LocalDate.parse(line[2]))
                         .setCustomer(customer)
+                        .setStatus(line[5])
                         .setBook(book)
                         .build();
 
@@ -249,6 +254,11 @@ class CSVDataSource implements DataSource {
     }
 
     @Override
+    public void save(Author a) {
+        authors.add(a);
+    }
+
+    @Override
     public void saveAll() {
         // Saves the authors contained in the list back to the CSV file. The same thing occur for the other lines.
         writeCsvDataToFile(authorsCsv, Converters.getAuthorConverter().convert(readAuthors()));
@@ -301,6 +311,7 @@ class CSVDataSource implements DataSource {
     }
 
     private void writeDataToFile(String fileName, String path, byte[] data) {
+
         try (BufferedOutputStream bou = new BufferedOutputStream(new FileOutputStream(new File(path + fileName), false))) {
             bou.write(data);
         } catch (FileNotFoundException e) {
