@@ -6,13 +6,31 @@ import com.biblioteca.core.employee.Employee;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * A standard way to serialize the objects in memory in a well-structured CSV file format.<br>
+ *  For example, this code fragment creates a lambda for converting Author objects to a String CSV representation:<br><br>
+              <code><pre>
+         authors -> authors.stream()
+             .map(author -> author.getId() + "," + author.getName())
+              .collect(Collectors.joining("\n"));
+              </pre></code>
+ * @param <T> The data type of the objects to be serialized
+ */
 @FunctionalInterface
 public interface Converter<T> {
 
+    /**
+     * Serialize the given entities to its CSV String representation.
+     * @param entities The entities to be serialized
+     * @return a String representing the serialized entities in CSV format.
+     */
     String convert(List<? extends T> entities);
 
     // These 5 converters has not been translated in the equivalent functional style to show different ways of doing the same thing.
 
+    /**
+     * Serialize Employees to a String in CSV format.
+     */
     class EmployeeConverter implements Converter<Employee> {
         @Override
         public String convert(List<? extends Employee> entities) {
@@ -27,6 +45,9 @@ public interface Converter<T> {
         }
     }
 
+    /**
+     * Serialize Customers to a String in CSV format.
+     */
     class CustomerConverter implements Converter<Customer> {
         @Override
         public String convert(List<? extends Customer> entities) {
@@ -42,6 +63,9 @@ public interface Converter<T> {
         }
     }
 
+    /**
+     * Serialize Books to a String in CSV format.
+     */
     class BookConverter implements Converter<Book> {
         @Override
         public String convert(List<? extends Book> entities) {

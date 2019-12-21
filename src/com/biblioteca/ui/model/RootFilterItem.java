@@ -2,14 +2,17 @@ package com.biblioteca.ui.model;
 
 import javafx.scene.image.Image;
 
-public class RootFilterItem extends AbstractFilterItem {
+/**
+ * A class for managing root filter nodes.
+ */
+public class RootFilterItem extends FilterItem {
 
     public RootFilterItem(String name, Image image) {
-        super(name, image);
+        super(name,image, null);
     }
 
     public RootFilterItem(String name, String imagePath) {
-        super(name, imagePath);
+        super(name, imagePath, null);
     }
 
     @Override

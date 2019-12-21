@@ -3,7 +3,9 @@ package com.biblioteca.ui.controller;
 import com.biblioteca.core.Book;
 import com.biblioteca.core.Customer;
 import com.biblioteca.core.Loan;
+import com.biblioteca.core.facade.Library;
 import com.biblioteca.datasource.DataSource;
+import com.biblioteca.ui.Dialogs;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,7 +16,10 @@ import javafx.scene.control.TextField;
 
 import java.time.LocalDate;
 
-public class LoanDialogController implements DialogController{
+/**
+ * The controller class associated to the New Loan dialog.
+ */
+public class LoanDialogController implements DialogController {
 
     @FXML
     public DatePicker startDatePicker;
@@ -35,44 +40,44 @@ public class LoanDialogController implements DialogController{
         ObservableList<Customer> allUsers = FXCollections.observableArrayList(ds.readCustomers());
         usersCombobox.setItems(allUsers);
 
+        // maxmium day is today + 60 days
         var maxDate = LocalDate.now().plusDays(60); // Max 2 month
+        // minimum date is today
         var minDate = LocalDate.now();
 
         startDatePicker.setDayCellFactory(d -> new DateCell() {
-                    @Override public void updateItem(LocalDate item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setDisable(item.isBefore(minDate));
-                    }});
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                setDisable(item.isBefore(minDate));
+            }
+        });
         startDatePicker.setValue(LocalDate.now());
 
         endDatePicker.setDayCellFactory(d -> new DateCell() {
-            @Override public void updateItem(LocalDate item, boolean empty) {
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
                 super.updateItem(item, empty);
                 setDisable(item.isAfter(maxDate) || item.isBefore(minDate));
-            }});
+            }
+        });
         endDatePicker.setValue(LocalDate.now());
         usersCombobox.getSelectionModel().selectFirst();
     }
 
-    public void setReservedBook(Book b) {
+    public void setLentBook(Book b) {
         this.book = b;
         reservedBook.setText(b.getId() + " - " + b.getTitle());
     }
 
-    public Loan getLoan() throws LoanDialogException {
+    /**
+     * Confirm the data and creates a new loan .
+     * @throws LoanDialogException
+     */
+    public Loan confirmAndGet() throws LoanDialogException {
         final Customer selectedUser = usersCombobox.getSelectionModel().getSelectedItem();
 
-        if(selectedUser == null)
-            throw new LoanDialogException("No user selected for a new loan");
-
-        return new Loan.Builder()
-                .setLoanDate(startDatePicker.getValue())
-                .setExpectedReturnDate(endDatePicker.getValue())
-                .setCustomer(selectedUser)
-                .setStatus("not-returned")
-                .setBook(book)
-                .build();
-
+        return Library.getInstance().newLoan(startDatePicker.getValue(), endDatePicker.getValue(), selectedUser, book);
     }
 
     public static class LoanDialogException extends RuntimeException {

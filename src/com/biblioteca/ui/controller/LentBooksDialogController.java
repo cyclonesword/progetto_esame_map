@@ -1,7 +1,8 @@
 package com.biblioteca.ui.controller;
 
+import com.biblioteca.core.facade.Library;
 import com.biblioteca.datasource.DataSource;
-import com.biblioteca.ui.model.TableViewLoan;
+import com.biblioteca.ui.model.TableViewLoanRow;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,24 +12,27 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 
-public class ReservedBooksDialogController implements DialogController {
+/**
+ * The controller responsible for the Lent Books Dialog management.
+ */
+public class LentBooksDialogController implements DialogController {
 
-    public TableColumn<TableViewLoan, Integer> id;
-    public TableColumn<TableViewLoan, String> reservedBook;
-    public TableColumn<TableViewLoan, String> user;
-    public TableColumn<TableViewLoan, String> startDate;
-    public TableColumn<TableViewLoan, String> status;
-    public TableColumn<TableViewLoan, String> expectedReturnDate;
+    public TableColumn<TableViewLoanRow, Integer> id;
+    public TableColumn<TableViewLoanRow, String> reservedBook;
+    public TableColumn<TableViewLoanRow, String> user;
+    public TableColumn<TableViewLoanRow, String> startDate;
+    public TableColumn<TableViewLoanRow, String> status;
+    public TableColumn<TableViewLoanRow, String> expectedReturnDate;
 
     @FXML
-    private TableView<TableViewLoan> tableView;
+    private TableView<TableViewLoanRow> tableView;
 
     private DataSource ds = DataSource.getDefault();
 
     public void initialize() {
         var items = FXCollections.observableArrayList(ds.readLoans()
                 .stream()
-                .map(TableViewLoan::new)
+                .map(TableViewLoanRow::new)
                 .collect(Collectors.toList())
         );
 
@@ -44,7 +48,7 @@ public class ReservedBooksDialogController implements DialogController {
         MenuItem returnedMenuItem = new MenuItem("Set as returned");
         returnedMenuItem.setOnAction((ActionEvent event) -> {
             var i = tableView.getSelectionModel().getSelectedItem();
-            if(i.getStatus().equals("not-returned")) {
+            if (i.getStatus().equals("not-returned")) {
                 i.setReturnDate(LocalDate.now());
                 i.setStatus("returned");
                 i.getBook().setQuantity(i.getBook().getQuantity() + 1);
@@ -55,10 +59,10 @@ public class ReservedBooksDialogController implements DialogController {
         MenuItem deleteMenuItem = new MenuItem("Delete selected");
         deleteMenuItem.setOnAction((ActionEvent event) -> {
             var i = tableView.getSelectionModel().getSelectedItem();
-            ds.readLoans().remove(i.getLoan());
-            items.remove(i);
-            if(i.getStatus().equals("not-returned"))
+            Library.getInstance().removeLoan(i.getLoan());
+            if (i.getStatus().equals("not-returned"))
                 i.getBook().setQuantity(i.getBook().getQuantity() + 1);
+            items.remove(i);
             tableView.refresh();
         });
 
@@ -68,6 +72,10 @@ public class ReservedBooksDialogController implements DialogController {
             var selected = tableView.getSelectionModel().getSelectedItem();
             if (selected == null) {
                 tableView.getSelectionModel().selectFirst();
+            } else if (selected.getStatus().equals("returned")) {
+                menu.getItems().remove(returnedMenuItem);
+            } else {
+                menu.getItems().add(returnedMenuItem);
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.biblioteca.core;
 
+import com.biblioteca.ui.Images;
 import com.biblioteca.ui.model.BookImage;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
@@ -7,6 +8,9 @@ import javafx.scene.image.Image;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * The default implementation of the Book interface. See {@link Book} for the javadoc of the getters and setters.
+ */
 public class BookImpl implements Book {
 
     private String title;
@@ -16,7 +20,10 @@ public class BookImpl implements Book {
     private Loan currentLoan;
     private List<Loan> loanHistory = new ArrayList<>();
     private String description;
-    private BookImage image = new BookImage(getClass().getResourceAsStream("/images/book_default.png"),"local","book_default.png");
+
+    // Setting the default image
+    private BookImage image = Images.BOOK_DEFAULT;
+
     private int quantity;
     private String subtitle;
     private int year;
@@ -24,28 +31,6 @@ public class BookImpl implements Book {
     private int id;
     private List<Category> categories = new ArrayList<>();
     private String format;
-
-    public BookImpl() {
-    }
-
-    public BookImpl(String title, String ISBN) {
-        this.title = title;
-        this.ISBN = ISBN;
-    }
-
-    public BookImpl(String title, String ISBN, String description) {
-        this.title = title;
-        this.ISBN = ISBN;
-        this.description = description;
-    }
-
-    public BookImpl(String title, String ISBN, String description, int quantity) {
-        this.title = title;
-        this.ISBN = ISBN;
-        this.description = description;
-        this.quantity = quantity;
-    }
-
 
     @Override
     public int getId() {
@@ -79,27 +64,15 @@ public class BookImpl implements Book {
         this.id = id;
     }
 
-    public Loan getCurrentLoan() {
-        return currentLoan;
-    }
-
-    public void lendBookTo(Customer customer, LocalDateTime expectedReturnDate, LocalDateTime loanDate) throws LoanException {
-        if (currentLoan != null)
-            throw new LoanException();
-
-//        currentLoan = new Loan.Builder()
-//                .setCustomer(customer)
-//                .setLoanDate(loanDate)
-//                .setExpectedReturnDate(expectedReturnDate)
-//                .build();
-
-
-    }
-
-    public void setAsReturned(LocalDateTime returnDate) {
-      //  currentLoan.setReturnDate(returnDate);
-        loanHistory.add(currentLoan);
-    }
+//    public Loan getCurrentLoan() {
+//        return currentLoan;
+//    }
+//
+//    public void lendBookTo(Customer customer, LocalDateTime expectedReturnDate, LocalDateTime loanDate) throws LoanException {
+//        if (currentLoan != null)
+//            throw new LoanException();
+//
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -120,7 +93,7 @@ public class BookImpl implements Book {
 
     @Override
     public void addAuthor(Author author) {
-        if(!authors.contains(author))
+        if (!authors.contains(author))
             authors.add(author);
     }
 
@@ -131,6 +104,8 @@ public class BookImpl implements Book {
 
     @Override
     public void setFormat(String format) {
+        if (!Book.ALL_BOOK_FORMATS.contains(format))
+            throw new IllegalArgumentException("Invalid book format given: " + format);
         this.format = format;
     }
 
@@ -210,5 +185,6 @@ public class BookImpl implements Book {
         return title;
     }
 
-    private static class LoanException extends RuntimeException { }
+    static class LoanException extends RuntimeException {
+    }
 }

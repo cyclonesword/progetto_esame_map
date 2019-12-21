@@ -8,6 +8,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * The starter point of this JavaFX Application.
+ */
 public class ApplicationStart extends Application {
 
     public static ApplicationStart instance;

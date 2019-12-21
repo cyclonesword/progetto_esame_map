@@ -7,6 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+/**
+ * JavaFX extended {@link Image} class for displaying images coming from the operating system of the user.
+ */
 public class BookImage extends Image {
 
     private File file;

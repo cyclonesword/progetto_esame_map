@@ -10,8 +10,27 @@ import java.time.LocalDate;
 import java.util.StringJoiner;
 
 
+/**
+ * This class is used to represent a row in the Table of lent books.
+ *
+ * =====> Adapter pattern used Here!! <=====
+ */
 // === !! Adapter pattern used here. === //
-public class TableViewLoan implements Loan {
+public class TableViewLoanRow implements Loan {
+
+    // ====  Nota per il prof. Fici ==== //
+
+    // Il design pattern  Adapter viene qui usato per incapsulare
+    // un oggetto di tipo Loan in modo da essere correttamente interpretato dalla TableView di JavaFX.
+    // In particolare, per abilitare il dynamic binding dei dati contenuti nella TableView è necessario creare
+    // una classe wrapper (o adapter) e incapsulare ogni proprietà della classe di partenza in un oggetto del tipo
+    // SimpleStringProperty e simili, in modo che quando una di queste proprietà cambia il suo valore, la TableView
+    // aggiorna automaticamente i valori mostrati nella tabella.
+    // Infatti, queste classi internamente utilizzano il design pattern Observer per notificare ogni qualvolta la proprietà cambia valore.
+    // Per una spiegazione più approfondita sul funzionamento delle TableView di JavaFX, si veda la guida ufficiale al seguente link:
+    // https://docs.oracle.com/javafx/2/ui_controls/table-view.htm
+
+    // ====================================
 
     private Loan loan;
 
@@ -23,7 +42,7 @@ public class TableViewLoan implements Loan {
     private SimpleStringProperty expectedReturnDate = new SimpleStringProperty();
     private SimpleStringProperty status = new SimpleStringProperty();
 
-    public TableViewLoan(Loan loan) {
+    public TableViewLoanRow(Loan loan) {
         this.loan = loan;
         loanId.set(getLoanId());
         user.set(getCustomer().getId() + " - " +getCustomer().getFullName());
@@ -65,6 +84,11 @@ public class TableViewLoan implements Loan {
     }
 
     @Override
+    public void confirm() {
+        loan.confirm();
+    }
+
+    @Override
     public int getLoanId() {
         return loan.getLoanId();
     }
@@ -97,14 +121,14 @@ public class TableViewLoan implements Loan {
         this.status.set(status);
     }
 
-    @Override
-    public void confirm() {
-        loan.confirm();
-    }
+//    @Override
+//    public void confirm() {
+//        loan.confirm();
+//    }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", TableViewLoan.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", TableViewLoanRow.class.getSimpleName() + "[", "]")
                 .add("loan=" + loan)
                 .add("loanId=" + loanId)
                 .add("user=" + user)

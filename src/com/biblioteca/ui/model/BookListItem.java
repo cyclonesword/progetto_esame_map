@@ -8,7 +8,11 @@ import javafx.scene.image.Image;
 
 import java.util.List;
 
-// Adapter pattern
+/**
+ * This class is used for displaying Book items in the ListView.
+ * The Adapter pattern is used here
+ */
+
 public class BookListItem implements ListItem {
 
     private Book book;

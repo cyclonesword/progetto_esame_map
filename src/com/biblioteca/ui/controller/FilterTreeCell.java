@@ -1,6 +1,6 @@
 package com.biblioteca.ui.controller;
 
-import com.biblioteca.ui.model.AbstractFilterItem;
+import com.biblioteca.ui.model.FilterItem;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.CheckBox;
@@ -12,7 +12,12 @@ import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 
-public class FilterTreeCell<T extends AbstractFilterItem> extends TreeCell<T> {
+/**
+ * A JavaFX required class to represent a Filter item in the TreeView.
+ * For more information see the official documentation:
+ * <pre>https://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/TreeCell.html</pre>
+ */
+public class FilterTreeCell<T extends FilterItem> extends TreeCell<T> {
 
     private FXMLLoader fxmlLoader;
 

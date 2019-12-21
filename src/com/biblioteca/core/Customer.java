@@ -1,11 +1,14 @@
 package com.biblioteca.core;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The Customer class encapsulates information and business logic for managing the customers of the library.
+ */
 public class Customer {
 
-    private List<Loan> loans;
     private int id;
     private String firstName;
     private String lastName;
@@ -13,29 +16,23 @@ public class Customer {
     private String fiscalCode;
     private String phoneNumber;
 
-    private boolean isPremiumUser = false;
+    private List<Loan> loans = new ArrayList<>();
 
-    public Customer(int id, String firstName, String lastName, String email, String fiscalCode, String phoneNumber, boolean isPremiumUser) {
+    public Customer(int id, String firstName, String lastName, String email, String fiscalCode, String phoneNumber) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.fiscalCode = fiscalCode;
         this.phoneNumber = phoneNumber;
-        this.isPremiumUser = isPremiumUser;
     }
 
-    public Customer(String firstName, String lastName, String email, String fiscalCode, String phoneNumber, boolean isPremiumUser) {
+    public Customer(String firstName, String lastName, String email, String fiscalCode, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.fiscalCode = fiscalCode;
         this.phoneNumber = phoneNumber;
-        this.isPremiumUser = isPremiumUser;
-    }
-
-    boolean isPremiumUser() {
-        return isPremiumUser;
     }
 
     public void addLoan(Loan loan) {

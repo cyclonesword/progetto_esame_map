@@ -2,7 +2,6 @@ module Progetto {
 
     requires javafx.fxml;
     requires javafx.controls;
-    requires jfxglib;
 
     opens com.biblioteca.core;
     opens com.biblioteca.core.auth;

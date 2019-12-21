@@ -4,18 +4,17 @@ import com.biblioteca.core.Author;
 import com.biblioteca.core.Book;
 import com.biblioteca.core.Category;
 import com.biblioteca.core.Publisher;
+import com.biblioteca.core.facade.Library;
 import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.Dialogs;
 
 import com.biblioteca.ui.model.BookImage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -88,16 +87,16 @@ public class ModifyBookDialogController implements DialogController {
         var formats = FXCollections.observableArrayList(ds.readFormats());
         formatoCombobox.setItems(formats);
 
-        if (modify) {
+        if (book != null) {
             authors.addAll(book.getAuthors()); // Shallow copy
             categories.addAll(book.getCategories());
 
             titleTf.setText(book.getTitle());
             subtitleTf.setText(book.getSubtitle());
             descriptionTf.setText(book.getDescription());
-            yearTf.setText(String.valueOf(book.getYear()));
+            yearTf.setText(String.valueOf(book.getYear() > 0 ? book.getYear() : 2020));
             isbnTf.setText(book.getISBN());
-            qntTf.setText(String.valueOf(book.getQuantity()));
+            qntTf.setText(String.valueOf(book.getQuantity() > 0 ? book.getQuantity() : 1));
             bookImg.setImage(book.getImage());
 
             editoriCombobox.getSelectionModel().select(book.getPublisher());
@@ -128,7 +127,7 @@ public class ModifyBookDialogController implements DialogController {
     }
 
 
-    public void applyData() {
+    public Book confirmAndGet() {
 
         book.setTitle(titleTf.getText());
         book.setSubtitle(subtitleTf.getText());
@@ -138,7 +137,7 @@ public class ModifyBookDialogController implements DialogController {
             if (selectedImage != null) {
                 BookImage image = new BookImage(selectedImage);
                 book.setImage(image);
-                ds.saveImage(image);
+                ds.save(image);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -154,6 +153,8 @@ public class ModifyBookDialogController implements DialogController {
 
         book.getCategories().clear();
         book.addCategories(categories);
+
+        return book;
     }
 
     @FXML
@@ -212,7 +213,6 @@ public class ModifyBookDialogController implements DialogController {
     public void setDialog(Dialog<ButtonType> dialog) {
         this.dialog = dialog;
         DialogController.super.setDialog(dialog);
-
     }
 
     @Override
@@ -222,13 +222,17 @@ public class ModifyBookDialogController implements DialogController {
 
     @Override
     public boolean checkData() {
+        String title = titleTf.getText();
+        String subtitle = subtitleTf.getText();
+        String isbn = isbnTf.getText();
 
-        var test1 = titleTf.getText().isEmpty() || subtitleTf.getText().isEmpty() || isbnTf.getText().isEmpty()
+        var test = title == null || subtitle == null || isbn == null
+                || title.isEmpty() || subtitle.isEmpty() || isbn.isEmpty()
                 || categories.size() == 0 || authors.size() == 0
                 || editoriCombobox.getSelectionModel().getSelectedItem() == null
                 || formatoCombobox.getSelectionModel().getSelectedItem() == null;
 
-        if (test1) {
+        if (test) {
             Dialogs.showAlertDialog("Si prega di completare tutti i campi", rootPane.getScene().getWindow());
             return false;
         }

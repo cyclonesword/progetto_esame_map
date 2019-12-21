@@ -1,8 +1,14 @@
 package com.biblioteca.core;
 
+import com.biblioteca.datasource.DataSource;
+
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Comparator;
 
+/**
+ * The reference implementation for the {@link Loan} interface.
+ */
 public class StandardLoan implements Loan {
 
     private int id;
@@ -12,6 +18,8 @@ public class StandardLoan implements Loan {
     private LocalDate loanDate;
     private LocalDate expectedReturnDate;
     private String status;
+
+    private static final DataSource ds = DataSource.getDefault();
 
     public StandardLoan(int id, Customer customer, Book book, LocalDate loanDate, LocalDate expectedReturnDate) {
         this.id = id;
@@ -23,7 +31,10 @@ public class StandardLoan implements Loan {
 
     @Override
     public void confirm() {
-        id = Math.toIntExact(Calendar.getInstance().getTimeInMillis());
+        int lastId = ds.readLoans().stream().map(Loan::getLoanId).max(Comparator.naturalOrder()).get();
+        setId(lastId + 1);
+        ds.save(this);
+        book.decrementQuantity();
         customer.addLoan(this);
     }
 

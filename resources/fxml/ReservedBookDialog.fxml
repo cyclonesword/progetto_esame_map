@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
-          fx:controller="com.biblioteca.ui.controller.ReservedBooksDialogController"
+          fx:controller="com.biblioteca.ui.controller.LentBooksDialogController"
           vgap="10"
           prefHeight="350.0" prefWidth="650.0">
 

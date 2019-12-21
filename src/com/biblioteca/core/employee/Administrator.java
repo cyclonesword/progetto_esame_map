@@ -1,5 +1,8 @@
 package com.biblioteca.core.employee;
 
+/**
+ * Implementation of the <code>Employee</code> interface  for an employee that have access to all the functionality of the software (i.e Administrator)
+ */
 public class Administrator implements Employee {
 
     private String employeeNumber;

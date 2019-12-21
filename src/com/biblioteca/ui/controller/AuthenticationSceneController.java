@@ -83,17 +83,13 @@ public class AuthenticationSceneController {
 
     @FXML
     public void registerClicked() throws IOException {
+        // After the user press some confirmation button
         Dialogs.<RegisterEmployeeDialogController>showDialog("Nuovo impiegato",
                 "Aggiungi Impiegato",
                 "/fxml/NewEmployeeDialog.fxml", rootNode.getScene().getWindow(),
                 controller -> { // Before showing the dialog
-
                 },
-                controller -> { // After the user press some confirmation button
-                    var emp = controller.getEmployee();
-                    ds.save(emp);
-
-                });
+                RegisterEmployeeDialogController::confirmAndGet);
     }
 
     private void showErrorDialog() {

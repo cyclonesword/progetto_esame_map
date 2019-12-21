@@ -3,6 +3,7 @@ package com.biblioteca.ui.controller;
 import com.biblioteca.core.Author;
 import com.biblioteca.core.Book;
 import com.biblioteca.core.BookImpl;
+import com.biblioteca.core.facade.Library;
 import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.Dialogs;
 import com.biblioteca.ui.Images;
@@ -59,7 +60,7 @@ public class MainWindowController {
     private ListView<BookListItem> listView;
 
     @FXML
-    private TreeView<AbstractFilterItem> filtersTreeView;
+    private TreeView<FilterItem> filtersTreeView;
 
     @FXML
     public void handleExit(ActionEvent event) {
@@ -70,7 +71,7 @@ public class MainWindowController {
     private static final ObservableList<BookListItem> filteredItems = FXCollections.observableArrayList();
     private static final DataSource ds = DataSource.getDefault();
 
-    public static final Set<AbstractFilterItem> selectedFilters = new HashSet<>();
+    public static final Set<FilterItem> selectedFilters = new HashSet<>();
 
     public static void applyFilters() {
         filteredItems.clear();
@@ -86,7 +87,8 @@ public class MainWindowController {
 
     // This method will be called automatically by the JavaFX runtime.
     public void initialize() {
-        //
+
+        // Wraps every book with a BookListItem
         allBooks.addAll(ds.readBooks().stream()
                 .map(BookListItem::new)
                 .collect(Collectors.toList())
@@ -112,6 +114,7 @@ public class MainWindowController {
         initFilters();
     }
 
+    // changes the content of the book detail section on the right
     private void changeItemDetail(ListItem item) {
         if (item == null)
             return;
@@ -124,6 +127,9 @@ public class MainWindowController {
         prenotaButton.setDisable(!item.isAvailable());
     }
 
+    /**
+     * Invoked by the JavaFX Runtime when the user search a book in the search bar by pressing the search button.
+     */
     @FXML
     public void searchButtonClicked(MouseEvent mouseEvent) {
         var result = getFilteredItems().stream() // Then apply the search text filtering
@@ -134,6 +140,9 @@ public class MainWindowController {
         filteredItems.addAll(result);
     }
 
+    /**
+     * Invoked by the JavaFX Runtime when the user search a book in the search bar, pressing the Enter key of the keyboard.
+     */
     @FXML
     public void searchBarKeyReleased(KeyEvent keyEvent) {
         System.out.println(keyEvent);
@@ -148,6 +157,11 @@ public class MainWindowController {
 
     }
 
+    /**
+     * Invoked by the JavaFX Runtime when the user click onto the "Add Book" menu button. <br> This method will open a new window dialog .
+     *
+     * @throws IOException If something goes wrong with the FXML file loading.
+     */
     @FXML
     public void addBookClicked() throws IOException {
         var book = new BookImpl();
@@ -155,7 +169,7 @@ public class MainWindowController {
         Dialogs.<ModifyBookDialogController>showDialog("Nuovo libro", "Aggiungi", "/fxml/ModifyBookDialog.fxml", rootPane.getScene().getWindow(),
                 controller -> controller.setBook(book, false),
                 controller -> {
-                    controller.applyData();
+                    controller.confirmAndGet();
                     ds.save(book);
                     allBooks.add(new BookListItem(book));
                     applyFilters();
@@ -163,6 +177,12 @@ public class MainWindowController {
                 });
     }
 
+    /**
+     * Invoked by the JavaFX Runtime when the user click onto the "Modify" button on the book detail right panel.
+     * This method will open a new window dialog .
+     *
+     * @throws IOException If something goes wrong with the FXML file loading.
+     */
     @FXML
     public void editBookClicked() {
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -189,11 +209,17 @@ public class MainWindowController {
 
         if (dialog.getResult().equals(ButtonType.OK)) {
             System.out.println("Ok clicked");
-            controller.applyData();
+            controller.confirmAndGet();
             refreshListView();
         }
     }
 
+    /**
+     * Invoked by the JavaFX Runtime when the user click onto the "Delete" button on the book detail right panel.
+     * This method will open a new window dialog .
+     *
+     * @throws IOException If something goes wrong with the FXML file loading.
+     */
     @FXML
     public void deleteBookClicked() {
         final Book book = listView.getSelectionModel().getSelectedItem().getBook();
@@ -204,39 +230,54 @@ public class MainWindowController {
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.YES) {
-            ds.delete(book);
+            Library.getInstance().removeBook(book);
             filteredItems.removeIf(i -> i.getBook() == book);
             allBooks.removeIf(i -> i.getBook() == book);
         }
     }
 
+    /**
+     * Invoked by the JavaFX Runtime when the user click onto the "Start Loan" button on the book detail right panel.
+     * This method will open a new window dialog .
+     *
+     * @throws IOException If something goes wrong with the FXML file loading.
+     */
     @FXML
-    public void reserveBookClicked() throws IOException {
+    public void lendBookClicked() throws IOException {
         final Book book = listView.getSelectionModel().getSelectedItem().getBook();
 
         Dialogs.<LoanDialogController>showDialog("Nuovo prestito",
                 "Conferma",
                 "/fxml/LoanDialog.fxml",
                 rootPane.getScene().getWindow(),
+                controller -> controller.setLentBook(book),
                 controller -> {
-                    controller.setReservedBook(book);
-                }, controller -> {
-                    var loan = controller.getLoan();
-                    ds.save(loan);
-                    book.decrementQuantity();
-                    refreshListView();
+                    if (controller.checkData()) {
+                        controller.confirmAndGet();
+                        refreshListView();
+                    }
                 });
     }
 
+    /**
+     * Invoked by the JavaFX Runtime when the user click onto the "Add User" menu button. This method will open a new window dialog .
+     *
+     * @throws IOException If something goes wrong with the FXML file loading.
+     */
     @FXML
     public void addUserClicked(ActionEvent actionEvent) throws IOException {
-        Dialogs.<AddUserDialogController>showDialog("Add user", "/fxml/AddUserDialog.fxml", rootPane.getScene().getWindow(),
-                controller -> {
-                }, controller -> {
-                    ds.save(controller.getUser());
-                });
+        // ds.save(controller.getUser());
+        Dialogs.<AddUserDialogController>showDialog("Add user", "/fxml/AddUserDialog.fxml",
+                rootPane.getScene().getWindow(),
+                null,
+                AddUserDialogController::confirmAndGet);
     }
 
+    /**
+     * Invoked by the JavaFX Runtime when the user click onto the "Add Author" menu button. This method will open a new window dialog .
+     *
+     * @throws IOException If something goes wrong with the FXML file loading.
+     */
     @FXML
     public void addAuthorClicked(ActionEvent actionEvent) throws IOException {
         Dialogs.<AddAuthorDialogController>showDialog("Add Book Author", "Add",
@@ -244,28 +285,30 @@ public class MainWindowController {
                 rootPane.getScene().getWindow(),
                 null,
                 controller -> {
-                    Author a = controller.getAuthor();
-                    ds.save(a);
-                    filtersTreeView.getRoot().getChildren().get(1).getChildren().add(new AuthorFilterItem(a).getTreeItem());
+                    Author a = controller.confirmAndGet();
+                    filtersTreeView.getRoot().getChildren().get(1).getChildren().add(new FilterItem(a.getName(), i -> i.getAuthors().contains(a)).getTreeItem());
                 });
     }
 
     /**
-     * Invoked when the user click onto the "show loans" button. This method will open a new window dialog .
+     * Invoked by the JavaFX Runtime when the user click onto the "show loans" button. This method will open a new window dialog .
      *
      * @param mouseEvent The mouse event occurred
      * @throws IOException If something horrible happens
      */
     @FXML
     public void showReservedBooksClicked(MouseEvent mouseEvent) throws IOException {
-        Dialogs.<ReservedBooksDialogController>showDialog("Prestiti", "Ok", "/fxml/ReservedBookDialog.fxml",
+        Dialogs.<LentBooksDialogController>showDialog("Prestiti", "Ok", "/fxml/ReservedBookDialog.fxml",
                 rootPane.getScene().getWindow(),
-                controller -> {
-                }, controller -> {
-                    refreshListView();
-                });
+                null,
+                controller -> refreshListView());
     }
 
+    /**
+     * Invoked by the JavaFX Runtime when the user click onto the "About" menu button. This method will open a new window dialog .
+     *
+     * @throws IOException If something goes wrong with the FXML file loading.
+     */
     @FXML
     public void onAboutClicked() throws IOException {
         Dialogs.<AboutDialogController>showDialog("About", "Ok", "/fxml/About.fxml",
@@ -278,6 +321,7 @@ public class MainWindowController {
         changeItemDetail(listView.getSelectionModel().getSelectedItem());
     }
 
+    // Configures the filters displayed in the left section.
     private void initFilters() {
         filtersTreeView.setCellFactory(FilterTreeCell::new);
 
@@ -290,36 +334,43 @@ public class MainWindowController {
 
         var filterList = List.of(rootCategoryFilter, rootAuthorsFilter, rootPublishersFilter, rootFormatsFilter);
 
-        rootFilterNode.getChildren().addAll(filterList.stream().map(AbstractFilterItem::getTreeItem).collect(Collectors.toList()));
+        rootFilterNode.getChildren().addAll(filterList.stream().map(FilterItem::getTreeItem).collect(Collectors.toList()));
         rootFilterNode.setExpanded(true);
         filtersTreeView.setRoot(rootFilterNode);
 
         rootCategoryFilter.getTreeItem()
                 .getChildren()
-                .addAll(ds.readCategories().stream().sorted()
-                        .map(CategoryFilterItem::new)
-                        .map(AbstractFilterItem::getTreeItem)
+                .addAll(ds.readCategories()
+                        .stream()
+                        .sorted()
+                        .map(c -> new FilterItem(c.getName(), item -> item.getCategories().contains(c)))
+                        .map(FilterItem::getTreeItem)
                         .collect(Collectors.toList()));
 
         rootAuthorsFilter.getTreeItem()
                 .getChildren()
-                .addAll(ds.readAuthors().stream().sorted()
-                        .map(AuthorFilterItem::new)
-                        .map(AbstractFilterItem::getTreeItem)
+                .addAll(ds.readAuthors()
+                        .stream()
+                        .sorted()
+                        .map(author -> new FilterItem(author.getName(), item -> item.getAuthors().contains(author)))
+                        .map(FilterItem::getTreeItem)
                         .collect(Collectors.toList()));
 
         rootPublishersFilter.getTreeItem()
                 .getChildren()
-                .addAll(ds.readPublishers().stream().sorted()
-                        .map(PublisherFilterItem::new)
-                        .map(AbstractFilterItem::getTreeItem)
+                .addAll(ds.readPublishers()
+                        .stream()
+                        .sorted()
+                        .map(publisher -> new FilterItem(publisher.getName(), item -> item.getPublisher() == publisher))
+                        .map(FilterItem::getTreeItem)
                         .collect(Collectors.toList()));
 
         rootFormatsFilter.getTreeItem()
                 .getChildren()
-                .addAll(ds.readFormats().stream()
-                        .map(FormatFilterItem::new)
-                        .map(AbstractFilterItem::getTreeItem)
+                .addAll(ds.readFormats()
+                        .stream()
+                        .map(format -> new FilterItem(format, item -> item.getFormat().equalsIgnoreCase(format)))
+                        .map(FilterItem::getTreeItem)
                         .collect(Collectors.toList()));
 
     }

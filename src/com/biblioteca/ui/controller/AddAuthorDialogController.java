@@ -2,6 +2,7 @@ package com.biblioteca.ui.controller;
 
 import com.biblioteca.core.Author;
 import com.biblioteca.core.AuthorImpl;
+import com.biblioteca.core.facade.Library;
 import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.Dialogs;
 import javafx.fxml.FXML;
@@ -23,8 +24,8 @@ public class AddAuthorDialogController implements DialogController {
 
     @Override
     public boolean checkData() {
-        var test1 = name.getText().isEmpty()
-                || DataSource.getDefault()
+        var test1 = name.getText().isEmpty();
+        var test2 = DataSource.getDefault()
                 .readAuthors()
                 .stream()
                 .anyMatch(a -> a.getName().toLowerCase().equals(name.getText().toLowerCase()));
@@ -32,18 +33,16 @@ public class AddAuthorDialogController implements DialogController {
         if (test1) {
             Dialogs.showAlertDialog("Tutti i campi sono obbligatori", rootNode.getScene().getWindow());
             return false;
+        } else if(test2) {
+            Dialogs.showAlertDialog(String.format("L'autore '%s' è gia presente nel database", name.getText()), rootNode.getScene().getWindow());
+            return false;
         }
 
         return true;
     }
 
-    public Author getAuthor() {
-        var id = DataSource.getDefault().readAuthors()
-                .stream()
-                .map(Author::getId)
-                .max(Comparator.naturalOrder()).get() + 1;
-
-        return new AuthorImpl(id, name.getText());
+    public Author confirmAndGet() {
+        return Library.getInstance().newAuthor(name.getText());
     }
 
     @Override

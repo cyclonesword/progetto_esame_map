@@ -2,6 +2,10 @@ package com.biblioteca.core;
 
 import java.util.Objects;
 
+/**
+ * The default reference implementation of the {@link Publisher } interface.
+ * The Comparator uses the publisher's name for comparing.
+ */
 public class PublisherImpl implements Publisher {
 
     private int id;

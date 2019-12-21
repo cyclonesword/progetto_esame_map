@@ -1,6 +1,7 @@
 package com.biblioteca.ui.controller;
 
 import com.biblioteca.core.employee.Employee;
+import com.biblioteca.core.facade.Library;
 import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.Dialogs;
 import javafx.event.ActionEvent;
@@ -9,6 +10,9 @@ import javafx.scene.layout.GridPane;
 
 import java.util.Comparator;
 
+/**
+ * This class
+ */
 public class RegisterEmployeeDialogController implements DialogController {
 
     public TextField firstName;
@@ -38,7 +42,7 @@ public class RegisterEmployeeDialogController implements DialogController {
             return false;
         }
 
-        if (!authCode.getText().equals("21134")) {
+        if (!authCode.getText().equals("123")) {
             Dialogs.showAlertDialog("Il Codice di autorizzazione è errato", rootNode.getScene().getWindow());
             return false;
         }
@@ -46,21 +50,8 @@ public class RegisterEmployeeDialogController implements DialogController {
         return true;
     }
 
-    public Employee getEmployee() {
-
-        var lastNum = ds.getEmployees().stream()
-                .map(Employee::getEmployeeNumber)
-                .map(Integer::parseInt)
-                .max(Comparator.naturalOrder())
-                .get();
-
-        return new Employee.Builder()
-                .setNumber(String.valueOf(lastNum + 1))
-                .setPassword(password.getText())
-                .setFirstName(firstName.getText())
-                .setLastName(lastName.getText())
-                .setEmail(email.getText())
-                .build();
+    public Employee confirmAndGet() {
+        return Library.getInstance().newEmployee(firstName.getText(), lastName.getText(), email.getText(), password.getText());
     }
 
     @Override

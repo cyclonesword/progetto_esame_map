@@ -1,6 +1,7 @@
 package com.biblioteca.ui.controller;
 
 import com.biblioteca.core.Customer;
+import com.biblioteca.core.facade.Library;
 import com.biblioteca.ui.Dialogs;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,10 +34,6 @@ public class AddUserDialogController implements DialogController {
 
     private Dialog<ButtonType> dialog;
 
-    public Customer getUser() {
-        return new Customer(firstNameTf.getText(), lastNameTf.getText(), emailTf.getText(), fiscalCodeTf.getText(), phoneNumberTf.getText(), false);
-    }
-
     @Override
     public boolean checkData() {
 
@@ -61,5 +58,9 @@ public class AddUserDialogController implements DialogController {
     @Override
     public Dialog<ButtonType> getDialog() {
         return dialog;
+    }
+
+    public Customer confirmAndGet() {
+        return Library.getInstance().newCustomer(firstNameTf.getText(), lastNameTf.getText(), emailTf.getText(), fiscalCodeTf.getText(), phoneNumberTf.getText());
     }
 }

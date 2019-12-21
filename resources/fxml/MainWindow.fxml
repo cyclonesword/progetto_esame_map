@@ -40,9 +40,9 @@
                     <MenuItem text="Nuovo autore" onAction="#addAuthorClicked"/>
                 </Menu>
 
-                <Menu text="Cerca">
-                    <MenuItem text="Utente" />
-                </Menu>
+<!--                <Menu text="Cerca">-->
+<!--                    <MenuItem text="Utente" />-->
+<!--                </Menu>-->
 
                 <Menu text="?">
                     <MenuItem text="Cerca aggiornamenti" />
@@ -56,13 +56,13 @@
                     <Insets left="10" />
                 </padding>
 
-                <Button prefHeight="40" text="Nuova restituzione">
-                    <graphic>
-                        <ImageView>
-                            <Image url="@/toolbarButtonGraphics/general/PageSetup24.gif" />
-                        </ImageView>
-                    </graphic>
-                </Button>
+<!--                <Button prefHeight="40" text="Nuova restituzione">-->
+<!--                    <graphic>-->
+<!--                        <ImageView>-->
+<!--                            <Image url="@/toolbarButtonGraphics/general/PageSetup24.gif" />-->
+<!--                        </ImageView>-->
+<!--                    </graphic>-->
+<!--                </Button>-->
 
                 <Button prefHeight="40" text="Visualizza prestiti" onMouseClicked="#showReservedBooksClicked">
                     <graphic>
@@ -162,7 +162,7 @@
                 </GridPane.margin>
             </Label>
 
-            <Button prefHeight="40" prefWidth="140" onMouseClicked="#reserveBookClicked" fx:id="prenotaButton" text="Avvia prestito" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.halignment="CENTER">
+            <Button prefHeight="40" prefWidth="140" onMouseClicked="#lendBookClicked" fx:id="prenotaButton" text="Avvia prestito" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.halignment="CENTER">
                 <GridPane.margin>
                     <Insets top="20" />
                 </GridPane.margin>

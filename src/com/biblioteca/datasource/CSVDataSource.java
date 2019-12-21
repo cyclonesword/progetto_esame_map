@@ -14,14 +14,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * This is the reference implementation of the DataSource interface. It uses simple CSV files to read and store the data.
- * It is package-private because it is not intended to be used directly by the clients. <br />
- * To obtain the singleton instance, you can use the
- * <code>
- * Datasource.getDefault()
- * </code>
- * method of the <code>DataSource</code> interface.
+ * This is the default implementation of the {@link DataSource} interface,.
+ * It is package-private because it is intended to be used internally.<br><br>
+ *
+ * ******* <b>Singleton Design Pattern</b> used here *******
  */
+// package-private
 class CSVDataSource implements DataSource {
 
     private static final DataSource instance = new CSVDataSource();
@@ -34,7 +32,6 @@ class CSVDataSource implements DataSource {
     private final String loansCsv = "loans.csv";
     private final String employeesCsv = "employees.csv";
 
-
     private final String basePath = System.getProperty("user.home") + File.separator + ApplicationStart.instance.getAppName() + File.separator;
     private final String basePathCsv = basePath + "csv" + File.separator;
     private final String basePathImgs = basePath + "images" + File.separator;
@@ -45,18 +42,37 @@ class CSVDataSource implements DataSource {
     private List<? extends Category> categories;
     private List<Customer> customers;
     private String classathImagesFolder = "/images/";
-    private List<String> formats = List.of("Paper Book", "ePub", "PDF", "Audiobook");
+//    private List<String> formats = List.of("Paper Book", "ePub", "PDF", "Audiobook");
     private List<Loan> loans;
     private List<Employee> employees;
 
-    private CSVDataSource() { // Creates a local copy of the internal database with mock entity.
-        // Create directories for csv files and for images if not exists.
+    // ====  Nota per il prof. Fici ==== //
+    // La javadoc per questa classe viene ereditata dalla sua interfaccia DataSource.
+    // In questa classe si fa largo uso di lambda expressions, Method references e streams.
+    // ====================================
 
+
+    /**
+     * This constructor creates a local copy of the internal database with mock objects. <br>
+     * It also creates all the necessary directories and files in the Operating System default user home directory.
+     * <pre>
+The path is this:  {home directory of you computer}/MAP Library/csv        ==> for CSV files
+                   {home directory of you computer}/MAP Library/images     ==> for images
+     * </pre>
+      */
+    private CSVDataSource() {
+
+        // Create directories for csv files and for images if not exists.
         new File(basePathCsv).mkdirs();
         new File(basePathImgs).mkdirs();
 
         var filesToCopy = List.of(categoriesCsv, authorsCsv, publishersCsv, booksCsv, customersCsv, loansCsv, employeesCsv);
 
+        // ====  Nota per il prof. Fici ==== //
+        // Nel suo computer verrà creata una cartella contenente
+        // i file necessari al funzionamento dell'applicativo.
+        // Verrà creata nel path indicato sopra, nella javadoc del costruttore
+        // ====================================
         filesToCopy.forEach(csv -> {
             try {
                 Path target = Paths.get(basePathCsv + csv);
@@ -71,6 +87,10 @@ class CSVDataSource implements DataSource {
 
     }
 
+    /**
+     *
+     * @return The singleton instance of this class
+     */
     static DataSource getInstance() {
         return instance;
     }
@@ -101,13 +121,13 @@ class CSVDataSource implements DataSource {
 
     @Override
     public List<String> readFormats() {
-        return formats;
+        return Book.ALL_BOOK_FORMATS;
     }
 
     @Override
     public List<? extends Customer> readCustomers() {
         if (customers == null)
-            customers = readDataFromCsv(customersCsv, line -> new Customer(Integer.parseInt(line[0]), line[1], line[2], line[3], line[4], line[5], false)); // Si poteva usare un Builder
+            customers = readDataFromCsv(customersCsv, line -> new Customer(Integer.parseInt(line[0]), line[1], line[2], line[3], line[4], line[5])); // Si poteva usare un Builder
 
         return customers;
     }
@@ -141,9 +161,6 @@ class CSVDataSource implements DataSource {
     }
 
     @Override
-    public void modify(Book book) { }
-
-    @Override
     public List<? extends Employee> getEmployees() {
         if (employees == null) {
             employees = readDataFromCsv(employeesCsv, line ->
@@ -153,6 +170,7 @@ class CSVDataSource implements DataSource {
                             .setFirstName(line[2])
                             .setLastName(line[3])
                             .setEmail(line[4])
+                            .setEmployeeType("admin")
                             .build());
         }
 
@@ -215,12 +233,11 @@ class CSVDataSource implements DataSource {
     }
 
     @Override
-    public void save(Customer user) {
+    public void save(Customer customer) {
         if (customers == null)
             readCustomers();
-        int lastId = customers.stream().map(Customer::getId).max(Comparator.naturalOrder()).get();
-        user.setId(lastId);
-        this.customers.add(user);
+
+        this.customers.add(customer);
     }
 
     @Override
@@ -228,8 +245,6 @@ class CSVDataSource implements DataSource {
         if (loans == null)
             readLoans();
 
-        int lastId = loans.stream().map(Loan::getLoanId).max(Comparator.naturalOrder()).get();
-        loan.setId(lastId + 1);
         this.loans.add(loan);
     }
 
@@ -245,7 +260,7 @@ class CSVDataSource implements DataSource {
     }
 
     @Override
-    public void saveImage(BookImage image) {
+    public void save(BookImage image) {
         try {
             writeDataToFile(image.getName(), basePathImgs, new FileInputStream(image.getFile()).readAllBytes());
         } catch (IOException e) {
@@ -268,6 +283,11 @@ class CSVDataSource implements DataSource {
         writeCsvDataToFile(employeesCsv, Converters.getEmployeeConverter().convert(getEmployees()));
         writeCsvDataToFile(loansCsv, Converters.getLoanConverter().convert(readLoans()));
         writeCsvDataToFile(booksCsv, Converters.getBookConverter().convert(readBooks()));
+    }
+
+    @Override
+    public void delete(Loan loan) {
+        loans.remove(loan);
     }
 
     @Override
@@ -330,24 +350,4 @@ class CSVDataSource implements DataSource {
         return List.of(s.replaceAll("[\\[\\] ]", "").split(";"));
     }
 
-//    private <T> Collection<T> readCSVFile(String csvFilePath, BiFunction<Integer, String, T> action) {
-//
-//        String line;
-//        List<T> elements = new ArrayList<>();
-//
-//        try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(csvFilePath)))) {
-//
-//            while((line = br.readLine()) != null) {
-//                String[] splittedLine = line.split(",");
-//                elements.add(action.apply(Integer.valueOf(splittedLine[0]), splittedLine[1]));
-//            }
-//
-//            return elements;
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return Collections.emptyList(); // Return empty collection to avoid returning null or throwing exceptions.
-//    }
 }

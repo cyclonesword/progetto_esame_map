@@ -2,11 +2,19 @@ package com.biblioteca.core;
 
 import java.util.Objects;
 
+/**
+ * Default reference implementation of {@link Category}.
+ */
 public class CategoryImpl implements Category {
 
     private String name;
     private int id;
 
+    /**
+     * Creates a new CategoryImpl instance for the given unique identifier (id) and a name.
+     * @param id The unique identifier
+     * @param name The category name
+     */
     public CategoryImpl(int id, String name) {
         this.name = name;
         this.id = id;

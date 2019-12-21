@@ -14,6 +14,11 @@ import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 
+/**
+ * A JavaFX required class to represent a Book in the ListView.
+ * For more information see the official documentation:
+ * <pre>https://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/ListCell.html</pre>
+ */
 public class BookListCell extends ListCell<BookListItem> {
 
     @FXML
