@@ -4,11 +4,10 @@ import com.biblioteca.core.Author;
 import com.biblioteca.core.Book;
 import com.biblioteca.core.Category;
 import com.biblioteca.core.Publisher;
-import com.biblioteca.core.facade.Library;
 import com.biblioteca.datasource.DataSource;
-import com.biblioteca.ui.Dialogs;
+import com.biblioteca.ui.utils.Dialogs;
 
-import com.biblioteca.ui.model.BookImage;
+import com.biblioteca.ui.utils.BookImage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -27,7 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ModifyBookDialogController implements DialogController {
+/**
+ * This controller class is responsible for managing the addition and the modification of the books. <br>
+ * Refer to {@link DialogController} class for the common methods.
+ */
+public class ModifyBookDialogController implements DialogController<Book> {
 
     @FXML
     private VBox authorsContainer;
@@ -79,12 +82,12 @@ public class ModifyBookDialogController implements DialogController {
 
     private File selectedImage;
 
-    public void fillFields() {
+    private void fillFields() {
 
-        ObservableList<Publisher> publishers = FXCollections.observableArrayList(ds.readPublishers());
+        ObservableList<Publisher> publishers = FXCollections.observableArrayList(ds.getPublishers());
         editoriCombobox.setItems(publishers);
 
-        var formats = FXCollections.observableArrayList(ds.readFormats());
+        var formats = FXCollections.observableArrayList(ds.getFormats());
         formatoCombobox.setItems(formats);
 
         if (book != null) {
@@ -127,6 +130,7 @@ public class ModifyBookDialogController implements DialogController {
     }
 
 
+    @Override
     public Book confirmAndGet() {
 
         book.setTitle(titleTf.getText());
@@ -157,6 +161,10 @@ public class ModifyBookDialogController implements DialogController {
         return book;
     }
 
+    /**
+     * Opens a new Browse window dialog to choose a new image for the book.
+     * @throws FileNotFoundException If some error occur in the file selection
+     */
     @FXML
     public void browseFileClicked() throws FileNotFoundException {
         FileChooser fileChooser = new FileChooser();
@@ -170,6 +178,10 @@ public class ModifyBookDialogController implements DialogController {
         }
     }
 
+    /**
+     * Opens a new window dialog to add or remove new categories.
+     * @throws IOException If some error occur with the loading of the FXML file
+     */
     @FXML
     public void modifyCategoryClicked() throws IOException {
         Dialogs.<AddRemoveDialogController<Category>>showDialog("Modify categories",
@@ -177,16 +189,20 @@ public class ModifyBookDialogController implements DialogController {
                 rootPane.getScene().getWindow(),
                 controller -> {
                     controller.setInitialData(categories);
-                    controller.setAllData(ds.readCategories());
+                    controller.setAllData(ds.getCategories());
                     controller.init();
                 },
                 controller -> {
-                    this.categories = controller.getSelectedItems();
+                    this.categories = controller.confirmAndGet();
                     fillCategoriesLabel();
                 });
     }
 
 
+    /**
+     * Opens a new window dialog to add or remove new authors.
+     * @throws IOException If some error occur with the loading of the FXML file
+     */
     @FXML
     public void modifyAuthorsClicked() throws IOException {
         Dialogs.<AddRemoveDialogController<Author>>showDialog("Modify authors",
@@ -194,11 +210,11 @@ public class ModifyBookDialogController implements DialogController {
                 rootPane.getScene().getWindow(),
                 controller -> {
                     controller.setInitialData(authors);
-                    controller.setAllData(ds.readAuthors());
+                    controller.setAllData(ds.getAuthors());
                     controller.init();
                 },
                 controller -> {
-                    this.authors = controller.getSelectedItems();
+                    this.authors = controller.confirmAndGet();
                     fillAuthorsLabel();
                 });
     }
@@ -207,17 +223,6 @@ public class ModifyBookDialogController implements DialogController {
         this.book = book;
         this.modify = modify;
         fillFields();
-    }
-
-    @Override
-    public void setDialog(Dialog<ButtonType> dialog) {
-        this.dialog = dialog;
-        DialogController.super.setDialog(dialog);
-    }
-
-    @Override
-    public Dialog<ButtonType> getDialog() {
-        return dialog;
     }
 
     @Override

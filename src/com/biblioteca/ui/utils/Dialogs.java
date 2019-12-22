@@ -1,16 +1,14 @@
-package com.biblioteca.ui;
+package com.biblioteca.ui.utils;
 
 import com.biblioteca.ui.controller.DialogController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.stage.Window;
 
 import java.io.IOException;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * Utility class to create window dialogs.
@@ -43,7 +41,7 @@ public class Dialogs {
         dialog.setTitle(dialogTitle);
 
         T controller = fxmlLoader.getController();
-        controller.setDialog(dialog);
+        controller.setOnConfirmClickedEventListener(dialog);
         if(preConditions != null)
             preConditions.accept(controller); // do pre-conditions stuff
 

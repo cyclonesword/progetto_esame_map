@@ -2,7 +2,7 @@ package com.biblioteca.datasource;
 
 import com.biblioteca.core.*;
 import com.biblioteca.core.employee.Employee;
-import com.biblioteca.ui.model.BookImage;
+import com.biblioteca.ui.utils.BookImage;
 
 import java.util.List;
 
@@ -18,33 +18,33 @@ import java.util.List;
 public interface DataSource {
 
     /**
-     * Returns a list containing all the categories retrived from the underlying datasource
+     * Returns a list containing all the categories retrieved from the underlying datasource
      */
-    List<? extends Category> readCategories();
+    List<? extends Category> getCategories();
     /**
-     * Returns a list containing all the authors retrived from the underlying datasource
+     * Returns a list containing all the authors retrieved from the underlying datasource
      */
-    List<? extends Author> readAuthors();
+    List<? extends Author> getAuthors();
     /**
-     * Returns a list containing all the books retrived from the underlying datasource
+     * Returns a list containing all the books retrieved from the underlying datasource
      */
-    List<? extends Book> readBooks();
+    List<? extends Book> getBooks();
     /**
-     * Returns a list containing all the publishers retrived from the underlying datasource
+     * Returns a list containing all the publishers retrieved from the underlying datasource
      */
-    List<? extends Publisher> readPublishers();
+    List<? extends Publisher> getPublishers();
     /**
-     * Returns a list containing all the book formats retrived from the underlying datasource
+     * Returns a list containing all the book formats retrieved from the underlying datasource
      */
-    List<String> readFormats();
+    List<String> getFormats();
     /**
-     * Returns a list containing all the customers retrived from the underlying datasource
+     * Returns a list containing all the customers retrieved from the underlying datasource
      */
-    List<? extends Customer> readCustomers();
+    List<? extends Customer> getCustomers();
     /**
-     * Returns a list containing all the loans retrived from the underlying datasource
+     * Returns a list containing all the loans retrieved from the underlying datasource
      */
-    List<? extends Loan> readLoans();
+    List<? extends Loan> getLoans();
 
     /**
      * Returns the list of employees read from the datasource
@@ -53,10 +53,16 @@ public interface DataSource {
     List<? extends Employee> getEmployees();
 
     /**
-     * Delete the given book
+     * Delete the given book from the database and from the current execution.
      * @param book the book to be deleted from the datasource.
      */
     void delete(Book book);
+    /**
+     * Delete the given loan from the database and from the current execution.
+     * @param loan
+     */
+    void delete(Loan loan);
+
     /**
      * Store the given customer
      * @param customer The customer to store in the datasource
@@ -96,6 +102,12 @@ public interface DataSource {
     void save(Author a);
 
     /**
+     * Save the given publisher to the database
+     * @param p
+     */
+    void save(Publisher p);
+
+    /**
      * Store all the data contained in memory to the underlying datasource (CSV files in the default implementation)
      */
     void saveAll();
@@ -106,6 +118,4 @@ public interface DataSource {
     static DataSource getDefault() {
         return CSVDataSource.getInstance();
     }
-
-    void delete(Loan loan);
 }

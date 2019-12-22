@@ -31,7 +31,7 @@
                 <Font name="AvenirLTStd-Medium" size="17.0"/>
             </font>
         </Label>
-        <PasswordField text="asdasd" fx:id="passwrord" maxWidth="160"/>
+        <PasswordField text="asdasd" fx:id="password" maxWidth="160"/>
     </VBox>
 
     <VBox spacing="15" alignment="CENTER">

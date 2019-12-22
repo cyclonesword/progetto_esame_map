@@ -5,7 +5,6 @@ import com.biblioteca.core.Customer;
 import com.biblioteca.core.Loan;
 import com.biblioteca.core.facade.Library;
 import com.biblioteca.datasource.DataSource;
-import com.biblioteca.ui.Dialogs;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,7 +18,7 @@ import java.time.LocalDate;
 /**
  * The controller class associated to the New Loan dialog.
  */
-public class LoanDialogController implements DialogController {
+public class LoanDialogController implements DialogController <Loan> {
 
     @FXML
     public DatePicker startDatePicker;
@@ -37,7 +36,7 @@ public class LoanDialogController implements DialogController {
     private Book book;
 
     public void initialize() {
-        ObservableList<Customer> allUsers = FXCollections.observableArrayList(ds.readCustomers());
+        ObservableList<Customer> allUsers = FXCollections.observableArrayList(ds.getCustomers());
         usersCombobox.setItems(allUsers);
 
         // maxmium day is today + 60 days
@@ -74,6 +73,7 @@ public class LoanDialogController implements DialogController {
      * Confirm the data and creates a new loan .
      * @throws LoanDialogException
      */
+    @Override
     public Loan confirmAndGet() throws LoanDialogException {
         final Customer selectedUser = usersCombobox.getSelectionModel().getSelectedItem();
 

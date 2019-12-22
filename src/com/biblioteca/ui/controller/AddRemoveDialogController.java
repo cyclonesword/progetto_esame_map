@@ -9,7 +9,12 @@ import javafx.scene.input.MouseEvent;
 
 import java.util.List;
 
-public class AddRemoveDialogController<T> implements DialogController {
+/**
+ *  Controller class used to add or remove authors or categories when the Add/Modify book dialog is displayed.
+ *  The relative view file is AddRemoveData.fxml
+ * @param <T>
+ */
+public class AddRemoveDialogController<T> implements DialogController<List<T>> {
 
     public ComboBox<T> dataCombobox;
     public ListView<T> listView;
@@ -39,7 +44,7 @@ public class AddRemoveDialogController<T> implements DialogController {
         listView.refresh();
     }
 
-    public List<T> getSelectedItems() {
+    public List<T> confirmAndGet() {
         return data;
     }
 

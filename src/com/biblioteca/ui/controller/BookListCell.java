@@ -1,9 +1,8 @@
 package com.biblioteca.ui.controller;
 
 import com.biblioteca.core.Book;
-import com.biblioteca.ui.Images;
-import com.biblioteca.ui.model.BookListItem;
-import com.biblioteca.ui.model.ListItem;
+import com.biblioteca.ui.utils.Images;
+import com.biblioteca.ui.items.BookListItem;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;

@@ -46,7 +46,7 @@
 
     <VBox GridPane.rowIndex="5" GridPane.columnIndex="0">
         <Label text="Codice autorizzazione"/>
-        <TextField maxWidth="170" fx:id="authCode"/>
+        <PasswordField maxWidth="170" fx:id="authCode"/>
     </VBox>
 
     <columnConstraints>

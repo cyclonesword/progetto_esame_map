@@ -1,4 +1,4 @@
-package com.biblioteca.ui.model;
+package com.biblioteca.ui.items;
 
 import com.biblioteca.core.Author;
 import com.biblioteca.core.Book;

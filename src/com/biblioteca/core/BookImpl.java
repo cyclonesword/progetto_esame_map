@@ -1,11 +1,8 @@
 package com.biblioteca.core;
 
-import com.biblioteca.ui.Images;
-import com.biblioteca.ui.model.BookImage;
-import javafx.collections.ObservableList;
-import javafx.scene.image.Image;
+import com.biblioteca.ui.utils.Images;
+import com.biblioteca.ui.utils.BookImage;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -63,16 +60,6 @@ public class BookImpl implements Book {
     public void setId(int id) {
         this.id = id;
     }
-
-//    public Loan getCurrentLoan() {
-//        return currentLoan;
-//    }
-//
-//    public void lendBookTo(Customer customer, LocalDateTime expectedReturnDate, LocalDateTime loanDate) throws LoanException {
-//        if (currentLoan != null)
-//            throw new LoanException();
-//
-//    }
 
     @Override
     public boolean equals(Object o) {

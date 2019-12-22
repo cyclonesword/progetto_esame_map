@@ -2,8 +2,8 @@ package com.biblioteca.datasource;
 
 import com.biblioteca.core.*;
 import com.biblioteca.core.employee.Employee;
-import com.biblioteca.ui.ApplicationStart;
-import com.biblioteca.ui.model.BookImage;
+import com.biblioteca.ui.start.ApplicationStart;
+import com.biblioteca.ui.utils.BookImage;
 
 import java.io.*;
 import java.nio.file.*;
@@ -32,11 +32,11 @@ class CSVDataSource implements DataSource {
     private final String loansCsv = "loans.csv";
     private final String employeesCsv = "employees.csv";
 
-    private final String basePath = System.getProperty("user.home") + File.separator + ApplicationStart.instance.getAppName() + File.separator;
+    private final String basePath = System.getProperty("user.home") + File.separator + ApplicationStart.getInstance().getAppName() + File.separator;
     private final String basePathCsv = basePath + "csv" + File.separator;
     private final String basePathImgs = basePath + "images" + File.separator;
 
-    private List<? extends Publisher> publishers;
+    private List<Publisher> publishers;
     private List<Author> authors;
     private List<Book> books;
     private List<? extends Category> categories;
@@ -96,7 +96,7 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
     }
 
     @Override
-    public List<? extends Category> readCategories() {
+    public List<? extends Category> getCategories() {
         if (categories == null)
             categories = readDataFromCsv(categoriesCsv, CategoryImpl::new);
 
@@ -104,7 +104,7 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
     }
 
     @Override
-    public List<? extends Author> readAuthors() {
+    public List<? extends Author> getAuthors() {
         if (authors == null)
             authors = readDataFromCsv(authorsCsv, AuthorImpl::new);
 
@@ -112,7 +112,7 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
     }
 
     @Override
-    public List<? extends Publisher> readPublishers() {
+    public List<? extends Publisher> getPublishers() {
         if (publishers == null)
             publishers = readDataFromCsv(publishersCsv, PublisherImpl::new);
 
@@ -120,12 +120,12 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
     }
 
     @Override
-    public List<String> readFormats() {
+    public List<String> getFormats() {
         return Book.ALL_BOOK_FORMATS;
     }
 
     @Override
-    public List<? extends Customer> readCustomers() {
+    public List<? extends Customer> getCustomers() {
         if (customers == null)
             customers = readDataFromCsv(customersCsv, line -> new Customer(Integer.parseInt(line[0]), line[1], line[2], line[3], line[4], line[5])); // Si poteva usare un Builder
 
@@ -133,15 +133,15 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
     }
 
     @Override
-    public List<? extends Loan> readLoans() {
+    public List<? extends Loan> getLoans() {
         if (loans == null)
             loans = readDataFromCsv(loansCsv, line -> {
 
-                Customer customer = readCustomers().stream()
+                Customer customer = getCustomers().stream()
                         .filter(c -> c.getId() == Integer.parseInt(line[3]))
                         .findFirst()
                         .orElse(null);
-                Book book = readBooks().stream()
+                Book book = getBooks().stream()
                         .filter(b -> b.getId() == Integer.parseInt(line[4]))
                         .findFirst()
                         .orElse(null);
@@ -165,7 +165,7 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
         if (employees == null) {
             employees = readDataFromCsv(employeesCsv, line ->
                     new Employee.Builder()
-                            .setNumber(line[0])
+                            .setId(line[0])
                             .setPassword(line[1])
                             .setFirstName(line[2])
                             .setLastName(line[3])
@@ -178,12 +178,12 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
     }
 
     @Override
-    public List<? extends Book> readBooks() {
+    public List<? extends Book> getBooks() {
 
         if (books == null) {
             books = readDataFromCsv(booksCsv, line -> { // Invoked on every line of the Csv file
 
-                var publisher = readPublishers().stream()
+                var publisher = getPublishers().stream()
                         .filter(p -> p.getId() == Integer.parseInt(line[6].trim()))
                         .findFirst()
                         .orElse(null);
@@ -191,11 +191,11 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
                 var authorIds = getIDs(line[4]);
                 var categoryIds = getIDs(line[10]);
 
-                var auths = readAuthors().stream()
+                var auths = getAuthors().stream()
                         .filter(author -> authorIds.contains(String.valueOf(author.getId())))
                         .collect(Collectors.toList());
 
-                var cats = readCategories().stream()
+                var cats = getCategories().stream()
                         .filter(category -> categoryIds.contains(String.valueOf(category.getId())))
                         .collect(Collectors.toList());
 
@@ -235,7 +235,7 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
     @Override
     public void save(Customer customer) {
         if (customers == null)
-            readCustomers();
+            getCustomers();
 
         this.customers.add(customer);
     }
@@ -243,7 +243,7 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
     @Override
     public void save(Loan loan) {
         if (loans == null)
-            readLoans();
+            getLoans();
 
         this.loans.add(loan);
     }
@@ -276,18 +276,24 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
     @Override
     public void saveAll() {
         // Saves the authors contained in the list back to the CSV file. The same thing occur for the other lines.
-        writeCsvDataToFile(authorsCsv, Converters.getAuthorConverter().convert(readAuthors()));
-        writeCsvDataToFile(categoriesCsv, Converters.getCategoryConverter().convert(readCategories()));
-        writeCsvDataToFile(publishersCsv, Converters.getPublisherConverter().convert(readPublishers()));
-        writeCsvDataToFile(customersCsv, Converters.getCustomerConverter().convert(readCustomers()));
+
+        writeCsvDataToFile(authorsCsv, Converters.getAuthorConverter().convert(getAuthors()));
+        writeCsvDataToFile(categoriesCsv, Converters.getCategoryConverter().convert(getCategories()));
+        writeCsvDataToFile(publishersCsv, Converters.getPublisherConverter().convert(getPublishers()));
+        writeCsvDataToFile(customersCsv, Converters.getCustomerConverter().convert(getCustomers()));
         writeCsvDataToFile(employeesCsv, Converters.getEmployeeConverter().convert(getEmployees()));
-        writeCsvDataToFile(loansCsv, Converters.getLoanConverter().convert(readLoans()));
-        writeCsvDataToFile(booksCsv, Converters.getBookConverter().convert(readBooks()));
+        writeCsvDataToFile(loansCsv, Converters.getLoanConverter().convert(getLoans()));
+        writeCsvDataToFile(booksCsv, Converters.getBookConverter().convert(getBooks()));
     }
 
     @Override
     public void delete(Loan loan) {
         loans.remove(loan);
+    }
+
+    @Override
+    public void save(Publisher p) {
+        publishers.add(p);
     }
 
     @Override
@@ -316,20 +322,6 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
         return lines;
     }
 
-    private <T> List<T> readDataFromCsv(String csvFilePath, BiFunction<Integer, String, T> action) { // Bi function for two input paramenters
-        return readCSVFile(csvFilePath)
-                .stream()
-                .map(line -> action.apply(Integer.valueOf(line[0]), line[1])) // Using lambda expression
-                .collect(Collectors.toList());
-    }
-
-    private <T> List<T> readDataFromCsv(String csvFilePath, Function<String[], T> action) { // Function with String array for n parameters.
-        return readCSVFile(csvFilePath)
-                .stream()
-                .map(action) // Using qualifiers
-                .collect(Collectors.toList());
-    }
-
     private void writeDataToFile(String fileName, String path, byte[] data) {
 
         try (BufferedOutputStream bou = new BufferedOutputStream(new FileOutputStream(new File(path + fileName), false))) {
@@ -343,6 +335,20 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
 
     private void writeCsvDataToFile(String fileName, String data) {
         writeDataToFile(fileName, basePathCsv, data.getBytes());
+    }
+
+    private <T> List<T> readDataFromCsv(String csvFilePath, BiFunction<Integer, String, T> action) { // Bi function for two input paramenters
+        return readCSVFile(csvFilePath)
+                .stream()
+                .map(line -> action.apply(Integer.valueOf(line[0]), line[1])) // Using lambda expression
+                .collect(Collectors.toList());
+    }
+
+    private <T> List<T> readDataFromCsv(String csvFilePath, Function<String[], T> action) { // Function with String array for n parameters.
+        return readCSVFile(csvFilePath)
+                .stream()
+                .map(action) // Using qualifiers
+                .collect(Collectors.toList());
     }
 
     // Utility method to get all IDs splitted by the ; separator and removing the [] parenthesis.

@@ -1,6 +1,5 @@
-package com.biblioteca.ui;
+package com.biblioteca.ui.utils;
 
-import com.biblioteca.ui.model.BookImage;
 import javafx.scene.image.Image;
 
 /**

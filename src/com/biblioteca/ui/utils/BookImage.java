@@ -1,4 +1,4 @@
-package com.biblioteca.ui.model;
+package com.biblioteca.ui.utils;
 
 import javafx.scene.image.Image;
 

@@ -1,4 +1,4 @@
-package com.biblioteca.ui;
+package com.biblioteca.ui.start;
 
 import com.biblioteca.core.facade.Library;
 import com.biblioteca.ui.controller.AuthenticationSceneController;
@@ -13,7 +13,7 @@ import javafx.stage.Stage;
  */
 public class ApplicationStart extends Application {
 
-    public static ApplicationStart instance;
+    private static ApplicationStart instance;
 
     private String appName = "MAP Library";
 
@@ -31,8 +31,13 @@ public class ApplicationStart extends Application {
 
         primaryStage.setTitle("Autenticazione Impiegato");
         primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(false);
         primaryStage.show();
 
+    }
+
+    public static ApplicationStart getInstance() {
+        return instance;
     }
 
     public static void begin(String[] args) {

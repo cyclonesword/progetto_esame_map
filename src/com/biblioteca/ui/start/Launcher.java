@@ -1,4 +1,4 @@
-package com.biblioteca.ui;
+package com.biblioteca.ui.start;
 
 /**
  * This class is necessary to make the JAR executable.<br>

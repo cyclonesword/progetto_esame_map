@@ -1,6 +1,6 @@
 package com.biblioteca.ui.controller;
 
-import com.biblioteca.ui.model.FilterItem;
+import com.biblioteca.ui.items.FilterItem;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.CheckBox;

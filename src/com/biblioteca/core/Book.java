@@ -1,8 +1,6 @@
 package com.biblioteca.core;
 
-import com.biblioteca.ui.model.BookImage;
-import javafx.collections.ObservableList;
-import javafx.scene.image.Image;
+import com.biblioteca.ui.utils.BookImage;
 
 import java.util.List;
 

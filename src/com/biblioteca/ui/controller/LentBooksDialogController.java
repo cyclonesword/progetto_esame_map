@@ -2,9 +2,8 @@ package com.biblioteca.ui.controller;
 
 import com.biblioteca.core.facade.Library;
 import com.biblioteca.datasource.DataSource;
-import com.biblioteca.ui.model.TableViewLoanRow;
+import com.biblioteca.ui.items.TableViewLoanRow;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -30,7 +29,7 @@ public class LentBooksDialogController implements DialogController {
     private DataSource ds = DataSource.getDefault();
 
     public void initialize() {
-        var items = FXCollections.observableArrayList(ds.readLoans()
+        var items = FXCollections.observableArrayList(ds.getLoans()
                 .stream()
                 .map(TableViewLoanRow::new)
                 .collect(Collectors.toList())
@@ -46,7 +45,7 @@ public class LentBooksDialogController implements DialogController {
         tableView.setItems(items);
 
         MenuItem returnedMenuItem = new MenuItem("Set as returned");
-        returnedMenuItem.setOnAction((ActionEvent event) -> {
+        returnedMenuItem.setOnAction(event -> {
             var i = tableView.getSelectionModel().getSelectedItem();
             if (i.getStatus().equals("not-returned")) {
                 i.setReturnDate(LocalDate.now());
@@ -57,7 +56,7 @@ public class LentBooksDialogController implements DialogController {
         });
 
         MenuItem deleteMenuItem = new MenuItem("Delete selected");
-        deleteMenuItem.setOnAction((ActionEvent event) -> {
+        deleteMenuItem.setOnAction(event -> {
             var i = tableView.getSelectionModel().getSelectedItem();
             Library.getInstance().removeLoan(i.getLoan());
             if (i.getStatus().equals("not-returned"))
@@ -80,4 +79,8 @@ public class LentBooksDialogController implements DialogController {
         });
     }
 
+    @Override
+    public Object confirmAndGet() {
+        throw new UnsupportedOperationException();
+    }
 }

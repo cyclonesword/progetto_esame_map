@@ -2,17 +2,17 @@ package com.biblioteca.ui.controller;
 
 import com.biblioteca.core.Customer;
 import com.biblioteca.core.facade.Library;
-import com.biblioteca.ui.Dialogs;
-import javafx.event.ActionEvent;
+import com.biblioteca.ui.utils.Dialogs;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
-public class AddUserDialogController implements DialogController {
+/**
+ * Controller class that manage the add user window dialog.
+ */
+public class AddUserDialogController implements DialogController<Customer> {
 
     @FXML
     private GridPane rootNode;
@@ -47,17 +47,6 @@ public class AddUserDialogController implements DialogController {
 
         return true;
 
-    }
-
-    @Override
-    public void setDialog(Dialog<ButtonType> dialog) {
-        this.dialog = dialog;
-        DialogController.super.setDialog(dialog);
-    }
-
-    @Override
-    public Dialog<ButtonType> getDialog() {
-        return dialog;
     }
 
     public Customer confirmAndGet() {

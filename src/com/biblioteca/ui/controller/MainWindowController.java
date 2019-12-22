@@ -5,10 +5,11 @@ import com.biblioteca.core.Book;
 import com.biblioteca.core.BookImpl;
 import com.biblioteca.core.facade.Library;
 import com.biblioteca.datasource.DataSource;
-import com.biblioteca.ui.Dialogs;
-import com.biblioteca.ui.Images;
-import com.biblioteca.ui.model.*;
-import javafx.application.Platform;
+import com.biblioteca.ui.items.BookListItem;
+import com.biblioteca.ui.items.FilterItem;
+import com.biblioteca.ui.items.ListItem;
+import com.biblioteca.ui.utils.Dialogs;
+import com.biblioteca.ui.utils.Images;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -27,6 +28,17 @@ import java.net.MalformedURLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * This controller class is responsible of all the behaviour management of the central window of the application.<br>
+ * It is responsible for managing the user interaction with the UI.<br><br>
+ * All methods with the annotation <code>@FXML</code> means that it is invoked by the JavaFX Runtime
+ * when the user interacts with the UI. <br><br>
+ *
+ * In the Model View Controller architectural pattern used here,
+ * this class represents the Controller,
+ * the MainWindow.fxml is the View and
+ * the Model is represented mainly by the Library Facade class and by other classes in the <code>com.biblioteca.core</code> package, representing the business logic of the application.
+ */
 public class MainWindowController {
 
     @FXML
@@ -62,34 +74,21 @@ public class MainWindowController {
     @FXML
     private TreeView<FilterItem> filtersTreeView;
 
-    @FXML
-    public void handleExit(ActionEvent event) {
-        Platform.exit();
-    }
-
     private static final ObservableList<BookListItem> allBooks = FXCollections.observableArrayList();
     private static final ObservableList<BookListItem> filteredItems = FXCollections.observableArrayList();
     private static final DataSource ds = DataSource.getDefault();
-
     public static final Set<FilterItem> selectedFilters = new HashSet<>();
 
-    public static void applyFilters() {
-        filteredItems.clear();
-        filteredItems.addAll(getFilteredItems());
-    }
 
-    private static List<BookListItem> getFilteredItems() {
-        return allBooks.stream()
-                .filter(book -> selectedFilters.stream()
-                        .allMatch(filter -> filter.applyTo(book)))
-                .collect(Collectors.toList());
-    }
-
+    /**
+     * Initialize the ListView and the TreeView with initial data.
+     * This method is called reflectively by the JavaFX Runtime.
+     */
     // This method will be called automatically by the JavaFX runtime.
     public void initialize() {
 
         // Wraps every book with a BookListItem
-        allBooks.addAll(ds.readBooks().stream()
+        allBooks.addAll(ds.getBooks().stream()
                 .map(BookListItem::new)
                 .collect(Collectors.toList())
         );
@@ -114,19 +113,8 @@ public class MainWindowController {
         initFilters();
     }
 
+
     // changes the content of the book detail section on the right
-    private void changeItemDetail(ListItem item) {
-        if (item == null)
-            return;
-
-        bookDetailTitle.setText(item.getItemTitle());
-        bookDetailDescription.setText(item.getItemDescription());
-        bookDetailImageView.setImage(item.getImage());
-        availabilityImage.setImage(item.getQuantity() > 0 ? Images.GREEN_CIRCLE : Images.RED_CIRCLE);
-        availabilityText.setText(item.isAvailable() ? "Disponibile" : "Prestato");
-        prenotaButton.setDisable(!item.isAvailable());
-    }
-
     /**
      * Invoked by the JavaFX Runtime when the user search a book in the search bar by pressing the search button.
      */
@@ -139,7 +127,6 @@ public class MainWindowController {
         filteredItems.clear();
         filteredItems.addAll(result);
     }
-
     /**
      * Invoked by the JavaFX Runtime when the user search a book in the search bar, pressing the Enter key of the keyboard.
      */
@@ -156,7 +143,6 @@ public class MainWindowController {
         }
 
     }
-
     /**
      * Invoked by the JavaFX Runtime when the user click onto the "Add Book" menu button. <br> This method will open a new window dialog .
      *
@@ -217,8 +203,6 @@ public class MainWindowController {
     /**
      * Invoked by the JavaFX Runtime when the user click onto the "Delete" button on the book detail right panel.
      * This method will open a new window dialog .
-     *
-     * @throws IOException If something goes wrong with the FXML file loading.
      */
     @FXML
     public void deleteBookClicked() {
@@ -291,6 +275,23 @@ public class MainWindowController {
     }
 
     /**
+     * Invoked by the JavaFX Runtime when the user click onto the "Add Publisher" menu button. This method will open a new window dialog .
+     *
+     * @throws IOException If something goes wrong with the FXML file loading.
+     */
+    @FXML
+    public void addPublisherClicked() throws IOException {
+        Dialogs.<AddPublisherDialogController>showDialog("Add Publisher", "Ok",
+                "/fxml/AddPublisherDialog.fxml",
+                rootPane.getScene().getWindow(),
+                null,
+                controller -> {
+                    var p = controller.confirmAndGet();
+                    filtersTreeView.getRoot().getChildren().get(2).getChildren().add(new FilterItem(p.getName(), i -> i.getPublisher() == p).getTreeItem());
+                });
+    }
+
+    /**
      * Invoked by the JavaFX Runtime when the user click onto the "show loans" button. This method will open a new window dialog .
      *
      * @param mouseEvent The mouse event occurred
@@ -305,7 +306,7 @@ public class MainWindowController {
     }
 
     /**
-     * Invoked by the JavaFX Runtime when the user click onto the "About" menu button. This method will open a new window dialog .
+     * Invoked by the JavaFX Runtime when the user click onto the "About" menu button.<br> This method will open a new window dialog .
      *
      * @throws IOException If something goes wrong with the FXML file loading.
      */
@@ -316,20 +317,49 @@ public class MainWindowController {
                 null, null);
     }
 
-    private void refreshListView() {
-        listView.refresh();
-        changeItemDetail(listView.getSelectionModel().getSelectedItem());
+
+    // =============== ***** private methods **** ================== //
+
+
+    /**
+     * Invoked by the JavaFX Runtime when the user click onto the "Search for updates" menu button. <br>This method will open a new window dialog .
+     */
+    @FXML
+    public void onSearchUpdateClicked() {
+        Dialogs.showAlertDialog("Non ci sono aggiornamenti disponibili", rootPane.getScene().getWindow());
+    }
+
+    /**
+     * Called by the FilterTreeCell class when the employee select a new filter from the left section of the application
+     */
+    public static void applyFilters() {
+        filteredItems.clear();
+        filteredItems.addAll(getFilteredItems());
+    }
+
+    // ============ ***** private methods start ***** ============ //
+
+    private void changeItemDetail(ListItem item) {
+        if (item == null)
+            return;
+
+        bookDetailTitle.setText(item.getItemTitle());
+        bookDetailDescription.setText(item.getItemDescription());
+        bookDetailImageView.setImage(item.getImage());
+        availabilityImage.setImage(item.getQuantity() > 0 ? Images.GREEN_CIRCLE : Images.RED_CIRCLE);
+        availabilityText.setText(item.isAvailable() ? item.getQuantity() + " Disponibili" : "Prestato");
+        prenotaButton.setDisable(!item.isAvailable());
     }
 
     // Configures the filters displayed in the left section.
     private void initFilters() {
         filtersTreeView.setCellFactory(FilterTreeCell::new);
 
-        var rootFilterNode = new RootFilterItem("Filtri", "/images/filter.png").getTreeItem();
-        var rootCategoryFilter = new RootFilterItem("Categorie", "/images/category.png");
-        var rootAuthorsFilter = new RootFilterItem("Autori", "/images/authors.png");
-        var rootPublishersFilter = new RootFilterItem("Editori", "/images/publisher.png");
-        var rootFormatsFilter = new RootFilterItem("Formato", "/images/format.png");
+        var rootFilterNode = new FilterItem("Filtri", "/images/filter.png").getTreeItem();
+        var rootCategoryFilter = new FilterItem("Categorie", "/images/category.png");
+        var rootAuthorsFilter = new FilterItem("Autori", "/images/authors.png");
+        var rootPublishersFilter = new FilterItem("Editori", "/images/publisher.png");
+        var rootFormatsFilter = new FilterItem("Formato", "/images/format.png");
         // var rootTagFilter = new RootFilterItem("Tag", "/images/tag.png");
 
         var filterList = List.of(rootCategoryFilter, rootAuthorsFilter, rootPublishersFilter, rootFormatsFilter);
@@ -340,7 +370,7 @@ public class MainWindowController {
 
         rootCategoryFilter.getTreeItem()
                 .getChildren()
-                .addAll(ds.readCategories()
+                .addAll(ds.getCategories()
                         .stream()
                         .sorted()
                         .map(c -> new FilterItem(c.getName(), item -> item.getCategories().contains(c)))
@@ -349,7 +379,7 @@ public class MainWindowController {
 
         rootAuthorsFilter.getTreeItem()
                 .getChildren()
-                .addAll(ds.readAuthors()
+                .addAll(ds.getAuthors()
                         .stream()
                         .sorted()
                         .map(author -> new FilterItem(author.getName(), item -> item.getAuthors().contains(author)))
@@ -358,7 +388,7 @@ public class MainWindowController {
 
         rootPublishersFilter.getTreeItem()
                 .getChildren()
-                .addAll(ds.readPublishers()
+                .addAll(ds.getPublishers()
                         .stream()
                         .sorted()
                         .map(publisher -> new FilterItem(publisher.getName(), item -> item.getPublisher() == publisher))
@@ -367,11 +397,23 @@ public class MainWindowController {
 
         rootFormatsFilter.getTreeItem()
                 .getChildren()
-                .addAll(ds.readFormats()
+                .addAll(ds.getFormats()
                         .stream()
                         .map(format -> new FilterItem(format, item -> item.getFormat().equalsIgnoreCase(format)))
                         .map(FilterItem::getTreeItem)
                         .collect(Collectors.toList()));
 
+    }
+
+    private void refreshListView() {
+        listView.refresh();
+        changeItemDetail(listView.getSelectionModel().getSelectedItem());
+    }
+
+    private static List<BookListItem> getFilteredItems() {
+        return allBooks.stream()
+                .filter(book -> selectedFilters.stream()
+                        .allMatch(filter -> filter.applyTo(book)))
+                .collect(Collectors.toList());
     }
 }

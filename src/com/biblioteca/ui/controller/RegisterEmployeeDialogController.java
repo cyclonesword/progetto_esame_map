@@ -2,18 +2,15 @@ package com.biblioteca.ui.controller;
 
 import com.biblioteca.core.employee.Employee;
 import com.biblioteca.core.facade.Library;
-import com.biblioteca.datasource.DataSource;
-import com.biblioteca.ui.Dialogs;
-import javafx.event.ActionEvent;
+import com.biblioteca.ui.utils.Dialogs;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
-import java.util.Comparator;
-
 /**
- * This class
+ * This controller class is responsible for managing the registration of new employees. <br>
+ * Refer to {@link DialogController} class for the common methods.
  */
-public class RegisterEmployeeDialogController implements DialogController {
+public class RegisterEmployeeDialogController implements DialogController<Employee> {
 
     public TextField firstName;
     public GridPane rootNode;
@@ -21,15 +18,6 @@ public class RegisterEmployeeDialogController implements DialogController {
     public TextField email;
     public TextField password;
     public TextField authCode;
-
-    // public ComboBox<Employee.Level> levelComboBox;
-
-    private DataSource ds = DataSource.getDefault();
-    private Dialog<ButtonType> dialog;
-
-    public void initialize() {
-
-    }
 
     @Override
     public boolean checkData() {
@@ -42,6 +30,11 @@ public class RegisterEmployeeDialogController implements DialogController {
             return false;
         }
 
+        // Nota per il prof Fici: ===
+            // In realtà l'applicazione dovrebbe collegarsi ad un server remoto, controllare il codice
+            // ed autorizzare (o non autorizzare). Dato che questo è ad di fuori dello scopo del progetto,
+            // viene confrontato con un codice di esempio "123"
+        // ============
         if (!authCode.getText().equals("123")) {
             Dialogs.showAlertDialog("Il Codice di autorizzazione è errato", rootNode.getScene().getWindow());
             return false;
@@ -50,24 +43,15 @@ public class RegisterEmployeeDialogController implements DialogController {
         return true;
     }
 
+    /**
+     *
+     * @return The newly created Employee instance
+     */
+    @Override
     public Employee confirmAndGet() {
         return Library.getInstance().newEmployee(firstName.getText(), lastName.getText(), email.getText(), password.getText());
     }
 
-    @Override
-    public void setDialog(Dialog<ButtonType> dialog) {
-        this.dialog = dialog;
-        dialog.getDialogPane().lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION,
-                event -> {
-                    if (!checkData())
-                        event.consume();
-                });
-    }
-
-    @Override
-    public Dialog<ButtonType> getDialog() {
-        return dialog;
-    }
 
     //   ObservableList<Employee.Level> observableList = FXCollections.observableList(List.of(Employee.Level.ADMIN, Employee.Level.MANAGER, Employee.Level.ASSISTANT));
     //   levelComboBox.getItems().addAll(observableList);

@@ -2,8 +2,8 @@ package com.biblioteca.ui.controller;
 
 import com.biblioteca.core.facade.Library;
 import com.biblioteca.core.auth.Authentication;
-import com.biblioteca.datasource.DataSource;
-import com.biblioteca.ui.Dialogs;
+import com.biblioteca.ui.start.ApplicationStart;
+import com.biblioteca.ui.utils.Dialogs;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,6 +18,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 
+/**
+ * Controller class that manage the initial Authentication window .
+ */
 public class AuthenticationSceneController {
 
     @FXML
@@ -27,14 +30,15 @@ public class AuthenticationSceneController {
     private TextField emailOrNumber;
 
     @FXML
-    private PasswordField passwrord;
+    private PasswordField password;
 
     private Scene mainWindowScene;
     private Stage primaryStage;
     private Parent mainWindowRootNode;
 
-    private DataSource ds = DataSource.getDefault();
-
+    /**
+     * The constructor loads in a background thread the MainWindow.fxml file to speed up the opening of the MainWindow window.
+     */
     public AuthenticationSceneController() {
         // Loads the MainWindow.fxml in another thread(asynchronously) to avoid lag effect when the user press the Login button.
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -48,11 +52,6 @@ public class AuthenticationSceneController {
         });
     }
 
-    private void loadMainWindow() throws IOException {
-        mainWindowRootNode = FXMLLoader.load(getClass().getResource("/fxml/MainWindow.fxml"));
-        mainWindowScene = new Scene(mainWindowRootNode, 1024, 768);
-    }
-
     /**
      * This method is invoked by the JavaFX Runtime when the user press the Login button.
      *
@@ -63,14 +62,14 @@ public class AuthenticationSceneController {
         if (mainWindowRootNode == null)
             loadMainWindow();
 
-        Authentication authStrategy = Authentication.from(emailOrNumber.getText(), passwrord.getText());
+        Authentication authStrategy = Authentication.from(emailOrNumber.getText(), password.getText());
 
         try {
             var emp = authStrategy.authenticate();
             Library.getInstance().setLoggedEmployee(emp);
 
             primaryStage.close();
-            primaryStage.setTitle("Super Biblioteca 1.0");
+            primaryStage.setTitle(ApplicationStart.getInstance().getAppName());
             primaryStage.setScene(mainWindowScene);
             primaryStage.show();
 
@@ -81,6 +80,10 @@ public class AuthenticationSceneController {
 
     }
 
+    /**
+     * Invoked by JavaFX when the user click onto the "Add new Employee" button.
+     * @throws IOException
+     */
     @FXML
     public void registerClicked() throws IOException {
         // After the user press some confirmation button
@@ -92,13 +95,18 @@ public class AuthenticationSceneController {
                 RegisterEmployeeDialogController::confirmAndGet);
     }
 
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+
+    private void loadMainWindow() throws IOException {
+        mainWindowRootNode = FXMLLoader.load(getClass().getResource("/fxml/MainWindow.fxml"));
+        mainWindowScene = new Scene(mainWindowRootNode, 1024, 768);
+    }
+
     private void showErrorDialog() {
         Alert alert = new Alert(Alert.AlertType.WARNING, "Credenziali non corrette!", ButtonType.OK);
         alert.initOwner(rootNode.getScene().getWindow());
         alert.showAndWait();
-    }
-
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
     }
 }

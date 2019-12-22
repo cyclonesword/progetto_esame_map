@@ -3,7 +3,6 @@ package com.biblioteca.core;
 import com.biblioteca.datasource.DataSource;
 
 import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.Comparator;
 
 /**
@@ -31,7 +30,7 @@ public class StandardLoan implements Loan {
 
     @Override
     public void confirm() {
-        int lastId = ds.readLoans().stream().map(Loan::getLoanId).max(Comparator.naturalOrder()).get();
+        int lastId = ds.getLoans().stream().map(Loan::getLoanId).max(Comparator.naturalOrder()).get();
         setId(lastId + 1);
         ds.save(this);
         book.decrementQuantity();

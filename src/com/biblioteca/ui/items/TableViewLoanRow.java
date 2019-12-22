@@ -1,4 +1,4 @@
-package com.biblioteca.ui.model;
+package com.biblioteca.ui.items;
 
 import com.biblioteca.core.Book;
 import com.biblioteca.core.Customer;
@@ -12,6 +12,7 @@ import java.util.StringJoiner;
 
 /**
  * This class is used to represent a row in the Table of lent books.
+ * Please refer to the {@link Loan} class for the complete documentation
  *
  * =====> Adapter pattern used Here!! <=====
  */

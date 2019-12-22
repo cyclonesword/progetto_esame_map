@@ -67,15 +67,16 @@ public interface Employee {
      * A Builder to create new instances of classes conforming to the {@link Employee} interface .
      */
     class Builder {
-        private String number;
+
+        private String id;
         private String password;
         private String firstName;
         private String lastName;
         private String email;
         private String employeeType;
 
-        public Builder setNumber(String number) {
-            this.number = number;
+        public Builder setId(String id) {
+            this.id = id;
             return this;
         }
 
@@ -121,7 +122,9 @@ public interface Employee {
         private Employee create(String fromType) throws IllegalArgumentException {
 
             if(fromType.equals("admin")) {
-                return new Administrator(number, password, firstName, lastName, email);
+                return new Administrator(id, password, firstName, lastName, email);
+            } else if(fromType.equalsIgnoreCase("manager")) {
+                return new Manager(id, password, firstName, lastName, email);
             }
 
             throw new IllegalArgumentException("The "+fromType+ " employee type does not exists");
