@@ -53,7 +53,7 @@ public class AuthenticationSceneController {
     }
 
     /**
-     * This method is invoked by the JavaFX Runtime when the user press the Login button.
+     * This method is invoked by the JavaFX Runtime when the user clicks onto the Login button.
      *
      * @throws IOException if the .fxml file cannot be loaded. This is a critical error that will abort the application.
      */
@@ -81,7 +81,7 @@ public class AuthenticationSceneController {
     }
 
     /**
-     * Invoked by JavaFX when the user click onto the "Add new Employee" button.
+     * Invoked by JavaFX when the user click onto the "Add new Employee" button. Opens a new window dialog.
      * @throws IOException
      */
     @FXML
@@ -90,9 +90,8 @@ public class AuthenticationSceneController {
         Dialogs.<RegisterEmployeeDialogController>showDialog("Nuovo impiegato",
                 "Aggiungi Impiegato",
                 "/fxml/NewEmployeeDialog.fxml", rootNode.getScene().getWindow(),
-                controller -> { // Before showing the dialog
-                },
-                RegisterEmployeeDialogController::confirmAndGet);
+                null,
+                DialogController::confirmAndGet);
     }
 
     public void setPrimaryStage(Stage primaryStage) {

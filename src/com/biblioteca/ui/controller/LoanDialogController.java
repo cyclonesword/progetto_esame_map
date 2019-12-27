@@ -53,6 +53,17 @@ public class LoanDialogController implements DialogController <Loan> {
         });
         startDatePicker.setValue(LocalDate.now());
 
+        startDatePicker.valueProperty().addListener((observableValue, oldDate, newDate) -> {
+            endDatePicker.setValue(newDate);
+            endDatePicker.setDayCellFactory(d -> new DateCell() {
+                @Override
+                public void updateItem(LocalDate item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setDisable(item.isAfter(maxDate) || item.isBefore(newDate));
+                }
+            });
+        });
+
         endDatePicker.setDayCellFactory(d -> new DateCell() {
             @Override
             public void updateItem(LocalDate item, boolean empty) {
