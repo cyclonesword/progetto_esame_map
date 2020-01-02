@@ -39,7 +39,7 @@
             <MenuBar>
                 <Menu text="Aggiungi">
                     <MenuItem text="Nuovo libro" onAction="#addBookClicked"/>
-                    <MenuItem text="Nuovo utente" onAction="#addUserClicked"/>
+                    <MenuItem text="Nuovo tesserato" onAction="#addUserClicked"/>
                     <MenuItem text="Nuovo autore" onAction="#addAuthorClicked"/>
                     <MenuItem text="Nuovo editore" onAction="#addPublisherClicked"/>
                 </Menu>
@@ -75,6 +75,15 @@
                         </ImageView>
                     </graphic>
                 </Button>
+
+                <Label prefHeight="40" prefWidth="800" textAlignment="RIGHT" alignment="CENTER_RIGHT" fx:id="authenticatedEmployeeName">
+                    <font>
+                        <Font name="Arial" size="14.0"/>
+                    </font>
+                    <HBox.margin>
+                        <Insets right="15" />
+                    </HBox.margin>
+                </Label>
             </HBox>
             <HBox id="border-bottom" maxHeight="1" minHeight="1">
 
@@ -221,6 +230,10 @@
     <bottom>
 
     </bottom>
+
+    <userData>
+        <fx:reference source="controller" />
+    </userData>
 
 </BorderPane>
 

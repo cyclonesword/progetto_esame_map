@@ -10,6 +10,7 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.biblioteca.ui.controller.LoanDialogController"
             vgap="10"
+          fx:id="rootNode"
             prefHeight="300.0" prefWidth="400.0">
 
     <VBox GridPane.rowIndex="0" GridPane.columnIndex="0" spacing="10">

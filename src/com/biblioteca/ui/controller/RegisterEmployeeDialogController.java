@@ -2,9 +2,13 @@ package com.biblioteca.ui.controller;
 
 import com.biblioteca.core.employee.Employee;
 import com.biblioteca.core.facade.Library;
+import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.utils.Dialogs;
+import com.biblioteca.ui.utils.Utils;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+
+import java.util.Comparator;
 
 /**
  * This controller class is responsible for managing the registration of new employees. <br>
@@ -18,11 +22,16 @@ public class RegisterEmployeeDialogController implements DialogController<Employ
     public TextField email;
     public TextField password;
     public TextField authCode;
+    public TextField empCode;
 
     @Override
     public boolean checkData() {
 
-        if (firstName.getText().isEmpty() || lastName.getText().isEmpty() || email.getText().isEmpty()) {
+        if(!Utils.isValidEmailAddress(email.getText())) {
+            Dialogs.showAlertDialog("Per favore inserisci un indirizzo email valido", rootNode.getScene().getWindow());
+            return false;
+        }
+        else if (firstName.getText().isEmpty() || lastName.getText().isEmpty() || empCode.getText().isEmpty()) {
             Dialogs.showAlertDialog("Tutti i campi sono obbligatori!", rootNode.getScene().getWindow());
             return false;
         } else if (password.getText().isEmpty() || password.getText().length() < 5) {
@@ -53,6 +62,14 @@ public class RegisterEmployeeDialogController implements DialogController<Employ
     }
 
 
+    public void initialize() {
+        var lastNum = DataSource.getDefault().getEmployees().stream()
+                .map(Employee::getEmployeeNumber)
+                .max(Comparator.naturalOrder())
+                .get();
+
+        empCode.setText(String.valueOf(lastNum + 1));
+    }
     //   ObservableList<Employee.Level> observableList = FXCollections.observableList(List.of(Employee.Level.ADMIN, Employee.Level.MANAGER, Employee.Level.ASSISTANT));
     //   levelComboBox.getItems().addAll(observableList);
     //   levelComboBox.getSelectionModel().selectLast();

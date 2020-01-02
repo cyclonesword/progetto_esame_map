@@ -1,6 +1,9 @@
 package com.biblioteca.core;
 
+import com.biblioteca.ui.items.TableViewLoanRow;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,6 +40,10 @@ public class Customer {
 
     public void addLoan(Loan loan) {
         loans.add(loan);
+    }
+
+    public List<Loan> getLoans() {
+        return Collections.unmodifiableList(loans);
     }
 
     @Override
@@ -87,5 +94,9 @@ public class Customer {
 
     public void setId(int lastId) {
         this.id = lastId;
+    }
+
+    public void removeLoan(Loan loan) {
+        loans.remove(loan);
     }
 }

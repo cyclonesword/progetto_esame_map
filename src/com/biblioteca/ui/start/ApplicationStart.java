@@ -15,7 +15,7 @@ public class ApplicationStart extends Application {
 
     private static ApplicationStart instance;
 
-    private String appName = "MAP Library";
+    private String appName = "Memento legere";
 
     @Override
     public void start(Stage primaryStage) throws Exception{

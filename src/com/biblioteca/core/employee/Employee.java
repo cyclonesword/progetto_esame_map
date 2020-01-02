@@ -9,7 +9,7 @@ public interface Employee {
      *
      * @return The employee code (matricola)
      */
-    String getEmployeeNumber();
+    int getEmployeeNumber();
 
     /**
      *
@@ -42,6 +42,20 @@ public interface Employee {
      */
     boolean canPerform(Action action);
 
+    void setEmployeeNumber(int employeeNumber);
+
+    void setPassword(String password);
+
+    void setName(String name);
+
+    void setLastName(String lastName);
+
+    void setEmail(String email);
+
+    default String getFullName() {
+        return String.format("%s %s", getFirstName(),getLastName());
+    }
+
     /**
      *  Lists all the possible Actions that an {@link Employee} can do.
      */
@@ -58,76 +72,8 @@ public interface Employee {
      * @param email
      * @return
      */
-    static Employee newInstance(String number, String password, String firstName, String lastName, String email) {
+    static Employee newInstance(int number, String password, String firstName, String lastName, String email) {
         return new Administrator(number, password, firstName, lastName, email);
     }
 
-
-    /**
-     * A Builder to create new instances of classes conforming to the {@link Employee} interface .
-     */
-    class Builder {
-
-        private String id;
-        private String password;
-        private String firstName;
-        private String lastName;
-        private String email;
-        private String employeeType;
-
-        public Builder setId(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder setPassword(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public Builder setFirstName(String firstName) {
-            this.firstName = firstName;
-            return this;
-        }
-
-        public Builder setLastName(String lastName) {
-            this.lastName = lastName;
-            return this;
-        }
-
-        public Builder setEmail(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public Builder setEmployeeType(String employeeType) {
-            this.employeeType = employeeType;
-            return this;
-        }
-
-        /**
-         * Constructs a new instance with the assigned values.
-         * @throws IllegalArgumentException If some of the provided values are invalid.
-         */
-        public Employee build() throws IllegalArgumentException {
-            return create(employeeType);
-        }
-
-        /** This is a custom implementation of the <b>Factory method</b> design pattern.
-         * It creates new instances based on the provided Employee type.
-         * @param fromType The employee type. The default implementation type is 'admin'
-         * @return A newly created instance for the given type.
-         * @throws IllegalArgumentException if the specified type does not correspond to any implementation.
-         */
-        private Employee create(String fromType) throws IllegalArgumentException {
-
-            if(fromType.equals("admin")) {
-                return new Administrator(id, password, firstName, lastName, email);
-            } else if(fromType.equalsIgnoreCase("manager")) {
-                return new Manager(id, password, firstName, lastName, email);
-            }
-
-            throw new IllegalArgumentException("The "+fromType+ " employee type does not exists");
-        }
-    }
 }

@@ -35,6 +35,7 @@ public class AuthenticationSceneController {
     private Scene mainWindowScene;
     private Stage primaryStage;
     private Parent mainWindowRootNode;
+    private MainWindowController mainWindowController;
 
     /**
      * The constructor loads in a background thread the MainWindow.fxml file to speed up the opening of the MainWindow window.
@@ -62,12 +63,17 @@ public class AuthenticationSceneController {
         if (mainWindowRootNode == null)
             loadMainWindow();
 
-        Authentication authStrategy = Authentication.from(emailOrNumber.getText(), password.getText());
+        String message = "Per favore inserisci un codice o un indirizzo email valido";
 
         try {
+            Authentication authStrategy = Authentication.from(emailOrNumber.getText(), password.getText());
+
+            message = "Credenziali non corrette!";
+
             var emp = authStrategy.authenticate();
             Library.getInstance().setLoggedEmployee(emp);
 
+            mainWindowController.initCompleted();
             primaryStage.close();
             primaryStage.setTitle(ApplicationStart.getInstance().getAppName());
             primaryStage.setScene(mainWindowScene);
@@ -75,7 +81,7 @@ public class AuthenticationSceneController {
 
         } catch (Authentication.InvalidCredentialsException e) {
             e.printStackTrace();
-            showErrorDialog();
+            showErrorDialog(message);
         }
 
     }
@@ -101,10 +107,12 @@ public class AuthenticationSceneController {
     private void loadMainWindow() throws IOException {
         mainWindowRootNode = FXMLLoader.load(getClass().getResource("/fxml/MainWindow.fxml"));
         mainWindowScene = new Scene(mainWindowRootNode, 1024, 768);
+        mainWindowController = (MainWindowController) mainWindowRootNode.getUserData();
+
     }
 
-    private void showErrorDialog() {
-        Alert alert = new Alert(Alert.AlertType.WARNING, "Credenziali non corrette!", ButtonType.OK);
+    private void showErrorDialog(String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING, message, ButtonType.OK);
         alert.initOwner(rootNode.getScene().getWindow());
         alert.showAndWait();
     }

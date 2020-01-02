@@ -11,29 +11,33 @@
           xmlns:fx="http://javafx.com/fxml"
           fx:id="rootNode"
           fx:controller="com.biblioteca.ui.controller.RegisterEmployeeDialogController"
-          vgap="10"
-          >
+          vgap="10">
 
     <padding>
         <Insets left="15" right="15" top="20" bottom="20" />
     </padding>
 
     <VBox GridPane.rowIndex="0" GridPane.columnIndex="0">
+        <Label text="Codice impiegato"/>
+        <TextField maxWidth="180" fx:id="empCode" disable="true"/>
+    </VBox>
+
+    <VBox GridPane.rowIndex="1" GridPane.columnIndex="0">
         <Label text="Nome"/>
         <TextField maxWidth="180" fx:id="firstName"/>
     </VBox>
 
-    <VBox GridPane.rowIndex="1" GridPane.columnIndex="0">
+    <VBox GridPane.rowIndex="2" GridPane.columnIndex="0">
         <Label text="Cognome"/>
         <TextField maxWidth="180" fx:id="lastName"/>
     </VBox>
 
-    <VBox GridPane.rowIndex="2" GridPane.columnIndex="0">
+    <VBox GridPane.rowIndex="3" GridPane.columnIndex="0">
         <Label text="Email"/>
         <TextField maxWidth="220" fx:id="email"/>
     </VBox>
 
-    <VBox GridPane.rowIndex="3" GridPane.columnIndex="0">
+    <VBox GridPane.rowIndex="4" GridPane.columnIndex="0">
         <Label text="Scegli una password (minimo 5 caratteri)"/>
         <PasswordField maxWidth="180" fx:id="password"/>
     </VBox>

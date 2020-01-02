@@ -5,6 +5,7 @@ import com.biblioteca.core.Customer;
 import com.biblioteca.core.Loan;
 import com.biblioteca.core.facade.Library;
 import com.biblioteca.datasource.DataSource;
+import com.biblioteca.ui.utils.Dialogs;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,6 +13,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 
 import java.time.LocalDate;
 
@@ -19,6 +21,8 @@ import java.time.LocalDate;
  * The controller class associated to the New Loan dialog.
  */
 public class LoanDialogController implements DialogController <Loan> {
+    @FXML
+    public GridPane rootNode;
 
     @FXML
     public DatePicker startDatePicker;
@@ -80,6 +84,23 @@ public class LoanDialogController implements DialogController <Loan> {
         reservedBook.setText(b.getId() + " - " + b.getTitle());
     }
 
+    @Override
+    public boolean checkData() {
+        var customer = usersCombobox.getSelectionModel().getSelectedItem();
+
+        var loans = customer.getLoans()
+                .stream()
+                .filter(l -> l.getStatus().equals("not-returned"))
+                .count();
+
+        if (loans >= 3) {
+            Dialogs.showAlertDialog("Limite di 3 prestiti raggiunto per l'utente "+customer.getFullName(), rootNode.getScene().getWindow());
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Confirm the data and creates a new loan .
      * @throws LoanDialogException
@@ -88,7 +109,9 @@ public class LoanDialogController implements DialogController <Loan> {
     public Loan confirmAndGet() throws LoanDialogException {
         final Customer selectedUser = usersCombobox.getSelectionModel().getSelectedItem();
 
-        return Library.getInstance().newLoan(startDatePicker.getValue(), endDatePicker.getValue(), selectedUser, book);
+        var loan = Library.getInstance().newLoan(startDatePicker.getValue(), endDatePicker.getValue(), selectedUser, book);
+        selectedUser.addLoan(loan);
+        return loan;
     }
 
     public static class LoanDialogException extends RuntimeException {

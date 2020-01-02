@@ -8,7 +8,7 @@
 
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
-          fx:controller="com.biblioteca.ui.controller.AddUserDialogController"
+          fx:controller="com.biblioteca.ui.controller.AddCustomerDialogController"
           prefHeight="200.0" prefWidth="280.0"
 fx:id="rootNode">
 

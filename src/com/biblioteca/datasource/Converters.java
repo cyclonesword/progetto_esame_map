@@ -3,6 +3,8 @@ package com.biblioteca.datasource;
 import com.biblioteca.core.*;
 import com.biblioteca.core.employee.Employee;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.stream.Collectors;
 
 public class Converters {
@@ -37,18 +39,31 @@ public class Converters {
                 .collect(Collectors.joining("\n"));
     }
 
-    // The other 3 converters are intentionally left in a non-functional way
-    // to underline the different ways of doing the same thing (in this case, functional or non functional style)
-
     public static Converter<Customer> getCustomerConverter() {
-        return new Converter.CustomerConverter();
+        return entities -> entities.stream()
+                .map(customer -> String.format("%d,%s,%s,%s,%s,%s",
+                        customer.getId(),
+                        customer.getFirstName(),
+                        customer.getLastName(),
+                        customer.getEmail(),
+                        customer.getFiscalCode(),
+                        customer.getPhoneNumber()))
+                .collect(Collectors.joining("\n"));
     }
 
     public static Converter<Book> getBookConverter() {
-        return new Converter.BookConverter();
+        return new BookConverter();
     }
 
     public static Converter<Employee> getEmployeeConverter() {
-        return new Converter.EmployeeConverter();
+
+        return employees -> employees.stream()
+                .map(employee -> String.format("%d,%s,%s,%s,%s",
+                        employee.getEmployeeNumber(),
+                        employee.getPassword(),
+                        employee.getFirstName(),
+                        employee.getLastName(),
+                        employee.getEmail()))
+                .collect(Collectors.joining("\n"));
     }
 }

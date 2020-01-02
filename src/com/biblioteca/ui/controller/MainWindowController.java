@@ -42,6 +42,9 @@ import java.util.stream.Collectors;
 public class MainWindowController {
 
     @FXML
+    private Label authenticatedEmployeeName;
+
+    @FXML
     private BorderPane rootPane;
 
     @FXML
@@ -113,7 +116,9 @@ public class MainWindowController {
         initFilters();
     }
 
-
+    public void initCompleted() {
+        authenticatedEmployeeName.setText("Impiegato autenticato: "+ Library.getInstance().getLoggedEmployee().getFullName());
+    }
     // changes the content of the book detail section on the right
     /**
      * Invoked by the JavaFX Runtime when the user search a book in the search bar by pressing the search button.
@@ -143,26 +148,6 @@ public class MainWindowController {
         }
 
     }
-    /**
-     * Invoked by the JavaFX Runtime when the user click onto the "Add Book" menu button. <br> This method will open a new window dialog .
-     *
-     * @throws IOException If something goes wrong with the FXML file loading.
-     */
-    @FXML
-    public void addBookClicked() throws IOException {
-        var book = new BookImpl();
-
-        Dialogs.<ModifyBookDialogController>showDialog("Nuovo libro", "Aggiungi", "/fxml/ModifyBookDialog.fxml", rootPane.getScene().getWindow(),
-                controller -> controller.setBook(book, false),
-                controller -> {
-                    controller.confirmAndGet();
-                    ds.save(book);
-                    allBooks.add(new BookListItem(book));
-                    applyFilters();
-                    refreshListView();
-                });
-    }
-
     /**
      * Invoked by the JavaFX Runtime when the user click onto the "Modify" button on the book detail right panel.
      * This method will open a new window dialog .
@@ -251,10 +236,10 @@ public class MainWindowController {
     @FXML
     public void addUserClicked(ActionEvent actionEvent) throws IOException {
         // ds.save(controller.getUser());
-        Dialogs.<AddUserDialogController>showDialog("Add user", "/fxml/AddUserDialog.fxml",
+        Dialogs.<AddCustomerDialogController>showDialog("Aggiungi utente", "/fxml/AddUserDialog.fxml",
                 rootPane.getScene().getWindow(),
                 null,
-                AddUserDialogController::confirmAndGet);
+                AddCustomerDialogController::confirmAndGet);
     }
 
     /**
@@ -264,7 +249,7 @@ public class MainWindowController {
      */
     @FXML
     public void addAuthorClicked(ActionEvent actionEvent) throws IOException {
-        Dialogs.<AddAuthorDialogController>showDialog("Add Book Author", "Add",
+        Dialogs.<AddAuthorDialogController>showDialog("Aggiungi autore", "Add",
                 "/fxml/AddAuthorDialog.fxml",
                 rootPane.getScene().getWindow(),
                 null,
@@ -281,7 +266,7 @@ public class MainWindowController {
      */
     @FXML
     public void addPublisherClicked() throws IOException {
-        Dialogs.<AddPublisherDialogController>showDialog("Add Publisher", "Ok",
+        Dialogs.<AddPublisherDialogController>showDialog("Aggiungi editore", "Ok",
                 "/fxml/AddPublisherDialog.fxml",
                 rootPane.getScene().getWindow(),
                 null,
@@ -317,9 +302,25 @@ public class MainWindowController {
                 null, null);
     }
 
+    /**
+     * Invoked by the JavaFX Runtime when the user click onto the "Add Book" menu button. <br> This method will open a new window dialog .
+     *
+     * @throws IOException If something goes wrong with the FXML file loading.
+     */
+    @FXML
+    public void addBookClicked() throws IOException {
+        var book = new BookImpl();
 
-    // =============== ***** private methods **** ================== //
-
+        Dialogs.<ModifyBookDialogController>showDialog("Nuovo libro", "Aggiungi", "/fxml/ModifyBookDialog.fxml", rootPane.getScene().getWindow(),
+                controller -> controller.setBook(book, false),
+                controller -> {
+                    controller.confirmAndGet();
+                    ds.save(book);
+                    allBooks.add(new BookListItem(book));
+                    applyFilters();
+                    refreshListView();
+                });
+    }
 
     /**
      * Invoked by the JavaFX Runtime when the user click onto the "Search for updates" menu button. <br>This method will open a new window dialog .
@@ -337,7 +338,7 @@ public class MainWindowController {
         filteredItems.addAll(getFilteredItems());
     }
 
-    // ============ ***** private methods start ***** ============ //
+    // =============== ***** private methods **** ================== //
 
     private void changeItemDetail(ListItem item) {
         if (item == null)
@@ -416,4 +417,6 @@ public class MainWindowController {
                         .allMatch(filter -> filter.applyTo(book)))
                 .collect(Collectors.toList());
     }
+    // ============ ***** private methods start ***** ============ //
+
 }

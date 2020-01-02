@@ -1,9 +1,14 @@
 package com.biblioteca.core.facade;
 
+
 import com.biblioteca.core.*;
+import com.biblioteca.core.builder.EmployeeBuilder;
 import com.biblioteca.core.employee.Employee;
 import com.biblioteca.datasource.DataSource;
+import com.biblioteca.ui.utils.Utils;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.Comparator;
 
@@ -54,7 +59,7 @@ public class Library {
     }
 
     /**
-     * Constructs a new Loan instance with the given parameters, saving it to the database.
+     * Constructs a new Loan instance with the given parameters, assigning a new id and saving it to the database.
      *
      * @param start    The start date of the Loan
      * @param end      The end date of the Loan
@@ -82,7 +87,7 @@ public class Library {
     }
 
     /**
-     * Constructs a new Author instance with the given parameters, saving it to the database.
+     * Constructs a new Author instance with the given parameters, assigning a new id and saving it to the database.
      *
      * @param name The author's name
      * @return the newly created Author
@@ -100,7 +105,7 @@ public class Library {
     }
 
     /**
-     * Constructs a new Customer instance with the given parameters, saving it to the database.
+     * Constructs a new Customer instance with the given parameters, , assigning a new id and saving it to the database.
      *
      * @param name
      * @param lastName
@@ -120,7 +125,7 @@ public class Library {
     }
 
     /**
-     * Constructs a new Employee instance with the given parameters,saving it to the database.
+     * Constructs a new Employee instance with the given parameters, assigning a new id and saving it to the database.
      *
      * @param firstName
      * @param lastName
@@ -129,19 +134,18 @@ public class Library {
      * @return The newly created Employee
      */
     public Employee newEmployee(String firstName, String lastName, String email, String password) {
+
         var lastNum = ds.getEmployees().stream()
                 .map(Employee::getEmployeeNumber)
-                .map(Integer::parseInt)
                 .max(Comparator.naturalOrder())
                 .get();
 
-        Employee admin = new Employee.Builder()
-                .setId(String.valueOf(lastNum + 1))
-                .setPassword(password)
+        Employee admin = EmployeeBuilder.getDefault()
+                .setId(lastNum + 1)
+                .setPassword(Utils.sha1Digest(password))
                 .setFirstName(firstName)
                 .setLastName(lastName)
                 .setEmail(email)
-                .setEmployeeType("admin")
                 .build();
 
         ds.save(admin);
@@ -188,9 +192,13 @@ public class Library {
     }
 
     /**
-     * Invoked when the application will be closed.
+     * Invoked when the application will be closed. It saves all data to the underlying data store. (CSV files in its default implementation)
      */
     public void applicationWillClose() {
         ds.saveAll();
+    }
+
+    public Employee getLoggedEmployee() {
+        return loggedEmployee;
     }
 }

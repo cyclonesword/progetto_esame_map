@@ -4,12 +4,13 @@ import com.biblioteca.core.Author;
 import com.biblioteca.core.Book;
 import com.biblioteca.core.Category;
 import com.biblioteca.core.Publisher;
+import com.biblioteca.ui.controller.MainWindowController;
 import javafx.scene.image.Image;
 
 import java.util.List;
 
 /**
- * This class is used for displaying Book items in the ListView.
+ * This class is used for displaying Book items in the ListView of the {@link MainWindowController} class.
  * The Adapter pattern is used here
  */
 

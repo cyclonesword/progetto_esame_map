@@ -44,9 +44,10 @@ public class LentBooksDialogController implements DialogController {
 
         tableView.setItems(items);
 
-        MenuItem returnedMenuItem = new MenuItem("Set as returned");
+        MenuItem returnedMenuItem = new MenuItem("Segna come restituito");
         returnedMenuItem.setOnAction(event -> {
             var i = tableView.getSelectionModel().getSelectedItem();
+            i.getCustomer().removeLoan(i);
             if (i.getStatus().equals("not-returned")) {
                 i.setReturnDate(LocalDate.now());
                 i.setStatus("returned");
@@ -55,9 +56,10 @@ public class LentBooksDialogController implements DialogController {
             }
         });
 
-        MenuItem deleteMenuItem = new MenuItem("Delete selected");
+        MenuItem deleteMenuItem = new MenuItem("Elimina");
         deleteMenuItem.setOnAction(event -> {
             var i = tableView.getSelectionModel().getSelectedItem();
+            i.getCustomer().removeLoan(i);
             Library.getInstance().removeLoan(i.getLoan());
             if (i.getStatus().equals("not-returned"))
                 i.getBook().setQuantity(i.getBook().getQuantity() + 1);

@@ -1,6 +1,9 @@
 package com.biblioteca.datasource;
 
 import com.biblioteca.core.*;
+import com.biblioteca.core.builder.BookBuilder;
+import com.biblioteca.core.builder.EmployeeBuilder;
+import com.biblioteca.core.builder.StandardBookBuilder;
 import com.biblioteca.core.employee.Employee;
 import com.biblioteca.ui.start.ApplicationStart;
 import com.biblioteca.ui.utils.BookImage;
@@ -146,7 +149,7 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
                         .findFirst()
                         .orElse(null);
 
-                return new Loan.Builder()
+                var loan = new Loan.Builder()
                         .setId(Integer.parseInt(line[0]))
                         .setLoanDate(LocalDate.parse(line[1]))
                         .setExpectedReturnDate(LocalDate.parse(line[2]))
@@ -154,6 +157,10 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
                         .setStatus(line[5])
                         .setBook(book)
                         .build();
+
+                customer.addLoan(loan);
+
+                return loan;
 
             });
 
@@ -164,13 +171,12 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
     public List<? extends Employee> getEmployees() {
         if (employees == null) {
             employees = readDataFromCsv(employeesCsv, line ->
-                    new Employee.Builder()
-                            .setId(line[0])
+                    EmployeeBuilder.getDefault()
+                            .setId(Integer.parseInt(line[0]))
                             .setPassword(line[1])
                             .setFirstName(line[2])
                             .setLastName(line[3])
                             .setEmail(line[4])
-                            .setEmployeeType("admin")
                             .build());
         }
 
@@ -212,7 +218,7 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
                     }
                 }
 
-                return new Book.Builder()
+                return BookBuilder.getDefault()
                         .setId(Integer.parseInt(line[0]))
                         .setTitle(line[1])
                         .setSubTitle(line[2])
