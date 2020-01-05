@@ -8,6 +8,7 @@ import com.biblioteca.ui.start.ApplicationStart;
 import com.biblioteca.ui.utils.BookImage;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.time.LocalDate;
 import java.util.*;
@@ -312,6 +313,21 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
 
     /* ========= Private utility methods ====== */
 
+    private void writeDataToFile(String fileName, String path, byte[] data) {
+
+        try (BufferedOutputStream bou = new BufferedOutputStream(new FileOutputStream(new File(path + fileName), false))) {
+            bou.write(data);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeCsvDataToFile(String fileName, String data) {
+        writeDataToFile(fileName, basePathCsv, data.getBytes(StandardCharsets.UTF_8));
+    }
+
     private List<String[]> readCSVFile(String csvFileName) {
         String line;
         List<String[]> lines = new ArrayList<>();
@@ -329,21 +345,6 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
         }
 
         return lines;
-    }
-
-    private void writeDataToFile(String fileName, String path, byte[] data) {
-
-        try (BufferedOutputStream bou = new BufferedOutputStream(new FileOutputStream(new File(path + fileName), false))) {
-            bou.write(data);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void writeCsvDataToFile(String fileName, String data) {
-        writeDataToFile(fileName, basePathCsv, data.getBytes());
     }
 
     private <T> List<T> readDataFromCsv(String csvFilePath, BiFunction<Integer, String, T> action) { // Bi function for two input paramenters

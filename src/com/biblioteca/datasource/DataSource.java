@@ -62,8 +62,10 @@ public interface DataSource {
     /**
      * Delete the given book from the database and from the current execution.
      * @param book the book to be deleted from the datasource.
+     * @throws BookDependencyException If the book has been lent, it cannot be deleted.
+     * You must delete all the loans associated with this book to remove it.
      */
-    void delete(Book book);
+    void delete(Book book) throws BookDependencyException;
     /**
      * Delete the given loan from the database and from the current execution.
      * @param loan The loan to store in the datasource
@@ -125,5 +127,30 @@ public interface DataSource {
      */
     static DataSource getInstance() {
         return CSVDataSource.getInstance();
+    }
+
+    class DataSourceException extends RuntimeException {
+        public DataSourceException() {
+        }
+
+        public DataSourceException(String message) {
+            super(message);
+        }
+
+        public DataSourceException(Throwable cause) {
+            super(cause);
+        }
+    }
+
+    class BookDependencyException extends DataSourceException {
+        public BookDependencyException() { }
+
+        public BookDependencyException(String message) {
+            super(message);
+        }
+
+        public BookDependencyException(Throwable cause) {
+            super(cause);
+        }
     }
 }

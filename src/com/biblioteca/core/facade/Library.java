@@ -180,7 +180,10 @@ public class Library {
      *
      * @param book The book to be removed
      */
-    public void removeBook(Book book) {
+    public void removeBook(Book book) throws DataSource.BookDependencyException {
+        if(ds.getLoans().stream().map(Loan::getBook).anyMatch(book::equals))
+            throw new DataSource.BookDependencyException("Cannot delete a book that has a dependency on a Loan object");
+
         ds.delete(book);
     }
 
@@ -218,4 +221,6 @@ public class Library {
     public Employee getLoggedEmployee() {
         return loggedEmployee;
     }
+
+
 }

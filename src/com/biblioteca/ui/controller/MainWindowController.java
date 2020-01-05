@@ -27,6 +27,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Window;
 
 import java.awt.*;
 import java.io.File;
@@ -93,6 +94,7 @@ public class MainWindowController {
     public static final Set<FilterItem> selectedFilters = new HashSet<>();
 
     private final DataSource ds = DataSource.getInstance();
+    private final Library library = Library.getInstance();
 
     /**
      * Initialize the ListView and the TreeView with initial data.
@@ -213,7 +215,12 @@ public class MainWindowController {
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.YES) {
-            Library.getInstance().removeBook(book);
+            try {
+                library.removeBook(book);
+            } catch (DataSource.BookDependencyException e) {
+                Dialogs.showAlertDialog("Non è possibile eliminare un libro che è stato prestato, anche se già restituito. Devi prima eliminare tutti i prestiti ad esso associati.", getRootWindow());
+                return;
+            }
             filteredItems.removeIf(i -> i.getBook() == book);
             allBooks.removeIf(i -> i.getBook() == book);
         }
@@ -232,7 +239,7 @@ public class MainWindowController {
         Dialogs.<LoanDialogController>showDialog("Nuovo prestito",
                 "Conferma",
                 "/fxml/LoanDialog.fxml",
-                rootPane.getScene().getWindow(),
+                getRootWindow(),
                 controller -> controller.setLentBook(book),
                 controller -> {
                     var loan = controller.confirmAndGet();
@@ -250,7 +257,7 @@ public class MainWindowController {
     public void addUserClicked(ActionEvent actionEvent) throws IOException {
         // ds.save(controller.getUser());
         Dialogs.<AddCustomerDialogController>showDialog("Aggiungi utente", "/fxml/AddUserDialog.fxml",
-                rootPane.getScene().getWindow(),
+                getRootWindow(),
                 null,
                 AddCustomerDialogController::confirmAndGet);
     }
@@ -264,7 +271,7 @@ public class MainWindowController {
     public void addAuthorClicked(ActionEvent actionEvent) throws IOException {
         Dialogs.<AddAuthorDialogController>showDialog("Aggiungi autore", "Add",
                 "/fxml/AddAuthorDialog.fxml",
-                rootPane.getScene().getWindow(),
+                getRootWindow(),
                 null,
                 controller -> {
                     Author a = controller.confirmAndGet();
@@ -281,7 +288,7 @@ public class MainWindowController {
     public void addPublisherClicked() throws IOException {
         Dialogs.<AddPublisherDialogController>showDialog("Aggiungi editore", "Ok",
                 "/fxml/AddPublisherDialog.fxml",
-                rootPane.getScene().getWindow(),
+                getRootWindow(),
                 null,
                 controller -> {
                     var p = controller.confirmAndGet();
@@ -298,7 +305,7 @@ public class MainWindowController {
     @FXML
     public void showReservedBooksClicked(MouseEvent mouseEvent) throws IOException {
         Dialogs.<LentBooksDialogController>showDialog("Prestiti", "Ok", "/fxml/ReservedBookDialog.fxml",
-                rootPane.getScene().getWindow(),
+                getRootWindow(),
                 null,
                 controller -> refreshListView());
     }
@@ -311,7 +318,7 @@ public class MainWindowController {
     @FXML
     public void onAboutClicked() throws IOException {
         Dialogs.<AboutDialogController>showDialog("About", "Ok", "/fxml/About.fxml",
-                rootPane.getScene().getWindow(),
+                getRootWindow(),
                 null, null);
     }
 
@@ -324,7 +331,7 @@ public class MainWindowController {
     public void addBookClicked() throws IOException {
         var book = new BookImpl();
 
-        Dialogs.<ModifyBookDialogController>showDialog("Nuovo libro", "Aggiungi", "/fxml/ModifyBookDialog.fxml", rootPane.getScene().getWindow(),
+        Dialogs.<ModifyBookDialogController>showDialog("Nuovo libro", "Aggiungi", "/fxml/ModifyBookDialog.fxml", getRootWindow(),
                 controller -> controller.setBook(book, false),
                 controller -> {
                     controller.confirmAndGet();
@@ -340,15 +347,15 @@ public class MainWindowController {
      */
     @FXML
     public void onSearchUpdateClicked() {
-        Dialogs.showAlertDialog("Non ci sono aggiornamenti disponibili", rootPane.getScene().getWindow());
+        Dialogs.showAlertDialog("Non ci sono aggiornamenti disponibili", getRootWindow());
     }
 
 
-    // =============== ***** private methods **** ================== //
 
+    // =============== ***** private methods **** ================== //
     private void viewPdfDialog(Loan pdfGenerator) {
         Dialogs.showInfoDialog("Vuoi visualizzare il pdf relativo al prestito?",
-                rootPane.getScene().getWindow(),
+                getRootWindow(),
                 () -> {
                     try {
                         File f = pdfGenerator.generatePdfFile();
@@ -370,8 +377,8 @@ public class MainWindowController {
         availabilityText.setText(item.isAvailable() ? item.getQuantity() + " Disponibili" : "Prestato");
         prenotaButton.setDisable(!item.isAvailable());
     }
-    // Configures the filters displayed in the left section.
 
+    // Configures the filters displayed in the left section.
     private void initFilters() {
         filtersTreeView.setCellFactory(FilterTreeCell::new);
 
@@ -438,11 +445,18 @@ public class MainWindowController {
         changeItemDetail(listView.getSelectionModel().getSelectedItem());
     }
 
+    private Window getRootWindow() {
+        return rootPane.getScene().getWindow();
+    }
+
     private static List<BookListItem> getFilteredItems() {
         return allBooks.stream()
                 .filter(book -> selectedFilters.stream()
                         .anyMatch(filter -> filter.applyTo(book)) || selectedFilters.isEmpty())
                 .collect(Collectors.toList());
+
+
+
 //        var satisfiedCategories = new HashSet<FilterCategory>();
 //        List<BookListItem> filteredBooks = new ArrayList<>();
 //
@@ -474,6 +488,6 @@ public class MainWindowController {
 //                })
 //                .collect(Collectors.toList());
     }
-    // ============ ***** private methods start ***** ============ //
 
+    // ============ ***** private methods start ***** ============ //
 }
