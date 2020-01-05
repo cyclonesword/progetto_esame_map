@@ -3,6 +3,8 @@ package com.biblioteca.ui.items;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -23,6 +25,12 @@ public class FilterItem {
 
     private TreeItem<FilterItem> treeItem;
 
+    public enum FilterCategory {
+        AUTHOR, CATEGORY, PUBLISHER, FORMAT, ROOT
+    }
+
+    private FilterCategory filterCategory;
+
     public FilterItem(String name, Image image, Predicate<ListItem> filterStrategy) {
         this.name = name;
         this.image = image;
@@ -31,10 +39,15 @@ public class FilterItem {
         treeItem = new TreeItem<>(this);
     }
 
-    public FilterItem(String name, Predicate<ListItem> filterStrategy) {
+    public FilterItem(String name, FilterCategory category, Predicate<ListItem> filterStrategy) {
         this.name = name;
+        this.filterCategory = category;
         this.filterStrategy = filterStrategy;
         treeItem = new TreeItem<>(this);
+    }
+
+    public FilterItem(String name, Predicate<ListItem> filterStrategy) {
+        this(name, FilterCategory.ROOT, filterStrategy);
     }
 
     public FilterItem(String name, String imagePath) {
@@ -105,5 +118,13 @@ public class FilterItem {
     @Override
     public String toString() {
         return "Filter: " + name;
+    }
+
+    /**
+     * The category of the filter
+     * @return
+     */
+    public FilterCategory getFilterCategory() {
+        return filterCategory;
     }
 }

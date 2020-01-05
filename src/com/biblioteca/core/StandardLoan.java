@@ -1,9 +1,13 @@
 package com.biblioteca.core;
 
-import com.biblioteca.datasource.DataSource;
+import com.biblioteca.ui.utils.LoanPDFGenerator;
+import com.biblioteca.ui.utils.PDFGenerator;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Comparator;
+import java.util.Objects;
+
 
 /**
  * The reference implementation for the {@link Loan} interface.
@@ -18,7 +22,8 @@ public class StandardLoan implements Loan {
     private LocalDate expectedReturnDate;
     private String status;
 
-    private static final DataSource ds = DataSource.getDefault();
+    // Use the default PDFGenerator implementation if no other generator will be assigned (with the setter method).
+    private PDFGenerator pdfGenerator = new LoanPDFGenerator(this);
 
     public StandardLoan(int id, Customer customer, Book book, LocalDate loanDate, LocalDate expectedReturnDate) {
         this.id = id;
@@ -28,14 +33,6 @@ public class StandardLoan implements Loan {
         this.expectedReturnDate = expectedReturnDate;
     }
 
-    @Override
-    public void confirm() {
-        int lastId = ds.getLoans().stream().map(Loan::getLoanId).max(Comparator.naturalOrder()).get();
-        setId(lastId + 1);
-        ds.save(this);
-        book.decrementQuantity();
-        customer.addLoan(this);
-    }
 
     @Override
     public Book getBook() {
@@ -83,6 +80,41 @@ public class StandardLoan implements Loan {
     }
 
     public void setStatus(String status) {
+        if (!status.equals(Loan.STATUS_NOT_RETURNED) && !status.equals(Loan.STATUS_RETURNED))
+            throw new IllegalArgumentException("Status can be only Loan.STATUS_NOT_RETURNED or Loan.STATUS_RETURNED .");
+
         this.status = status;
+    }
+
+    @Override
+    public void setAsReturned() {
+        if (status.equals(STATUS_NOT_RETURNED)) {
+            setStatus(Loan.STATUS_RETURNED);
+            setReturnDate(LocalDate.now());
+            getBook().incrementQuantityBy(1);
+            getCustomer().removeLoan(this);
+        }
+    }
+
+    @Override
+    public File generatePdfFile() throws IOException {
+        return pdfGenerator.generatePdfFile();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Loan)) return false;
+        Loan that = (Loan) o;
+        return id == that.getLoanId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    public void setPdfGenerator(PDFGenerator pdfGenerator) {
+        this.pdfGenerator = pdfGenerator;
     }
 }

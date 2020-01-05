@@ -24,7 +24,7 @@ public class AddPublisherDialogController implements DialogController<Publisher>
     public boolean checkData() {
         var test1 = name.getText().isEmpty();
 
-        var test2 = DataSource.getDefault()
+        var test2 = DataSource.getInstance()
                 .getPublishers()
                 .stream()
                 .anyMatch(p -> p.getName().toLowerCase().equals(name.getText().toLowerCase()));

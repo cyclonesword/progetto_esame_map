@@ -1,14 +1,23 @@
 package com.biblioteca.ui.controller;
 
+import com.biblioteca.core.Loan;
 import com.biblioteca.core.facade.Library;
 import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.items.TableViewLoanRow;
+import com.biblioteca.ui.utils.Dialogs;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.DirectoryChooser;
 
-import java.time.LocalDate;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 /**
@@ -26,7 +35,9 @@ public class LentBooksDialogController implements DialogController {
     @FXML
     private TableView<TableViewLoanRow> tableView;
 
-    private DataSource ds = DataSource.getDefault();
+    private DataSource ds = DataSource.getInstance();
+    private Library library = Library.getInstance();
+
 
     public void initialize() {
         var items = FXCollections.observableArrayList(ds.getLoans()
@@ -45,44 +56,82 @@ public class LentBooksDialogController implements DialogController {
         tableView.setItems(items);
 
         MenuItem returnedMenuItem = new MenuItem("Segna come restituito");
-        returnedMenuItem.setOnAction(event -> {
-            var i = tableView.getSelectionModel().getSelectedItem();
-            i.getCustomer().removeLoan(i);
-            if (i.getStatus().equals("not-returned")) {
-                i.setReturnDate(LocalDate.now());
-                i.setStatus("returned");
-                i.getBook().setQuantity(i.getBook().getQuantity() + 1);
-                tableView.refresh();
-            }
-        });
-
+        MenuItem downloadPDF = new MenuItem("Scarica PDF");
         MenuItem deleteMenuItem = new MenuItem("Elimina");
-        deleteMenuItem.setOnAction(event -> {
-            var i = tableView.getSelectionModel().getSelectedItem();
-            i.getCustomer().removeLoan(i);
-            Library.getInstance().removeLoan(i.getLoan());
-            if (i.getStatus().equals("not-returned"))
-                i.getBook().setQuantity(i.getBook().getQuantity() + 1);
-            items.remove(i);
+
+        ContextMenu menu = new ContextMenu(downloadPDF, returnedMenuItem, deleteMenuItem);
+        tableView.setContextMenu(menu);
+
+        returnedMenuItem.setOnAction(event -> {
+            getSelectedLoan().setAsReturned();
             tableView.refresh();
         });
 
-        ContextMenu menu = new ContextMenu(returnedMenuItem, deleteMenuItem);
-        tableView.setContextMenu(menu);
-        tableView.setOnMouseClicked(e -> {
-            var selected = tableView.getSelectionModel().getSelectedItem();
-            if (selected == null) {
-                tableView.getSelectionModel().selectFirst();
-            } else if (selected.getStatus().equals("returned")) {
-                menu.getItems().remove(returnedMenuItem);
-            } else {
-                menu.getItems().add(returnedMenuItem);
-            }
+        deleteMenuItem.setOnAction(event -> {
+            removeLoan(items, getSelectedLoan());
+            tableView.refresh();
         });
+
+        DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle("Seleziona cartella");
+
+        downloadPDF.setOnAction(event -> {
+            var directory = chooser.showDialog(tableView.getScene().getWindow());
+
+            if (directory != null)
+                copyFileTo(directory);
+        });
+
+        tableView.setOnMouseClicked(e -> {
+            var selected = getSelectedLoan();
+
+            if (selected == null)
+                tableView.getSelectionModel().selectFirst();
+            else if (selected.getStatus().equals(Loan.STATUS_RETURNED)) {
+                menu.getItems().remove(returnedMenuItem);
+                menu.getItems().remove(downloadPDF);
+            }
+            else {
+                menu.getItems().add(returnedMenuItem);
+                menu.getItems().add(downloadPDF);
+            }
+
+        });
+    }
+
+    private void copyFileTo(File source) {
+        FileInputStream fis = null;
+
+        try {
+            File file = getSelectedLoan().generatePdfFile();
+            fis = new FileInputStream(file);
+            Path target = Paths.get(source.getPath() + File.separator + "loan_" + file.getName());
+            Files.copy(fis, target);
+            showFileSavedDialog(source);
+            fis.close();
+        } catch (IOException e) {
+            Dialogs.showAlertDialog("Si è verificato un errore nel salvataggio del file. (Un file con lo stesso nome potrebbe già esistere nella cartella selezionata)", tableView.getScene().getWindow());
+            try { fis.close(); } catch (Exception ignored) { }
+        }
+    }
+
+    private void showFileSavedDialog(File dir) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "File copiato correttamente nella cartella " + dir.getName(), ButtonType.OK);
+        alert.initOwner(tableView.getScene().getWindow());
+        alert.showAndWait();
     }
 
     @Override
     public Object confirmAndGet() {
         throw new UnsupportedOperationException();
+    }
+
+    private TableViewLoanRow getSelectedLoan() {
+        return tableView.getSelectionModel().getSelectedItem();
+    }
+
+    private void removeLoan(ObservableList<TableViewLoanRow> items, TableViewLoanRow loan) {
+        library.removeLoan(loan);
+        items.remove(loan);
     }
 }

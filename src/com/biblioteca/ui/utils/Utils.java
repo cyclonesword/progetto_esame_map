@@ -1,5 +1,10 @@
 package com.biblioteca.ui.utils;
 
+import com.biblioteca.core.Loan;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -63,5 +68,6 @@ public final class Utils {
 
         return true;
     }
+
 
 }

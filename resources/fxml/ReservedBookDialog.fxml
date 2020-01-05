@@ -24,7 +24,7 @@
         </font>
     </Label>
 
-    <TableView GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.columnIndex="0" fx:id="tableView" prefWidth="600">
+    <TableView GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.columnIndex="0" fx:id="tableView" prefWidth="620">
         <GridPane.margin>
             <Insets top="5" />
         </GridPane.margin>
@@ -35,7 +35,7 @@
             <TableColumn fx:id="id" text="Cod." />
             <TableColumn fx:id="status" text="Status" prefWidth="100" />
             <TableColumn fx:id="reservedBook" text="Libro" />
-            <TableColumn fx:id="user" text="Cliente" />
+            <TableColumn fx:id="user" text="Tesserato" />
             <TableColumn fx:id="startDate" text="Data Inizio" prefWidth="100" />
             <TableColumn fx:id="expectedReturnDate" text="Data Restituz." prefWidth="100" />
         </columns>

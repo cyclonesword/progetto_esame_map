@@ -63,7 +63,7 @@ public class RegisterEmployeeDialogController implements DialogController<Employ
 
 
     public void initialize() {
-        var lastNum = DataSource.getDefault().getEmployees().stream()
+        var lastNum = DataSource.getInstance().getEmployees().stream()
                 .map(Employee::getEmployeeNumber)
                 .max(Comparator.naturalOrder())
                 .get();

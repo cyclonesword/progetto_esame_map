@@ -60,13 +60,29 @@ public class Dialogs {
 
     /**
      * Shows a simple Alert Dialog with a given message.
-     * @param message
-     * @param owner
+     * @param message The message to display in the alert dialog.
+     * @param owner Return the alert dialog for further usage.
      */
     public static void showAlertDialog(String message, Window owner) {
-        Alert alert = new Alert(Alert.AlertType.WARNING, message, ButtonType.OK);
-        alert.initOwner(owner);
+        Alert alert = getDialog(Alert.AlertType.WARNING, message, owner);
         alert.showAndWait();
+    }
+
+    public static void showInfoDialog(String message, Window owner, Runnable doSomething) {
+        var alert = getDialog(Alert.AlertType.INFORMATION, message,owner);
+        alert.getButtonTypes().add(ButtonType.CANCEL);
+        alert.showAndWait();
+        if(alert.getResult().equals(ButtonType.OK)) {
+            if(doSomething != null)
+                doSomething.run();
+        }
+    }
+
+
+    private static Alert getDialog(Alert.AlertType type, String message, Window owner) {
+        Alert alert = new Alert(type, message, ButtonType.OK);
+        alert.initOwner(owner);
+        return alert;
     }
 
 

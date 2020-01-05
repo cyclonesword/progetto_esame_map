@@ -7,37 +7,38 @@ import com.biblioteca.core.employee.Employee;
 import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.utils.Utils;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Comparator;
 
 /**
  * This is a Facade class that encapsulate the business logic to perform various operations.<br><br>
  * For instance, creating a new Employee involves creating a new unique id, the creation of the new object and saving it to the database: <br><br>
-    <pre>
-       var id = ds.getEmployees().stream()
-              .map(Employee::getEmployeeNumber)
-              .map(Integer::parseInt)
-              .max(Comparator.naturalOrder())
-              .get();
-
-      Employee admin = new Employee.Builder()
-              .setId(String.valueOf(id + 1))
-              .setPassword(password)
-              .setFirstName(firstName)
-              .setLastName(lastName)
-              .setEmail(email)
-              .setEmployeeType("admin")
-              .build();
-
-      ds.save(admin);
-   </pre>
+ * <pre>
+ * var id = ds.getEmployees().stream()
+ * .map(Employee::getEmployeeNumber)
+ * .map(Integer::parseInt)
+ * .max(Comparator.naturalOrder())
+ * .get();
  *
- *     The code above can be simplified by calling the method<br><br>
-  <pre>
-      Library.getInstance().newEmployee(firstName, lastName, ...);
-  </pre>
+ * Employee admin = new Employee.Builder()
+ * .setId(String.valueOf(id + 1))
+ * .setPassword(password)
+ * .setFirstName(firstName)
+ * .setLastName(lastName)
+ * .setEmail(email)
+ * .setEmployeeType("admin")
+ * .build();
+ *
+ * ds.save(admin);
+ * </pre>
+ * <p>
+ * The code above can be simplified by calling the method<br><br>
+ * <pre>
+ * Library.getInstance().newEmployee(firstName, lastName, ...);
+ * </pre>
  * This Facade class has been created to simplify all this operations.
  * See the relative methods for more information.
  */
@@ -46,10 +47,11 @@ public class Library {
     private Employee loggedEmployee;
 
     private static Library instance;
-    private static final DataSource ds = DataSource.getDefault();
+    private static final DataSource ds = DataSource.getInstance();
 
     /**
      * The Singleton instance of this Facade class.
+     *
      * @return The Singleton instance of this Facade class.
      */
     public static Library getInstance() {
@@ -75,13 +77,14 @@ public class Library {
                 .setLoanDate(start)
                 .setExpectedReturnDate(end)
                 .setCustomer(customer)
-                .setStatus("not-returned")
+                .setStatus(Loan.STATUS_NOT_RETURNED)
                 .setBook(book)
                 .build();
 
         ds.save(loan);
 
-        book.setQuantity(book.getQuantity() - 1);
+        book.decrementQuantityBy(1);
+        customer.addLoan(loan);
 
         return loan;
     }
@@ -94,12 +97,12 @@ public class Library {
      */
     public Author newAuthor(String name) {
 
-        var id = DataSource.getDefault().getAuthors()
+        var id = DataSource.getInstance().getAuthors()
                 .stream()
                 .map(Author::getId)
                 .max(Comparator.naturalOrder()).get() + 1;
 
-        AuthorImpl author = new AuthorImpl(id, name);
+        Author author = new AuthorImpl(id, name);
         ds.save(author);
         return author;
     }
@@ -155,6 +158,7 @@ public class Library {
 
     /**
      * Creates a new Publisher instance and save it to the database.
+     *
      * @param name The publissher name
      * @return The newly created publisher
      */
@@ -173,6 +177,7 @@ public class Library {
 
     /**
      * Removes the given book.
+     *
      * @param book The book to be removed
      */
     public void removeBook(Book book) {
@@ -181,10 +186,22 @@ public class Library {
 
     /**
      * Removes the given loan.
+     *
      * @param loan The loan to be removed
      */
     public void removeLoan(Loan loan) {
+
+        if (loan.getStatus().equals(Loan.STATUS_NOT_RETURNED))
+            loan.getBook().incrementQuantityBy(1);
+
         ds.delete(loan);
+
+        try {
+            Files.delete(Paths.get(ds.getApplicationFilesRootPath() + "pdf" + File.separator + loan.getLoanId() + ".pdf"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void setLoggedEmployee(Employee loggedEmployee) {

@@ -6,31 +6,33 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <GridPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.biblioteca.ui.controller.LoanDialogController"
-            vgap="10"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.biblioteca.ui.controller.LoanDialogController"
+          vgap="10"
           fx:id="rootNode"
-            prefHeight="300.0" prefWidth="400.0">
+          prefHeight="300.0" prefWidth="400.0">
 
     <VBox GridPane.rowIndex="0" GridPane.columnIndex="0" spacing="10">
-        <Label text="Libro: (Codice - Nome)" />
-        <TextField fx:id="reservedBook" disable="true" />
+        <Label text="Libro: (Codice - Nome)"/>
+        <TextField fx:id="reservedBook" disable="true"/>
     </VBox>
 
     <VBox GridPane.rowIndex="1" GridPane.columnIndex="0">
-        <Label text="Utente:" />
-        <ComboBox fx:id="usersCombobox" />
+        <Label text="Utente:"/>
+        <ComboBox fx:id="usersCombobox"/>
     </VBox>
 
     <VBox GridPane.rowIndex="2" GridPane.columnIndex="0">
-        <Label text="Data inizio prestito:" />
-        <DatePicker fx:id="startDatePicker" />
+        <Label text="Data inizio prestito:"/>
+        <DatePicker fx:id="startDatePicker"/>
     </VBox>
 
     <VBox GridPane.rowIndex="3" GridPane.columnIndex="0">
-        <Label text="Data fine prestito:" />
-        <DatePicker fx:id="endDatePicker" />
+        <Label text="Data fine prestito:"/>
+        <DatePicker fx:id="endDatePicker"/>
     </VBox>
 
 </GridPane>

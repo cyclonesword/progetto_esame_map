@@ -6,7 +6,10 @@ import com.biblioteca.core.Loan;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 
@@ -85,11 +88,6 @@ public class TableViewLoanRow implements Loan {
     }
 
     @Override
-    public void confirm() {
-        loan.confirm();
-    }
-
-    @Override
     public int getLoanId() {
         return loan.getLoanId();
     }
@@ -122,10 +120,17 @@ public class TableViewLoanRow implements Loan {
         this.status.set(status);
     }
 
-//    @Override
-//    public void confirm() {
-//        loan.confirm();
-//    }
+    @Override
+    public File generatePdfFile() throws IOException {
+        return loan.generatePdfFile();
+    }
+
+    @Override
+    public void setAsReturned() {
+        loan.setAsReturned();
+        status.set(Loan.STATUS_RETURNED);
+    }
+
 
     @Override
     public String toString() {
@@ -138,5 +143,18 @@ public class TableViewLoanRow implements Loan {
                 .add("expectedReturnDate=" + expectedReturnDate)
                 .add("endDate=" + status)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Loan)) return false;
+        Loan that = (Loan) o;
+        return loan.getLoanId() == that.getLoanId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(loan.getLoanId());
     }
 }

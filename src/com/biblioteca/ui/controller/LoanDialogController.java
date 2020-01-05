@@ -20,7 +20,7 @@ import java.time.LocalDate;
 /**
  * The controller class associated to the New Loan dialog.
  */
-public class LoanDialogController implements DialogController <Loan> {
+public class LoanDialogController implements DialogController<Loan> {
     @FXML
     public GridPane rootNode;
 
@@ -36,7 +36,7 @@ public class LoanDialogController implements DialogController <Loan> {
     @FXML
     private ComboBox<Customer> usersCombobox;
 
-    private DataSource ds = DataSource.getDefault();
+    private DataSource ds = DataSource.getInstance();
     private Book book;
 
     public void initialize() {
@@ -58,7 +58,9 @@ public class LoanDialogController implements DialogController <Loan> {
         startDatePicker.setValue(LocalDate.now());
 
         startDatePicker.valueProperty().addListener((observableValue, oldDate, newDate) -> {
-            endDatePicker.setValue(newDate);
+            if (endDatePicker.getValue().isBefore(newDate))
+                endDatePicker.setValue(newDate);
+
             endDatePicker.setDayCellFactory(d -> new DateCell() {
                 @Override
                 public void updateItem(LocalDate item, boolean empty) {
@@ -90,11 +92,11 @@ public class LoanDialogController implements DialogController <Loan> {
 
         var loans = customer.getLoans()
                 .stream()
-                .filter(l -> l.getStatus().equals("not-returned"))
+                .filter(loan -> loan.getStatus().equals(Loan.STATUS_NOT_RETURNED))
                 .count();
 
         if (loans >= 3) {
-            Dialogs.showAlertDialog("Limite di 3 prestiti raggiunto per l'utente "+customer.getFullName(), rootNode.getScene().getWindow());
+            Dialogs.showAlertDialog("Limite di 3 prestiti raggiunto per l'utente " + customer.getFullName(), rootNode.getScene().getWindow());
             return false;
         }
 
@@ -103,15 +105,13 @@ public class LoanDialogController implements DialogController <Loan> {
 
     /**
      * Confirm the data and creates a new loan .
+     *
      * @throws LoanDialogException
      */
     @Override
     public Loan confirmAndGet() throws LoanDialogException {
         final Customer selectedUser = usersCombobox.getSelectionModel().getSelectedItem();
-
-        var loan = Library.getInstance().newLoan(startDatePicker.getValue(), endDatePicker.getValue(), selectedUser, book);
-        selectedUser.addLoan(loan);
-        return loan;
+        return Library.getInstance().newLoan(startDatePicker.getValue(), endDatePicker.getValue(), selectedUser, book);
     }
 
     public static class LoanDialogException extends RuntimeException {

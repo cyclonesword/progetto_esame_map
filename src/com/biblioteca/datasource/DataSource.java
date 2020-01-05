@@ -52,6 +52,13 @@ public interface DataSource {
      */
     List<? extends Employee> getEmployees();
 
+
+    /**
+     * Returns the application's root path where files are saved.
+     * @return The root path with a system-dependent file separator at the end.
+     */
+    String getApplicationFilesRootPath();
+
     /**
      * Delete the given book from the database and from the current execution.
      * @param book the book to be deleted from the datasource.
@@ -59,7 +66,7 @@ public interface DataSource {
     void delete(Book book);
     /**
      * Delete the given loan from the database and from the current execution.
-     * @param loan
+     * @param loan The loan to store in the datasource
      */
     void delete(Loan loan);
 
@@ -103,7 +110,7 @@ public interface DataSource {
 
     /**
      * Save the given publisher to the database
-     * @param p
+     * @param p The publisher to store in the datasource
      */
     void save(Publisher p);
 
@@ -113,9 +120,10 @@ public interface DataSource {
     void saveAll();
 
     /**
-     * @return The default reference-implementation of the DataSource interface.
+     * Utility method that returns the default implementation of this interface.
+     * @return The default implementation of the DataSource interface.
      */
-    static DataSource getDefault() {
+    static DataSource getInstance() {
         return CSVDataSource.getInstance();
     }
 }

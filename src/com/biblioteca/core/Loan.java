@@ -1,11 +1,19 @@
 package com.biblioteca.core;
 
+import com.biblioteca.ui.utils.LoanPDFGenerator;
+import com.biblioteca.ui.utils.PDFGenerator;
+
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 
 /**
  * The <code>Loan</code> interface is responsible for managing the loan lifecycle of a book.<br>
  */
 public interface Loan {
+
+    String STATUS_NOT_RETURNED = "not-returned";
+    String STATUS_RETURNED = "returned";
 
     /**
      *
@@ -44,11 +52,6 @@ public interface Loan {
     void setReturnDate(LocalDate returnDate);
 
     /**
-     * Assigns a new id to this loan, add it to the loans list of the Customer.
-     */
-    void confirm();
-
-    /**
      *
      * @return The book associated with this loan
      */
@@ -56,15 +59,30 @@ public interface Loan {
 
     /**
      *
-     * @return The loan status. It can be "returned" or "not-returned"
+     * @return The loan status. It can be {@link Loan#STATUS_RETURNED} or {@link Loan#STATUS_NOT_RETURNED}
      */
     String getStatus();
 
     /**
      * Sets the status of the Book
-     * @param status The book status. Can be "returned" or "not-returned"
+     * @param status The book status. It can be {@link Loan#STATUS_RETURNED} or {@link Loan#STATUS_NOT_RETURNED}
      */
     void setStatus(String status);
+
+
+  //  File generatePdf() throws IOException;
+
+    /**
+     * Set this loan as completed, updating the return date and incrementing the book quantity by 1.
+     */
+    void setAsReturned();
+
+    /**
+     * Creates a new PDF File that describes the loan details and saves it in the default pdf files directory.
+     * @return The newly created PDF file
+     * @throws IOException If some error occurred during the file creation.
+     */
+    File generatePdfFile() throws IOException;
 
     /**
      * The Loan Builder using the standard, well-known design pattern "Builder"<br>
@@ -120,6 +138,8 @@ public interface Loan {
 
             StandardLoan standardLoan = new StandardLoan(id, customer, book, loanDate, expectedReturnDate);
             standardLoan.setStatus(status);
+            PDFGenerator pdfGenerator = new LoanPDFGenerator(standardLoan);
+            standardLoan.setPdfGenerator(pdfGenerator);
             return standardLoan;
 
         }

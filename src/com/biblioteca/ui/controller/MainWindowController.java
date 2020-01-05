@@ -3,6 +3,7 @@ package com.biblioteca.ui.controller;
 import com.biblioteca.core.Author;
 import com.biblioteca.core.Book;
 import com.biblioteca.core.BookImpl;
+import com.biblioteca.core.Loan;
 import com.biblioteca.core.facade.Library;
 import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.items.BookListItem;
@@ -16,6 +17,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -23,17 +28,23 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.biblioteca.ui.items.FilterItem.FilterCategory;
 
 /**
  * This controller class is responsible of all the behaviour management of the central window of the application.<br>
  * It is responsible for managing the user interaction with the UI.<br><br>
  * All methods with the annotation <code>@FXML</code> means that it is invoked by the JavaFX Runtime
  * when the user interacts with the UI. <br><br>
- *
+ * <p>
  * In the Model View Controller architectural pattern used here,
  * this class represents the Controller,
  * the MainWindow.fxml is the View and
@@ -79,9 +90,9 @@ public class MainWindowController {
 
     private static final ObservableList<BookListItem> allBooks = FXCollections.observableArrayList();
     private static final ObservableList<BookListItem> filteredItems = FXCollections.observableArrayList();
-    private static final DataSource ds = DataSource.getDefault();
     public static final Set<FilterItem> selectedFilters = new HashSet<>();
 
+    private final DataSource ds = DataSource.getInstance();
 
     /**
      * Initialize the ListView and the TreeView with initial data.
@@ -117,9 +128,10 @@ public class MainWindowController {
     }
 
     public void initCompleted() {
-        authenticatedEmployeeName.setText("Impiegato autenticato: "+ Library.getInstance().getLoggedEmployee().getFullName());
+        authenticatedEmployeeName.setText("Impiegato autenticato: " + Library.getInstance().getLoggedEmployee().getFullName());
     }
     // changes the content of the book detail section on the right
+
     /**
      * Invoked by the JavaFX Runtime when the user search a book in the search bar by pressing the search button.
      */
@@ -132,6 +144,7 @@ public class MainWindowController {
         filteredItems.clear();
         filteredItems.addAll(result);
     }
+
     /**
      * Invoked by the JavaFX Runtime when the user search a book in the search bar, pressing the Enter key of the keyboard.
      */
@@ -148,6 +161,7 @@ public class MainWindowController {
         }
 
     }
+
     /**
      * Invoked by the JavaFX Runtime when the user click onto the "Modify" button on the book detail right panel.
      * This method will open a new window dialog .
@@ -194,7 +208,7 @@ public class MainWindowController {
         final Book book = listView.getSelectionModel().getSelectedItem().getBook();
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                String.format("Sei sicuro di volere eliminare %s - %s?", book.getTitle(), book.getSubtitle()),
+                String.format("Sei sicuro di volere eliminare %s?", book.getTitle()),
                 ButtonType.YES, ButtonType.NO);
         alert.showAndWait();
 
@@ -221,10 +235,9 @@ public class MainWindowController {
                 rootPane.getScene().getWindow(),
                 controller -> controller.setLentBook(book),
                 controller -> {
-                    if (controller.checkData()) {
-                        controller.confirmAndGet();
-                        refreshListView();
-                    }
+                    var loan = controller.confirmAndGet();
+                    viewPdfDialog(loan);
+                    refreshListView();
                 });
     }
 
@@ -330,15 +343,21 @@ public class MainWindowController {
         Dialogs.showAlertDialog("Non ci sono aggiornamenti disponibili", rootPane.getScene().getWindow());
     }
 
-    /**
-     * Called by the FilterTreeCell class when the employee select a new filter from the left section of the application
-     */
-    public static void applyFilters() {
-        filteredItems.clear();
-        filteredItems.addAll(getFilteredItems());
-    }
 
     // =============== ***** private methods **** ================== //
+
+    private void viewPdfDialog(Loan pdfGenerator) {
+        Dialogs.showInfoDialog("Vuoi visualizzare il pdf relativo al prestito?",
+                rootPane.getScene().getWindow(),
+                () -> {
+                    try {
+                        File f = pdfGenerator.generatePdfFile();
+                        Desktop.getDesktop().open(f);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
 
     private void changeItemDetail(ListItem item) {
         if (item == null)
@@ -351,8 +370,8 @@ public class MainWindowController {
         availabilityText.setText(item.isAvailable() ? item.getQuantity() + " Disponibili" : "Prestato");
         prenotaButton.setDisable(!item.isAvailable());
     }
-
     // Configures the filters displayed in the left section.
+
     private void initFilters() {
         filtersTreeView.setCellFactory(FilterTreeCell::new);
 
@@ -374,7 +393,7 @@ public class MainWindowController {
                 .addAll(ds.getCategories()
                         .stream()
                         .sorted()
-                        .map(c -> new FilterItem(c.getName(), item -> item.getCategories().contains(c)))
+                        .map(c -> new FilterItem(c.getName(), FilterCategory.CATEGORY, item -> item.getCategories().contains(c)))
                         .map(FilterItem::getTreeItem)
                         .collect(Collectors.toList()));
 
@@ -383,7 +402,7 @@ public class MainWindowController {
                 .addAll(ds.getAuthors()
                         .stream()
                         .sorted()
-                        .map(author -> new FilterItem(author.getName(), item -> item.getAuthors().contains(author)))
+                        .map(author -> new FilterItem(author.getName(), FilterCategory.AUTHOR, item -> item.getAuthors().contains(author)))
                         .map(FilterItem::getTreeItem)
                         .collect(Collectors.toList()));
 
@@ -392,7 +411,7 @@ public class MainWindowController {
                 .addAll(ds.getPublishers()
                         .stream()
                         .sorted()
-                        .map(publisher -> new FilterItem(publisher.getName(), item -> item.getPublisher() == publisher))
+                        .map(publisher -> new FilterItem(publisher.getName(), FilterCategory.PUBLISHER, item -> item.getPublisher() == publisher))
                         .map(FilterItem::getTreeItem)
                         .collect(Collectors.toList()));
 
@@ -400,10 +419,18 @@ public class MainWindowController {
                 .getChildren()
                 .addAll(ds.getFormats()
                         .stream()
-                        .map(format -> new FilterItem(format, item -> item.getFormat().equalsIgnoreCase(format)))
+                        .map(format -> new FilterItem(format, FilterCategory.FORMAT, item -> item.getFormat().equalsIgnoreCase(format)))
                         .map(FilterItem::getTreeItem)
                         .collect(Collectors.toList()));
 
+    }
+
+    /**
+     * Called by the FilterTreeCell class when the employee select a new filter from the left section of the application
+     */
+    public static void applyFilters() {
+        filteredItems.clear();
+        filteredItems.addAll(getFilteredItems());
     }
 
     private void refreshListView() {
@@ -414,8 +441,38 @@ public class MainWindowController {
     private static List<BookListItem> getFilteredItems() {
         return allBooks.stream()
                 .filter(book -> selectedFilters.stream()
-                        .allMatch(filter -> filter.applyTo(book)))
+                        .anyMatch(filter -> filter.applyTo(book)) || selectedFilters.isEmpty())
                 .collect(Collectors.toList());
+//        var satisfiedCategories = new HashSet<FilterCategory>();
+//        List<BookListItem> filteredBooks = new ArrayList<>();
+//
+//        for (FilterItem f : selectedFilters) {
+//            if(!satisfiedCategories.contains(f.getFilterCategory())) {
+//                allBooks.forEach(book -> {
+//
+//                   if(f.applyTo(book))  {
+//                       satisfiedCategories.add(f.getFilterCategory());
+//                       filteredBooks.add(book);
+//                   }
+//
+//                });
+//            }
+//        }
+//        return filteredBooks;
+
+//        return allBooks.stream()
+//                .filter(book -> {
+//                    selectedFilters
+//                            .stream()
+//                            .filter(f -> !satisfiedCategories.contains(f.getFilterCategory()))
+//                            .forEach(filterItem -> {
+//                                var filterResult = filterItem.applyTo(book);
+//                                if(filterResult) {
+//                                    satisfiedCategories.add(filterItem.getFilterCategory());
+//                                }
+//                            });
+//                })
+//                .collect(Collectors.toList());
     }
     // ============ ***** private methods start ***** ============ //
 

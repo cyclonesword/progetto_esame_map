@@ -163,8 +163,13 @@ public class BookImpl implements Book {
     }
 
     @Override
-    public void decrementQuantity() {
-        quantity -= 1;
+    public void decrementQuantityBy(int num) {
+        quantity -= num;
+    }
+
+    @Override
+    public void incrementQuantityBy(int quantity) {
+        this.quantity += quantity;
     }
 
     @Override

@@ -3,10 +3,6 @@ package com.biblioteca.core.auth;
 import com.biblioteca.core.employee.Employee;
 import com.biblioteca.ui.utils.Utils;
 
-import java.net.PasswordAuthentication;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Base interface to perform authentication with various strategies. <br><br>
  * The <b>Strategy Design pattern</b> is applied here: <br><br>
@@ -24,6 +20,14 @@ public interface Authentication {
      */
     Employee authenticate() throws InvalidCredentialsException;
 
+
+    // ==== Factory method here ====/
+    // ====  Nota per il prof. Fici ==== //
+    // Il metodo static 'from' qui sotto, può essere visto come un Factory method in quanto restituisce
+    // la giusta istanza di Authentication scegliendo l'implementazione di essa più appropriata.
+    // Ad esempio, Authentication.from("miaemail@emai.com", "miapassword") restituisce una istanza di tipo EmailPasswordAuthentication,
+    // mentre Authentication.from("0579910", "miapassword") restituisce una istanza di tipo CodePasswordAuthentication
+    // ====================================
     /**
      * Utility method to provide a valid Authentication instance for the given employee code or email and password.
      *

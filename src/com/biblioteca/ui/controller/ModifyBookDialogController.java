@@ -77,7 +77,7 @@ public class ModifyBookDialogController implements DialogController<Book> {
     private List<Author> authors = new ArrayList<>();
     private List<Category> categories = new ArrayList<>();
 
-    private DataSource ds = DataSource.getDefault();
+    private DataSource ds = DataSource.getInstance();
     private Dialog<ButtonType> dialog;
 
     private File selectedImage;

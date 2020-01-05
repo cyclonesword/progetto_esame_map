@@ -25,7 +25,7 @@ public class AddAuthorDialogController implements DialogController<Author> {
     @Override
     public boolean checkData() {
         var test1 = name.getText().isEmpty();
-        var test2 = DataSource.getDefault()
+        var test2 = DataSource.getInstance()
                 .getAuthors()
                 .stream()
                 .anyMatch(a -> a.getName().toLowerCase().equals(name.getText().toLowerCase()));

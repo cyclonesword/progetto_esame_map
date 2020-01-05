@@ -3,7 +3,6 @@ package com.biblioteca.datasource;
 import com.biblioteca.core.*;
 import com.biblioteca.core.builder.BookBuilder;
 import com.biblioteca.core.builder.EmployeeBuilder;
-import com.biblioteca.core.builder.StandardBookBuilder;
 import com.biblioteca.core.employee.Employee;
 import com.biblioteca.ui.start.ApplicationStart;
 import com.biblioteca.ui.utils.BookImage;
@@ -45,7 +44,6 @@ class CSVDataSource implements DataSource {
     private List<? extends Category> categories;
     private List<Customer> customers;
     private String classathImagesFolder = "/images/";
-//    private List<String> formats = List.of("Paper Book", "ePub", "PDF", "Audiobook");
     private List<Loan> loans;
     private List<Employee> employees;
 
@@ -181,6 +179,11 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
         }
 
         return employees;
+    }
+
+    @Override
+    public String getApplicationFilesRootPath() {
+        return basePath;
     }
 
     @Override

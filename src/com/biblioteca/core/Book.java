@@ -168,7 +168,9 @@ public interface Book {
 
     /**
      * Decrement the stock quantity by 1.
+     * @param num
      */
-    void decrementQuantity();
+    void decrementQuantityBy(int num);
 
+    void incrementQuantityBy(int i);
 }

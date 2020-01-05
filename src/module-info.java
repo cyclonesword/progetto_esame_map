@@ -3,6 +3,8 @@ module Progetto {
     requires javafx.base;
     requires javafx.fxml;
     requires javafx.controls;
+    requires itextpdf;
+    requires java.desktop;
 
     opens com.biblioteca.core;
     opens com.biblioteca.core.auth;
