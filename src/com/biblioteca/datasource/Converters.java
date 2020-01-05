@@ -3,8 +3,6 @@ package com.biblioteca.datasource;
 import com.biblioteca.core.*;
 import com.biblioteca.core.employee.Employee;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.stream.Collectors;
 
 public class Converters {
@@ -17,7 +15,7 @@ public class Converters {
 
     public static Converter<Category> getCategoryConverter() {
         return categories -> categories.stream()
-                .map(cat -> cat.getId() + "," + cat.getName())
+                .map(cat -> cat.getId() + "," + filter(cat.getName()))
                 .collect(Collectors.joining("\n"));
     }
 
@@ -43,8 +41,8 @@ public class Converters {
         return entities -> entities.stream()
                 .map(customer -> String.format("%d,%s,%s,%s,%s,%s",
                         customer.getId(),
-                        customer.getFirstName(),
-                        customer.getLastName(),
+                        filter(customer.getFirstName()),
+                        filter(customer.getLastName()),
                         customer.getEmail(),
                         customer.getFiscalCode(),
                         customer.getPhoneNumber()))
@@ -65,5 +63,9 @@ public class Converters {
                         employee.getLastName(),
                         employee.getEmail()))
                 .collect(Collectors.joining("\n"));
+    }
+
+    static String filter(String string) {
+        return string.replace(",", "__").replace("\n", " ");
     }
 }

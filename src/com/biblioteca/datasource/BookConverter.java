@@ -7,10 +7,14 @@ import com.biblioteca.core.Category;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.biblioteca.datasource.Converters.filter;
+
+
 /**
  * Serialize Books to a String in CSV format.
  */
 class BookConverter implements Converter<Book> {
+
     @Override
     public String convert(List<? extends Book> entities) {
         return entities.stream()
@@ -29,11 +33,11 @@ class BookConverter implements Converter<Book> {
 
                     sb.append(book.getId());
                     sb.append(",");
-                    sb.append(book.getTitle());
+                    sb.append(filter(book.getTitle()));
                     sb.append(",");
-                    sb.append(book.getSubtitle());
+                    sb.append(filter(book.getSubtitle()));
                     sb.append(",");
-                    sb.append(book.getDescription());
+                    sb.append(filter(book.getDescription()));
                     sb.append(",");
                     sb.append("[" + authors + "]");
                     sb.append(",");

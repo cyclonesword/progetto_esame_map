@@ -173,8 +173,8 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
                     EmployeeBuilder.getDefault()
                             .setId(Integer.parseInt(line[0]))
                             .setPassword(line[1])
-                            .setFirstName(line[2])
-                            .setLastName(line[3])
+                            .setFirstName(replaceUnderscore(line[2]))
+                            .setLastName(replaceUnderscore(line[3]))
                             .setEmail(line[4])
                             .build());
         }
@@ -224,9 +224,9 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
 
                 return BookBuilder.getDefault()
                         .setId(Integer.parseInt(line[0]))
-                        .setTitle(line[1])
-                        .setSubTitle(line[2])
-                        .setDescription(line[3])
+                        .setTitle(replaceUnderscore(line[1]))
+                        .setSubTitle(replaceUnderscore(line[2]))
+                        .setDescription(replaceUnderscore(line[3]))
                         .setAuthors(auths)
                         .setYear(Integer.parseInt(line[5].trim()))
                         .setPublisher(publisher)
@@ -334,9 +334,9 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
 
         String path = basePathCsv + csvFileName;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)))) {
-
-            while ((line = br.readLine()) != null)
+            while ((line = br.readLine()) != null) {
                 lines.add(line.split(","));
+            }
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -364,6 +364,10 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
     // Utility method to get all IDs splitted by the ; separator and removing the [] parenthesis.
     private List<String> getIDs(String s) {
         return List.of(s.replaceAll("[\\[\\] ]", "").split(";"));
+    }
+
+    private String replaceUnderscore(String string) {
+        return string.replace("__", ",");
     }
 
 }

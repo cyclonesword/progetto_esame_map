@@ -21,6 +21,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ScrollPane?>
 <BorderPane fx:id="rootPane" prefHeight="600"
             prefWidth="800" xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -144,7 +145,7 @@
             </padding>
             <ImageView fx:id="bookDetailImageView"
                        GridPane.halignment="CENTER"
-                       fitWidth="150"
+                       fitWidth="130"
                        preserveRatio="true"
                        GridPane.columnIndex="0"
                        GridPane.rowIndex="0"
@@ -157,12 +158,14 @@
                     <Font name="AvenirLTStd-Medium" size="17.0"/>
                 </font>
             </Label>
-            <Label fx:id="bookDetailDescription" GridPane.columnIndex="0" GridPane.rowIndex="2" wrapText="true"
-                   GridPane.valignment="TOP" GridPane.halignment="CENTER" maxWidth="220" >
-                <font>
-                    <Font name="AvenirLTStd-Roman" size="14.0"/>
-                </font>
-            </Label>
+            <ScrollPane GridPane.columnIndex="0" GridPane.rowIndex="2" prefHeight="190" maxHeight="280" prefWidth="230" style="-fx-background-color: white; -fx-border-color: white;">
+                <Label fx:id="bookDetailDescription"  wrapText="true"
+                       GridPane.valignment="TOP" GridPane.halignment="CENTER" maxWidth="220" >
+                    <font>
+                        <Font name="AvenirLTStd-Roman" size="14.0"/>
+                    </font>
+                </Label>
+            </ScrollPane>
 
             <ImageView fitWidth="14" fitHeight="14" fx:id="availabilityImage" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.halignment="LEFT">
                 <GridPane.margin>
