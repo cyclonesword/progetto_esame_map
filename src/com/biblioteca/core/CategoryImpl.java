@@ -3,7 +3,7 @@ package com.biblioteca.core;
 import java.util.Objects;
 
 /**
- * Default reference implementation of {@link Category}.
+ * Default implementation of {@link Category} interface. The natural ordering defined here is by category name ascending.
  */
 public class CategoryImpl implements Category {
 
@@ -38,9 +38,9 @@ public class CategoryImpl implements Category {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CategoryImpl)) return false;
-        CategoryImpl category = (CategoryImpl) o;
-        return id == category.id;
+        if (!(o instanceof Category)) return false;
+        Category category = (Category) o;
+        return id == category.getId();
     }
 
     @Override

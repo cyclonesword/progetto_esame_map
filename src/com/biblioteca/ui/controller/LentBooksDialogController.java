@@ -21,7 +21,7 @@ import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 /**
- * The controller responsible for the Lent Books Dialog management.
+ * Controller class of the Lent Books window dialog for managing the lent books.
  */
 public class LentBooksDialogController implements DialogController {
 

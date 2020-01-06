@@ -10,7 +10,7 @@ import java.util.Objects;
 
 
 /**
- * The reference implementation for the {@link Loan} interface.
+ * The default implementation for the {@link Loan} interface.
  */
 public class StandardLoan implements Loan {
 

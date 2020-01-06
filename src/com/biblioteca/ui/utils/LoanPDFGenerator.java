@@ -16,6 +16,9 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * The default Loan PDF generator that uses the external Library "itextpdf" to build the PDF file.
+ */
 public class LoanPDFGenerator implements PDFGenerator {
 
     private Loan loan;

@@ -13,7 +13,7 @@ import java.util.List;
  *  The relative view file is AddRemoveData.fxml
  * @param <T>
  */
-public class AddRemoveDialogController<T> implements DialogController<List<T>> {
+public class AddRemoveDialogController<T extends Comparable<T>> implements DialogController<List<T>> {
 
     public ComboBox<T> dataCombobox;
     public ListView<T> listView;
@@ -53,5 +53,6 @@ public class AddRemoveDialogController<T> implements DialogController<List<T>> {
 
     public void setAllData(List<? extends T> allData) {
         this.allData = FXCollections.observableArrayList(allData);
+        //Collections.sort(allData);
     }
 }

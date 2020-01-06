@@ -8,8 +8,7 @@ import javafx.scene.image.Image;
 import java.util.List;
 
 /**
- * This interface is used to display items of type Book or Magazine.
- * in the ListView of the MainWindow window.
+ * This interface is used to display items in the ListView of the MainWindow window.
  */
 public interface ListItem {
 

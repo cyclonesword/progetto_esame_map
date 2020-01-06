@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.concurrent.Executors;
 
 /**
- * Controller class that manage the initial Authentication window .
+ * Controller class that manages the initial Authentication window .
  */
 public class AuthenticationSceneController {
 
@@ -106,7 +106,7 @@ public class AuthenticationSceneController {
 
     private void loadMainWindow() throws IOException {
         mainWindowRootNode = FXMLLoader.load(getClass().getResource("/fxml/MainWindow.fxml"));
-        mainWindowScene = new Scene(mainWindowRootNode, 1024, 768);
+        mainWindowScene = new Scene(mainWindowRootNode, 1050, 768);
         mainWindowController = (MainWindowController) mainWindowRootNode.getUserData();
 
     }

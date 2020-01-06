@@ -23,7 +23,7 @@
         <Insets left="10" right="10" />
     </padding>
 
-    <Label text="MAP Library" fx:id="appName">
+    <Label text="Memento Legere" fx:id="appName">
         <font>
             <Font name="Arial Bold" size="20.0"/>
         </font>
@@ -43,19 +43,19 @@
         </VBox.margin>
         <Text text="This software is licenced under ">
             <font>
-                <Font name="AvenirLTStd-Medium" size="17.0"/>
+                <Font name="Helvetica" size="17.0"/>
             </font>
         </Text>
         <Hyperlink text="GPL 2.0 licence." onMouseClicked="#linkToGPLClicked" />
         <Text text="You are free to use it for both personal and commercial purpose.">
             <font>
-                <Font name="AvenirLTStd-Medium" size="17.0"/>
+                <Font name="Helvetica" size="17.0"/>
             </font>
         </Text>
     </TextFlow>
 <!--    <Label text="This software is licenced under GPL 2.0 licence. You are free to use it for both personal or commercial purpose." >-->
 <!--        <font>-->
-<!--            <Font name="AvenirLTStd-Medium" size="17.0"/>-->
+<!--            <Font name="Helvetica" size="17.0"/>-->
 <!--        </font>-->
 <!--    </Label>-->
 

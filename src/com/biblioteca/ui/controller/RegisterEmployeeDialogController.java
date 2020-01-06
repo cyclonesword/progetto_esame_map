@@ -5,6 +5,7 @@ import com.biblioteca.core.facade.Library;
 import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.utils.Dialogs;
 import com.biblioteca.ui.utils.Utils;
+import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
@@ -16,13 +17,26 @@ import java.util.Comparator;
  */
 public class RegisterEmployeeDialogController implements DialogController<Employee> {
 
-    public TextField firstName;
-    public GridPane rootNode;
-    public TextField lastName;
-    public TextField email;
-    public TextField password;
-    public TextField authCode;
-    public TextField empCode;
+    @FXML
+    private TextField firstName;
+
+    @FXML
+    private GridPane rootNode;
+
+    @FXML
+    private TextField lastName;
+
+    @FXML
+    private TextField email;
+
+    @FXML
+    private TextField password;
+
+    @FXML
+    private TextField authCode;
+
+    @FXML
+    private TextField empCode;
 
     @Override
     public boolean checkData() {
@@ -62,6 +76,9 @@ public class RegisterEmployeeDialogController implements DialogController<Employ
     }
 
 
+    /**
+     * Initialize the employee code field with an unmodifiable code.
+     */
     public void initialize() {
         var lastNum = DataSource.getInstance().getEmployees().stream()
                 .map(Employee::getEmployeeNumber)

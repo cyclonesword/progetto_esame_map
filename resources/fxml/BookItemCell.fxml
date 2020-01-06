@@ -13,25 +13,25 @@
 <GridPane fx:id="rootNode" hgap="10"
           styleClass="book-item-cell"
           prefHeight="70"
-          maxWidth="490"
+          maxWidth="515"
           xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
 
     <padding>
         <Insets bottom="5" top="5" />
     </padding>
 
-    <Label fx:id="itemNumberLabel" text="1" GridPane.rowSpan="2">
-        <font>
-            <Font name="AvenirLTStd-Book" size="20.0"/>
-        </font>
-    </Label>
+<!--    <Label fx:id="itemNumberLabel" text="1" minWidth="21">-->
+<!--        <font>-->
+<!--            <Font name="Helvetica-Bold" size="18.0"/>-->
+<!--        </font>-->
+<!--    </Label>-->
     <ImageView fx:id="imageView" fitHeight="70" fitWidth="40" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="0"
                GridPane.rowSpan="2" GridPane.valignment="TOP">
         <Image url="@../images/it.jpg"/>
     </ImageView>
     <Label fx:id="titleLabel" GridPane.columnIndex="2" GridPane.rowIndex="0">
         <font>
-            <Font name="AvenirLTStd-Medium" size="15.0"/>
+            <Font name="Helvetica" size="15.0"/>
         </font>
     </Label>
     <ImageView fitWidth="11" fitHeight="11" fx:id="availabilityImage" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.halignment="RIGHT"/>
@@ -42,7 +42,7 @@
     </Label>
     <Label fx:id="subtitleLabel" GridPane.columnIndex="2" GridPane.rowIndex="1" wrapText="true" GridPane.valignment="TOP"  maxHeight="150">
         <font>
-            <Font name="AvenirLTStd-Roman" size="13.0"/>
+            <Font name="Helvetica" size="13.0"/>
         </font>
     </Label>
 

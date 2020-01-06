@@ -1,7 +1,5 @@
 package com.biblioteca.core;
 
-import com.biblioteca.ui.items.TableViewLoanRow;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,8 +7,9 @@ import java.util.Objects;
 
 /**
  * The Customer class encapsulates information and business logic for managing the customers of the library.
+ * The ordering defined here is by full name ascending.
  */
-public class Customer {
+public class Customer implements Comparable<Customer> {
 
     private int id;
     private String firstName;
@@ -44,14 +43,6 @@ public class Customer {
 
     public List<Loan> getLoans() {
         return Collections.unmodifiableList(loans);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Customer)) return false;
-        Customer customer = (Customer) o;
-        return id == customer.id;
     }
 
     @Override
@@ -98,5 +89,18 @@ public class Customer {
 
     public void removeLoan(Loan loan) {
         loans.remove(loan);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Customer)) return false;
+        Customer customer = (Customer) o;
+        return id == customer.id;
+    }
+
+    @Override
+    public int compareTo(Customer o) {
+        return getFullName().compareTo(o.getFullName());
     }
 }

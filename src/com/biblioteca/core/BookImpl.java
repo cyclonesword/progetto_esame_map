@@ -61,19 +61,6 @@ public class BookImpl implements Book {
         this.id = id;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BookImpl book = (BookImpl) o;
-        return ISBN.equals(book.ISBN);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(ISBN);
-    }
-
     public List<? extends Author> getAuthors() {
         return authors;
     }
@@ -173,10 +160,26 @@ public class BookImpl implements Book {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book)) return false;
+        Book book = (Book) o;
+        return id == book.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ISBN);
+    }
+
+    @Override
     public String toString() {
         return title;
     }
 
-    static class LoanException extends RuntimeException {
+    @Override
+    public int compareTo(Book o) {
+        return title.compareTo(o.getTitle());
     }
+
 }

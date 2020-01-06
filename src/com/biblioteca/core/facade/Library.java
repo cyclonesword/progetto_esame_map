@@ -201,12 +201,14 @@ public class Library {
 
         try {
             Files.delete(Paths.get(ds.getApplicationFilesRootPath() + "pdf" + File.separator + loan.getLoanId() + ".pdf"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignored) { }
 
     }
 
+    /**
+     * Sets the employee that is currently logged in
+     * @param loggedEmployee The currently logged employee
+     */
     public void setLoggedEmployee(Employee loggedEmployee) {
         this.loggedEmployee = loggedEmployee;
     }
@@ -218,6 +220,10 @@ public class Library {
         ds.saveAll();
     }
 
+    /**
+     *
+     * @return The currently logged employee
+     */
     public Employee getLoggedEmployee() {
         return loggedEmployee;
     }

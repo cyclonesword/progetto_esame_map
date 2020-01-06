@@ -5,7 +5,8 @@ import com.biblioteca.datasource.DataSource;
 import com.biblioteca.ui.utils.Utils;
 
 /**
- * This implementation of the <code>Authentication</code> interface performs authentication for the email / password authentication methodology.
+ * This implementation of the <code>Authentication</code> interface performs authentication for the email / password authentication methodology. <br>
+ * See the {@link Authentication} interface for the complete javadoc
  */
 public class EmailPasswordAuthentication implements Authentication {
 

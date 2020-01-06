@@ -81,55 +81,11 @@ public class ModifyBookDialogController implements DialogController<Book> {
     private Dialog<ButtonType> dialog;
 
     private File selectedImage;
-
-    private void fillFields() {
-
-        ObservableList<Publisher> publishers = FXCollections.observableArrayList(ds.getPublishers());
-        editoriCombobox.setItems(publishers);
-
-        var formats = FXCollections.observableArrayList(ds.getFormats());
-        formatoCombobox.setItems(formats);
-
-        if (book != null) {
-            authors.addAll(book.getAuthors()); // Shallow copy
-            categories.addAll(book.getCategories());
-
-            titleTf.setText(book.getTitle());
-            subtitleTf.setText(book.getSubtitle());
-            descriptionTf.setText(book.getDescription());
-            yearTf.setText(String.valueOf(book.getYear() > 0 ? book.getYear() : 2020));
-            isbnTf.setText(book.getISBN());
-            qntTf.setText(String.valueOf(book.getQuantity() > 0 ? book.getQuantity() : 1));
-            bookImg.setImage(book.getImage());
-
-            editoriCombobox.getSelectionModel().select(book.getPublisher());
-            formatoCombobox.getSelectionModel().select(book.getFormat());
-
-            fillCategoriesLabel();
-            fillAuthorsLabel();
-        }
-
-    }
-
-    private void fillAuthorsLabel() {
-        var authorsString = authors.stream()
-                .map(Author::getName)
-                .collect(Collectors.joining(" - "));
-
-        // 35 pixel in height for every author
-        authorsContainer.setMinHeight(Math.max((authors.size() / 2) * 35, 60));
-        authorsLabel.setText(authorsString);
-    }
-
-    private void fillCategoriesLabel() {
-        var categoriesString = categories.stream()
-                .map(Category::getName)
-                .collect(Collectors.joining(" - "));
-
-        categoryLabel.setText(categoriesString);
-    }
-
-
+    
+    /**
+     * Modify the book with the given values
+     * @return The modified book instance.
+     */
     @Override
     public Book confirmAndGet() {
 
@@ -242,20 +198,64 @@ public class ModifyBookDialogController implements DialogController<Book> {
             return false;
         }
 
-        try {
-            Integer.parseInt(qntTf.getText());
-        } catch (NumberFormatException e) {
-            Dialogs.showAlertDialog("Si prega di inserire una quantità numerica", rootPane.getScene().getWindow());
-            return false;
+        return isNumeric(yearTf.getText(), "Anno") && isNumeric(qntTf.getText(), "Quantità");
+    }
+
+    // Initialize all field with the already existent data
+    private void fillFields() {
+
+        ObservableList<Publisher> publishers = FXCollections.observableArrayList(ds.getPublishers());
+        editoriCombobox.setItems(publishers);
+
+        var formats = FXCollections.observableArrayList(ds.getFormats());
+        formatoCombobox.setItems(formats);
+
+        if (book != null) {
+            authors.addAll(book.getAuthors()); // Shallow copy
+            categories.addAll(book.getCategories());
+
+            titleTf.setText(book.getTitle());
+            subtitleTf.setText(book.getSubtitle());
+            descriptionTf.setText(book.getDescription());
+            yearTf.setText(String.valueOf(book.getYear() > 0 ? book.getYear() : 2020));
+            isbnTf.setText(book.getISBN());
+            qntTf.setText(String.valueOf(book.getQuantity() > 0 ? book.getQuantity() : 1));
+            bookImg.setImage(book.getImage());
+
+            editoriCombobox.getSelectionModel().select(book.getPublisher());
+            formatoCombobox.getSelectionModel().select(book.getFormat());
+
+            fillCategoriesLabel();
+            fillAuthorsLabel();
         }
 
+    }
+
+    private void fillAuthorsLabel() {
+        var authorsString = authors.stream()
+                .map(Author::getName)
+                .collect(Collectors.joining(" - "));
+
+        // 35 pixel in height for every author
+        authorsContainer.setMinHeight(Math.max((authors.size() / 2) * 35, 60));
+        authorsLabel.setText(authorsString);
+    }
+
+    private void fillCategoriesLabel() {
+        var categoriesString = categories.stream()
+                .map(Category::getName)
+                .collect(Collectors.joining(" - "));
+
+        categoryLabel.setText(categoriesString);
+    }
+
+    private boolean isNumeric(String num, String field) {
         try {
-            Integer.parseInt(yearTf.getText());
+            Integer.parseInt(num);
         } catch (NumberFormatException e) {
-            Dialogs.showAlertDialog("Si prega di inserire l'anno di pubblicazione del libro", rootPane.getScene().getWindow());
+            Dialogs.showAlertDialog("Si prega di inserire una quantità numerica nella casella '"+field+"'", rootPane.getScene().getWindow());
             return false;
         }
-
         return true;
     }
 }

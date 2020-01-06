@@ -7,9 +7,9 @@ import java.util.List;
 // 0, Title, Subtitle, Description, [Authors IDs], Year ID, Publisher ID, ISBN, Quantity
 
 /**
- * Base interface for the Book entity.
+ * Base interface for the Book entity. The natural ordering of Book objects is by ascending title.
  */
-public interface Book {
+public interface Book extends Comparable<Book> {
 
     String FORMAT_PAPER = "Paper Book";
     String FORMAT_EPUB = "ePub";

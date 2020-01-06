@@ -3,7 +3,7 @@ package com.biblioteca.core;
 import java.util.Objects;
 
 /**
- * The default reference implementation of the {@link Publisher } interface.
+ * The default implementation of the {@link Publisher } interface.
  * The Comparator uses the publisher's name for comparing.
  */
 public class PublisherImpl implements Publisher {
@@ -29,9 +29,9 @@ public class PublisherImpl implements Publisher {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PublisherImpl)) return false;
-        PublisherImpl publisher = (PublisherImpl) o;
-        return id == publisher.id;
+        if (!(o instanceof Publisher)) return false;
+        Publisher publisher = (Publisher) o;
+        return id == publisher.getId();
     }
 
     @Override
@@ -40,8 +40,8 @@ public class PublisherImpl implements Publisher {
     }
 
     @Override
-    public int compareTo(Publisher o) {
-        return name.compareTo(o.getName());
+    public int compareTo(Publisher p) {
+        return name.compareTo(p.getName());
     }
 
     @Override

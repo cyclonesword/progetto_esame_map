@@ -29,8 +29,8 @@ public class BookListCell extends ListCell<BookListItem> {
     @FXML
     private Label subtitleLabel;
 
-    @FXML
-    private Label itemNumberLabel;
+//    @FXML
+//    private Label itemNumberLabel;
 
     @FXML
     private ImageView imageView;
@@ -78,7 +78,7 @@ public class BookListCell extends ListCell<BookListItem> {
             item.setPosition(getIndex()+1);
             subtitleLabel.setText(book.getSubtitle().equals("-") ? book.getDescription() : book.getSubtitle());
             imageView.setImage(item.getImage());
-            itemNumberLabel.setText(String.valueOf(getIndex()+1));
+        //    itemNumberLabel.setText(String.valueOf(getIndex()+1));
             availabilityImage.setImage(item.isAvailable() ? Images.GREEN_CIRCLE : Images.RED_CIRCLE);
             availabilityText.setText(item.isAvailable() ? "Disponibile" : "Prestato");
 

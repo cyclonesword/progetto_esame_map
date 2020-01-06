@@ -3,8 +3,8 @@ package com.biblioteca.core;
 import java.util.Objects;
 
 /**
- * The default reference-implementation of the Author interface.<br>
- * When instances of this class are compared for sorting, the value used for sorting is the name, ascending.
+ * The default implementation of the Author interface.<br>
+ * The ordering defined here is by name ascending.
  */
 public class AuthorImpl implements Author {
 
@@ -43,9 +43,9 @@ public class AuthorImpl implements Author {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AuthorImpl)) return false;
-        AuthorImpl author = (AuthorImpl) o;
-        return id == author.id;
+        if (!(o instanceof Author)) return false;
+        Author author = (Author) o;
+        return id == author.getId();
     }
 
     @Override

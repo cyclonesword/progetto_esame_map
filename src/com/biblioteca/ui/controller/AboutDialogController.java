@@ -6,7 +6,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 
 /**
- * Controller class that manages the About dialog window
+ * Controller class that manages the About window dialog
  */
 public class AboutDialogController implements DialogController<Void> {
 
@@ -21,6 +21,9 @@ public class AboutDialogController implements DialogController<Void> {
         appName.setText(ApplicationStart.getInstance().getAppName());
     }
 
+    /**
+     * Opens the default web browser and displays the GPL 2.0 licence official web page.
+     */
     @FXML
     public void linkToGPLClicked() {
         var services = ApplicationStart.getInstance().getHostServices();

@@ -129,6 +129,9 @@ public interface DataSource {
         return CSVDataSource.getInstance();
     }
 
+    /**
+     * Common class for all exception thrown by the DataSource
+     */
     class DataSourceException extends RuntimeException {
         public DataSourceException() {
         }
@@ -142,6 +145,9 @@ public interface DataSource {
         }
     }
 
+    /**
+     * Indicates that some other object depends on a given book instance and therefore cannot be deleted.
+     */
     class BookDependencyException extends DataSourceException {
         public BookDependencyException() { }
 

@@ -16,9 +16,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 import java.time.LocalDate;
+import java.util.Collections;
 
 /**
- * The controller class associated to the New Loan dialog.
+ * Controller class that manages the window dialog for adding new loans.
  */
 public class LoanDialogController implements DialogController<Loan> {
     @FXML
@@ -41,6 +42,9 @@ public class LoanDialogController implements DialogController<Loan> {
 
     public void initialize() {
         ObservableList<Customer> allUsers = FXCollections.observableArrayList(ds.getCustomers());
+
+        Collections.sort(allUsers);
+
         usersCombobox.setItems(allUsers);
 
         // maxmium day is today + 60 days

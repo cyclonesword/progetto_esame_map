@@ -129,11 +129,7 @@ public class MainWindowController {
         initFilters();
     }
 
-    public void initCompleted() {
-        authenticatedEmployeeName.setText("Impiegato autenticato: " + Library.getInstance().getLoggedEmployee().getFullName());
-    }
     // changes the content of the book detail section on the right
-
     /**
      * Invoked by the JavaFX Runtime when the user search a book in the search bar by pressing the search button.
      */
@@ -351,6 +347,9 @@ public class MainWindowController {
     }
 
 
+    public void initCompleted() {
+        authenticatedEmployeeName.setText("Impiegato autenticato: " + Library.getInstance().getLoggedEmployee().getFullName());
+    }
 
     // =============== ***** private methods **** ================== //
     private void viewPdfDialog(Loan pdfGenerator) {

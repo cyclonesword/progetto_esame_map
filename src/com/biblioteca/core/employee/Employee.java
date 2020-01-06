@@ -1,7 +1,7 @@
 package com.biblioteca.core.employee;
 
 /**
- * Base interface that all employees must conform.
+ * Base interface for all Employee types.
  */
 public interface Employee {
 

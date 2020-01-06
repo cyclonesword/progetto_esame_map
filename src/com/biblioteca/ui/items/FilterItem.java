@@ -3,15 +3,13 @@ package com.biblioteca.ui.items;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
  * This class is used to model filters displayed in the TreeView at the left section of the Application.<br>
  * Every filter has an associated Predicate that encapsulate the filtering strategy.
- * This class is used in the MainWindowController to initialize the TreeView with all the filters divided in 4 sections:
+ * This class is used in the MainWindowController to initialize the TreeView with all the filters divided in 4 root sections:
  * Author,Category,Publisher and Format.
  */
 public class FilterItem {

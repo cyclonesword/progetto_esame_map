@@ -9,9 +9,14 @@ import com.biblioteca.ui.utils.BookImage;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -19,7 +24,7 @@ import java.util.stream.Collectors;
 /**
  * This is the default implementation of the {@link DataSource} interface,.
  * It is package-private because it is intended to be used internally.<br><br>
- *
+ * <p>
  * ******* <b>Singleton Design Pattern</b> used here *******
  */
 // package-private
@@ -58,10 +63,10 @@ class CSVDataSource implements DataSource {
      * This constructor creates a local copy of the internal database with mock objects. <br>
      * It also creates all the necessary directories and files in the Operating System default user home directory.
      * <pre>
-The path is this:  {home directory of you computer}/MAP Library/csv        ==> for CSV files
-                   {home directory of you computer}/MAP Library/images     ==> for images
+     * The path is this:  {home directory of you computer}/Memento Legere/csv        ==> for CSV files
+     * {home directory of you computer}/Memento Legere/images     ==> for images
      * </pre>
-      */
+     */
     private CSVDataSource() {
 
         // Create directories for csv files and for images if not exists.
@@ -90,7 +95,6 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
     }
 
     /**
-     *
      * @return The singleton instance of this class
      */
     static DataSource getInstance() {
@@ -99,16 +103,20 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
 
     @Override
     public List<? extends Category> getCategories() {
-        if (categories == null)
+        if (categories == null) {
             categories = readDataFromCsv(categoriesCsv, CategoryImpl::new);
+            Collections.sort(categories);
+        }
 
         return categories;
     }
 
     @Override
     public List<? extends Author> getAuthors() {
-        if (authors == null)
+        if (authors == null) {
             authors = readDataFromCsv(authorsCsv, AuthorImpl::new);
+            Collections.sort(authors);
+        }
 
         return authors;
     }
@@ -237,6 +245,8 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
                         .setFormat(line[11])
                         .build();
             });
+
+            Collections.sort(books);
         }
 
         return books;
@@ -267,6 +277,7 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
     public void save(Book book) {
         book.setId(books.stream().map(Book::getId).max(Comparator.naturalOrder()).get() + 1);
         books.add(book);
+        Collections.sort(books);
     }
 
     @Override
@@ -333,7 +344,7 @@ The path is this:  {home directory of you computer}/MAP Library/csv        ==> f
         List<String[]> lines = new ArrayList<>();
 
         String path = basePathCsv + csvFileName;
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8))) {
             while ((line = br.readLine()) != null) {
                 lines.add(line.split(","));
             }

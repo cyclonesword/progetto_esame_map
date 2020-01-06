@@ -20,7 +20,7 @@
 
     <Label GridPane.rowIndex="0" GridPane.columnIndex="0" text="Libri prestati" alignment="CENTER" GridPane.halignment="CENTER">
         <font>
-            <Font name="AvenirLTStd-Medium" size="14.0"/>
+            <Font name="Helvetica" size="14.0"/>
         </font>
     </Label>
 

@@ -19,7 +19,7 @@
     <VBox spacing="3" alignment="CENTER">
         <Label text="Email address">
             <font>
-                <Font name="AvenirLTStd-Medium" size="17.0"/>
+                <Font name="Helvetica" size="17.0"/>
             </font>
         </Label>
         <TextField text="alba.dasaro@gmail.com" fx:id="emailOrNumber" promptText="Email address" maxWidth="160"/>
@@ -28,7 +28,7 @@
     <VBox spacing="3" alignment="CENTER">
         <Label text="Password">
             <font>
-                <Font name="AvenirLTStd-Medium" size="17.0"/>
+                <Font name="Helvetica" size="17.0"/>
             </font>
         </Label>
         <PasswordField text="asdasd" fx:id="password" maxWidth="160"/>
@@ -40,7 +40,7 @@
         </VBox.margin>
         <Button text="Accedi" prefWidth="180" prefHeight="50" onMouseClicked="#loginClicked" >
             <font>
-                <Font name="AvenirLTStd-Medium" size="17.0"/>
+                <Font name="Helvetica" size="17.0"/>
             </font>
             <padding>
                 <Insets left="13" right="20" />
@@ -53,7 +53,7 @@
         </Button>
         <Button prefHeight="50" prefWidth="220" onMouseClicked="#registerClicked" text="Nuovo impiegato">
             <font>
-                <Font name="AvenirLTStd-Medium" size="17.0"/>
+                <Font name="Helvetica" size="17.0"/>
             </font>
             <GridPane.margin>
                 <Insets top="10" />

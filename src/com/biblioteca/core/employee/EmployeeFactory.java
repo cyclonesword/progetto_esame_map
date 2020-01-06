@@ -1,5 +1,8 @@
 package com.biblioteca.core.employee;
 
+/**
+ * Factory class for creating Employee instances of a valid given type.
+ */
 public  class EmployeeFactory {
 
     /**

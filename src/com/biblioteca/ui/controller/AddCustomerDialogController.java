@@ -5,13 +5,11 @@ import com.biblioteca.core.facade.Library;
 import com.biblioteca.ui.utils.Dialogs;
 import com.biblioteca.ui.utils.Utils;
 import javafx.fxml.FXML;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 /**
- * Controller class that manage the add user window dialog.
+ * Controller class that manages the add user window dialog.
  */
 public class AddCustomerDialogController implements DialogController<Customer> {
 

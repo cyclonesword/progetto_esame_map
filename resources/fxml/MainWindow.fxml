@@ -23,7 +23,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ScrollPane?>
 <BorderPane fx:id="rootPane" prefHeight="600"
-            prefWidth="800" xmlns="http://javafx.com/javafx/11.0.1"
+            prefWidth="825" xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.biblioteca.ui.controller.MainWindowController">
 
@@ -111,7 +111,7 @@
     <center>
         <VBox>
             <HBox>
-                <TextField prefWidth="450" fx:id="searchBar" promptText="Cerca sul database..." onKeyReleased="#searchBarKeyReleased" styleClass="searchBar">
+                <TextField prefWidth="475" fx:id="searchBar" promptText="Cerca sul database..." onKeyReleased="#searchBarKeyReleased" styleClass="searchBar">
                     <HBox.margin>
                         <Insets bottom="5" left="5" right="8" />
                     </HBox.margin>
@@ -123,12 +123,12 @@
                     </HBox.margin>
                 </Button>
             </HBox>
-            <ListView fx:id="listView" prefWidth="530" prefHeight="640" maxWidth="530" styleClass="roundBorders">
+            <ListView fx:id="listView" prefWidth="555" prefHeight="640" maxWidth="555" styleClass="roundBorders">
                 <VBox.margin>
                     <Insets left="5" right="5" />
                 </VBox.margin>
                 <padding>
-                    <Insets top="10" left="10" right="5" bottom="10" />
+                    <Insets top="10" left="5" right="5" bottom="10" />
                 </padding>
             </ListView>
         </VBox>
@@ -150,19 +150,19 @@
                        GridPane.columnIndex="0"
                        GridPane.rowIndex="0"
                        GridPane.valignment="TOP"/>
-            <Label fx:id="bookDetailTitle" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.halignment="CENTER">
+            <Label fx:id="bookDetailTitle" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.halignment="CENTER" maxWidth="235" textAlignment="CENTER" alignment="CENTER">
                 <GridPane.margin>
                     <Insets top="15" bottom="10" />
                 </GridPane.margin>
                 <font>
-                    <Font name="AvenirLTStd-Medium" size="17.0"/>
+                    <Font name="Helvetica" size="17.0"/>
                 </font>
             </Label>
             <ScrollPane GridPane.columnIndex="0" GridPane.rowIndex="2" prefHeight="190" maxHeight="280" prefWidth="230" style="-fx-background-color: white; -fx-border-color: white;">
                 <Label fx:id="bookDetailDescription"  wrapText="true"
                        GridPane.valignment="TOP" GridPane.halignment="CENTER" maxWidth="220" >
                     <font>
-                        <Font name="AvenirLTStd-Roman" size="14.0"/>
+                        <Font name="Helvetica" size="14.0"/>
                     </font>
                 </Label>
             </ScrollPane>

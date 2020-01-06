@@ -1,7 +1,8 @@
 package com.biblioteca.core.employee;
 
 /**
- * Implementation of the <code>Employee</code> interface  for an employee that have access to all the functionality of the software (i.e Administrator)
+ * Implementation of the <code>Employee</code> interface  for an employee that have access to a limited functionality of the software.
+ * See the {@link Employee} interface for the complete javadoc
  */
 public class Manager implements Employee {
 
