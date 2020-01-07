@@ -80,7 +80,6 @@ public class AuthenticationSceneController {
             primaryStage.show();
 
         } catch (Authentication.InvalidCredentialsException e) {
-            e.printStackTrace();
             showErrorDialog(message);
         }
 

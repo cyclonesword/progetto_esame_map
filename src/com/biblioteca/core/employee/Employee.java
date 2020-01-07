@@ -42,16 +42,40 @@ public interface Employee {
      */
     boolean canPerform(Action action);
 
+    /**
+     * Sets the employee code
+     * @param employeeNumber The code of the employee
+     */
     void setEmployeeNumber(int employeeNumber);
 
+    /**
+     *
+     * @param password The password of this employee
+     */
     void setPassword(String password);
 
+    /**
+     *
+     * @param name The first name of this employee
+     */
     void setName(String name);
 
+    /**
+     *
+     * @param lastName The last name of this employee
+     */
     void setLastName(String lastName);
 
+    /**
+     *
+     * @param email  A valid email address
+     */
     void setEmail(String email);
 
+    /**
+     * Returns the full name (First name + Last name) of this employee
+     * @return The full name
+     */
     default String getFullName() {
         return String.format("%s %s", getFirstName(),getLastName());
     }

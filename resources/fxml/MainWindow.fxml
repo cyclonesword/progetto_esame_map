@@ -117,7 +117,7 @@
                     </HBox.margin>
 
                 </TextField>
-                <Button fx:id="searchButton" onMouseClicked="#searchButtonClicked"  styleClass="searchBarButton" maxHeight="15" prefWidth="70" text="Search">
+                <Button fx:id="searchButton" onMouseClicked="#searchButtonClicked"  styleClass="searchBarButton" maxHeight="15" prefWidth="70" text="Cerca">
                     <HBox.margin>
                         <Insets right="5" />
                     </HBox.margin>

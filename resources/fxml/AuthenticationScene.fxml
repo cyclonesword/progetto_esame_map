@@ -17,12 +17,12 @@
       prefHeight="320" prefWidth="480" spacing="10" alignment="CENTER">
 
     <VBox spacing="3" alignment="CENTER">
-        <Label text="Email address">
+        <Label text="Email o codice impiegato">
             <font>
                 <Font name="Helvetica" size="17.0"/>
             </font>
         </Label>
-        <TextField text="alba.dasaro@gmail.com" fx:id="emailOrNumber" promptText="Email address" maxWidth="160"/>
+        <TextField text="alba.dasaro@gmail.com" fx:id="emailOrNumber" promptText="Indirizzo email" maxWidth="160"/>
     </VBox>
 
     <VBox spacing="3" alignment="CENTER">

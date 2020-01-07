@@ -179,7 +179,7 @@ public class BookImpl implements Book {
 
     @Override
     public int compareTo(Book o) {
-        return title.compareTo(o.getTitle());
+        return Integer.compare(id, o.getId());
     }
 
 }

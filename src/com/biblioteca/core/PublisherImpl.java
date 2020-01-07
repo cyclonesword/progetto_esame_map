@@ -4,7 +4,6 @@ import java.util.Objects;
 
 /**
  * The default implementation of the {@link Publisher } interface.
- * The Comparator uses the publisher's name for comparing.
  */
 public class PublisherImpl implements Publisher {
 

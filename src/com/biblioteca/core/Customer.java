@@ -7,7 +7,6 @@ import java.util.Objects;
 
 /**
  * The Customer class encapsulates information and business logic for managing the customers of the library.
- * The ordering defined here is by full name ascending.
  */
 public class Customer implements Comparable<Customer> {
 
@@ -37,51 +36,90 @@ public class Customer implements Comparable<Customer> {
         this.phoneNumber = phoneNumber;
     }
 
+    /**
+     * Add a loan to the list of loans of this customer.
+      * @param loan The loan to be associated to this customer
+     */
     public void addLoan(Loan loan) {
         loans.add(loan);
     }
 
+    /**
+     * Returns an unmodifiable collection with the loans of this customer
+     * @return The list of loans of this customer
+     */
     public List<Loan> getLoans() {
         return Collections.unmodifiableList(loans);
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s %s %s", firstName, lastName, fiscalCode);
-    }
-
+    /**
+     * Returns the Id of this customer
+     * @return
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * The first name of the customer
+     * @return The first name
+     */
     public String getFirstName() {
         return firstName;
     }
 
+    /**
+     * The last name of the Customer
+     * @return The last name
+     */
     public String getLastName() {
         return lastName;
     }
 
+    /**
+     * The email of the customer
+     * @return A valid email address of this customer
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * The fiscal code of the customer. It is 16 characters long.
+     * @return The Fiscal code of the customer (16 chars)
+     */
     public String getFiscalCode() {
         return fiscalCode;
     }
 
+    /**
+     * The telephone number (if any) of this customer
+     * @return The telephone number of the customer
+     */
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
+    /**
+     * The First name and last name of the customer
+     * @return
+     */
     public String getFullName() {
         return firstName + " " + lastName;
     }
 
+    /**
+     * Sets the id for this customer. It must be unique.
+     * @param lastId A unique identifier for this customer.
+     */
     public void setId(int lastId) {
         this.id = lastId;
     }
 
+    /**
+     * Removes a loan from the list of loans of this customer
+     * @param loan The loan to be removed
+     */
     public void removeLoan(Loan loan) {
         loans.remove(loan);
     }
@@ -102,5 +140,10 @@ public class Customer implements Comparable<Customer> {
     @Override
     public int compareTo(Customer o) {
         return Integer.compare(id, o.getId());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s %s", firstName, lastName, fiscalCode);
     }
 }

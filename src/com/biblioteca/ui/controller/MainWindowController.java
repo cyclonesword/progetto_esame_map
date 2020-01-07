@@ -33,6 +33,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -333,6 +334,7 @@ public class MainWindowController {
                     controller.confirmAndGet();
                     ds.save(book);
                     allBooks.add(new BookListItem(book));
+                    allBooks.sort(Comparator.comparing(ListItem::getItemTitle));
                     applyFilters();
                     refreshListView();
                 });

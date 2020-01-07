@@ -16,13 +16,13 @@ public interface Loan {
     String STATUS_RETURNED = "returned";
 
     /**
-     *
+     * The Customer associated with this loan
      * @return The customer that requested the loan
      */
     Customer getCustomer();
 
     /**
-     *
+     * The identifier of this loan
      * @return The unique identifier for this loan
      */
     int getLoanId();
@@ -34,31 +34,31 @@ public interface Loan {
     void setId(int id);
 
     /**
-     *
+     * The loan start date
      * @return The date at which the loan started.
      */
     LocalDate getLoanDate();
 
     /**
-     *
+     * The loan expected return date
      * @return The expected return date of the loan
      */
     LocalDate getExpectedReturnDate();
 
     /**
-     *
+     * Sets the return date of this book
      * @param returnDate The return date for this loan
      */
     void setReturnDate(LocalDate returnDate);
 
     /**
-     *
+     * The book associated with this loan
      * @return The book associated with this loan
      */
     Book getBook();
 
     /**
-     *
+     * Gets the status of this loan
      * @return The loan status. It can be {@link Loan#STATUS_RETURNED} or {@link Loan#STATUS_NOT_RETURNED}
      */
     String getStatus();
