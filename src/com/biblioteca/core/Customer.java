@@ -46,11 +46,6 @@ public class Customer implements Comparable<Customer> {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
     public String toString() {
         return String.format("%s %s %s", firstName, lastName, fiscalCode);
     }
@@ -100,7 +95,12 @@ public class Customer implements Comparable<Customer> {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
     public int compareTo(Customer o) {
-        return getFullName().compareTo(o.getFullName());
+        return Integer.compare(id, o.getId());
     }
 }

@@ -22,6 +22,7 @@ import java.util.Collections;
  * Controller class that manages the window dialog for adding new loans.
  */
 public class LoanDialogController implements DialogController<Loan> {
+
     @FXML
     public GridPane rootNode;
 

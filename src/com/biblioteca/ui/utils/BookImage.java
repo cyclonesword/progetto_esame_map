@@ -26,7 +26,7 @@ public class BookImage extends Image {
     }
 
     public String getName() {
-        return name;
+        return name.replace(",", "__");
     }
 
     public BookImage setName(String name) {
@@ -39,13 +39,13 @@ public class BookImage extends Image {
         this.file = selectedImage;
     }
 
-    public BookImage(String url, String location, String name) {
-        super(url);
-        this.location = location;
-        this.name = name;
-    }
+//    public BookImage(String url, String location, String name) {
+//        super(url);
+//        this.location = location;
+//        this.name = name;
+//    }
 
-    public BookImage(InputStream is,String location, String name) {
+    public BookImage(InputStream is, String location, String name) {
         super(is);
         this.location = location;
         this.name = name;

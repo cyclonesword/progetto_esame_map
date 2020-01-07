@@ -40,8 +40,8 @@ public class PublisherImpl implements Publisher {
     }
 
     @Override
-    public int compareTo(Publisher p) {
-        return name.compareTo(p.getName());
+    public int compareTo(Publisher o) {
+        return Integer.compare(id, o.getId());
     }
 
     @Override

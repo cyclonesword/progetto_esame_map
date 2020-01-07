@@ -53,6 +53,5 @@ public class AddRemoveDialogController<T extends Comparable<T>> implements Dialo
 
     public void setAllData(List<? extends T> allData) {
         this.allData = FXCollections.observableArrayList(allData);
-        //Collections.sort(allData);
     }
 }

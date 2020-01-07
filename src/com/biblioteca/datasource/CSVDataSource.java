@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -105,7 +104,7 @@ class CSVDataSource implements DataSource {
     public List<? extends Category> getCategories() {
         if (categories == null) {
             categories = readDataFromCsv(categoriesCsv, CategoryImpl::new);
-            Collections.sort(categories);
+            categories.sort(Comparator.comparing(Category::getName));
         }
 
         return categories;
@@ -115,7 +114,7 @@ class CSVDataSource implements DataSource {
     public List<? extends Author> getAuthors() {
         if (authors == null) {
             authors = readDataFromCsv(authorsCsv, AuthorImpl::new);
-            Collections.sort(authors);
+            authors.sort(Comparator.comparing(Author::getName));
         }
 
         return authors;
@@ -123,8 +122,10 @@ class CSVDataSource implements DataSource {
 
     @Override
     public List<? extends Publisher> getPublishers() {
-        if (publishers == null)
+        if (publishers == null) {
             publishers = readDataFromCsv(publishersCsv, PublisherImpl::new);
+            publishers.sort(Comparator.comparing(Publisher::getName));
+        }
 
         return publishers;
     }
@@ -246,7 +247,7 @@ class CSVDataSource implements DataSource {
                         .build();
             });
 
-            Collections.sort(books);
+            books.sort(Comparator.comparing(Book::getTitle));
         }
 
         return books;
@@ -277,7 +278,7 @@ class CSVDataSource implements DataSource {
     public void save(Book book) {
         book.setId(books.stream().map(Book::getId).max(Comparator.naturalOrder()).get() + 1);
         books.add(book);
-        Collections.sort(books);
+        books.sort(Comparator.comparing(Book::getTitle));
     }
 
     @Override

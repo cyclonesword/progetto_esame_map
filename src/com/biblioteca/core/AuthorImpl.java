@@ -4,7 +4,6 @@ import java.util.Objects;
 
 /**
  * The default implementation of the Author interface.<br>
- * The ordering defined here is by name ascending.
  */
 public class AuthorImpl implements Author {
 
@@ -17,7 +16,8 @@ public class AuthorImpl implements Author {
     /**
      * Constructs a new AuthorImpl instance. <br>
      * The caller is responsible for providing a unique (not already existing) id.
-     * @param id A unique identifier for the author
+     *
+     * @param id   A unique identifier for the author
      * @param name The author's name
      */
     public AuthorImpl(int id, String name) {
@@ -55,6 +55,6 @@ public class AuthorImpl implements Author {
 
     @Override
     public int compareTo(Author o) {
-        return name.compareTo(o.getName());
+        return Integer.compare(id, o.getId());
     }
 }

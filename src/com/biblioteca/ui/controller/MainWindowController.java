@@ -398,7 +398,6 @@ public class MainWindowController {
                 .getChildren()
                 .addAll(ds.getCategories()
                         .stream()
-                        .sorted()
                         .map(c -> new FilterItem(c.getName(), FilterCategory.CATEGORY, item -> item.getCategories().contains(c)))
                         .map(FilterItem::getTreeItem)
                         .collect(Collectors.toList()));
@@ -407,7 +406,6 @@ public class MainWindowController {
                 .getChildren()
                 .addAll(ds.getAuthors()
                         .stream()
-                        .sorted()
                         .map(author -> new FilterItem(author.getName(), FilterCategory.AUTHOR, item -> item.getAuthors().contains(author)))
                         .map(FilterItem::getTreeItem)
                         .collect(Collectors.toList()));
@@ -416,7 +414,6 @@ public class MainWindowController {
                 .getChildren()
                 .addAll(ds.getPublishers()
                         .stream()
-                        .sorted()
                         .map(publisher -> new FilterItem(publisher.getName(), FilterCategory.PUBLISHER, item -> item.getPublisher() == publisher))
                         .map(FilterItem::getTreeItem)
                         .collect(Collectors.toList()));

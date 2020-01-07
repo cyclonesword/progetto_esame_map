@@ -169,7 +169,7 @@ public class BookImpl implements Book {
 
     @Override
     public int hashCode() {
-        return Objects.hash(ISBN);
+        return Objects.hash(id);
     }
 
     @Override
